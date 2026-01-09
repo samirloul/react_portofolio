@@ -1,16 +1,83 @@
-# React + Vite
+# 👨‍💻 Mohamed Samir Loul – Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🌍 **Software Development Student | Nederland**  
+📅 Geboren: 17 januari 2006  
+📧 Email: sameerloul2010@gmail.com  
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🇳🇱 Nederlands
 
-## React Compiler
+### Over Mij
+Mijn naam is Samir Loul, ik kom uit Syrië en woon momenteel in Nederland. Ik ben student Software Development en werk hard om mijn droom te bereiken: **softwareontwikkelaar worden**.  
+Ik ben gemotiveerd, leergierig en hou van het bouwen van websites en applicaties.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Vaardigheden
+- HTML5, CSS3, JavaScript  
+- PHP, SQL, Laravel  
+- React (lerend)  
+- Git & GitHub  
+- Responsief Webdesign  
 
-## Expanding the ESLint configuration
+### Projecten
+- **Persoonlijke Portfolio Website** – HTML, CSS, JavaScript  
+- **Syrië Website** – PHP, MySQL, HTML/CSS  
+- **AlHaqq Portal** (Koran & Tools) – Laravel, API, MySQL  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🇬🇧 English
+
+### About Me
+My name is Samir Loul. I am originally from Syria and currently living in the Netherlands. I am a Software Development student working towards becoming a **professional software developer**.  
+I am passionate, adaptable, and always eager to learn new technologies.
+
+### Skills
+- HTML5, CSS3, JavaScript  
+- PHP, SQL, Laravel  
+- React (learning)  
+- Git & GitHub  
+- Responsive Web Design  
+
+### Projects
+- **Personal Portfolio Website** – HTML, CSS, JavaScript  
+- **Syria Website** – PHP, MySQL, HTML/CSS  
+- **AlHaqq Portal** (Qur'an & Tools) – Laravel, API, MySQL  
+
+---
+
+## 🇸🇦 العربية
+
+### عني
+اسمي سمير لول، من سوريا وأعيش حالياً في هولندا. أدرس تطوير البرمجيات وأسعى لتحقيق حلمي بأن أصبح **مطور برمجيات محترف**.  
+أنا شخص طموح، محب للتعلم، وأستمتع ببناء المواقع والتطبيقات.
+
+### المهارات
+- HTML5, CSS3, JavaScript  
+- PHP, SQL, Laravel  
+- React (قيد التعلم)  
+- Git & GitHub  
+- تصميم مواقع متجاوبة  
+
+### المشاريع
+- **موقع البورتفوليو الشخصي** – HTML, CSS, JavaScript  
+- **موقع سوريا** – PHP, MySQL, HTML/CSS  
+- **بوابة الحق (القرآن والأدوات)** – Laravel, API, MySQL  
+
+---
+
+## 🎓 Education
+- **Software Development** – MBO Utrecht (2024 – 2027)  
+- **ICT Support** – MBO Utrecht (2023 – 2024)  
+- **Mobiliteit & Transport** – Globe College Utrecht (2021 – 2023)  
+- **Ithaka (ISK)** – 2017 – 2019  
+
+---
+
+## 🤝 Contact
+📧 Email: sameerloul2010@gmail.com  
+📍 Location: Netherlands  
+
+---
+
+✨ *Thank you for visiting my portfolio!*
