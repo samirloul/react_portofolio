@@ -8,7 +8,7 @@ import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
 
 export default function App() {
-  // ✅ Initialiseer state vanuit localStorage (of gebruik defaults)
+  //  Initialiseer state vanuit localStorage (of gebruik defaults)
   const [lang, setLang] = useState(() => {
     return localStorage.getItem("portfolio-lang") || "en";
   });
@@ -19,14 +19,14 @@ export default function App() {
 
   const t = translations[lang];
 
-  // ✅ Sla taal op in localStorage wanneer deze verandert
+  //  Sla taal op in localStorage wanneer deze verandert
   useEffect(() => {
     localStorage.setItem("portfolio-lang", lang);
     document.documentElement.setAttribute("dir", t.dir);
     document.documentElement.setAttribute("lang", lang);
   }, [lang, t.dir]);
 
-  // ✅ Sla thema op in localStorage wanneer deze verandert
+  //  Sla thema op in localStorage wanneer deze verandert
   useEffect(() => {
     localStorage.setItem("portfolio-theme", theme);
     document.documentElement.setAttribute("data-theme", theme);

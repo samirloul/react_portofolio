@@ -11,7 +11,7 @@ import {
   FaBullseye,
 } from "react-icons/fa";
 
-// ✅ Zorg dat deze bestanden bestaan in je /src/assets/ map
+//  Zorg dat deze bestanden bestaan in je /src/assets/ map
 import cvEn from "../assets/cv-en.pdf";
 import cvNl from "../assets/cv-nl.pdf";
 import cvAr from "../assets/cv-ar.pdf";
@@ -39,7 +39,7 @@ export default function Cv({ t, lang = "en" }) {
   const locationLabel = c.locationLabel || "Location";
   const locationValue = c.locationValue || c.location;
 
-  // ✅ Selecteert nu de juiste PDF op basis van de 'lang' prop die uit App.jsx komt
+  //  Selecteert nu de juiste PDF op basis van de 'lang' prop die uit App.jsx komt
   const pdf = useMemo(() => CV_PDFS[lang] || CV_PDFS.en, [lang]);
 
   return (
@@ -61,7 +61,7 @@ export default function Cv({ t, lang = "en" }) {
         </div>
 
         <div className="cv-download">
-          {/* ✅ Download knop linkt nu dynamisch naar de juiste taal-versie */}
+          {/*  Download knop linkt nu dynamisch naar de juiste taal-versie */}
           <a href={pdf.file} download={pdf.name} className="btn primary">
             <FaDownload />
             <span style={{ marginInlineStart: "0.5rem" }}>{c.downloadLabel}</span>
