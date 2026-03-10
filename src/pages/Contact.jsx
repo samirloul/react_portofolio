@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const SOCIAL_LINKS = [
   { href: "https://x.com/samirloul", icon: "fa-brands fa-x-twitter" },
@@ -6,15 +7,24 @@ const SOCIAL_LINKS = [
   { href: "https://www.tiktok.com/@samirloul1", icon: "fa-brands fa-tiktok" },
   { href: "https://snapchat.com/t/zMfZUL7e", icon: "fa-brands fa-snapchat" },
   {
-    href:
-      "https://www.facebook.com/people/Samir-Loul/pfbid035xjDjgASokyobu9dbAtg5zczRCQhtYJ3ageknwV28QKjwhtXcAZaxGmnjpfzWUSql/",
+    href: "https://www.facebook.com/people/Samir-Loul/pfbid035xjDjgASokyobu9dbAtg5zczRCQhtYJ3ageknwV28QKjwhtXcAZaxGmnjpfzWUSql/",
     icon: "fa-brands fa-facebook-f",
   },
   { href: "https://www.threads.net/@samirloul", icon: "fa-brands fa-threads" },
 ];
 
 const EMAIL_TO = "sameerloul2010@gmail.com";
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const MAX_MESSAGE_LENGTH = 800;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const initialForm = {
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+  website: "",
+};
 
 function safeJsonParse(text) {
   try {
@@ -24,125 +34,243 @@ function safeJsonParse(text) {
   }
 }
 
-export default function Contact({ t }) {
+export default function Contact({ t, lang }) {
+  if (!t?.contact) return null;
+
   const c = t.contact;
+  const recaptchaRef = useRef(null);
+  const copyTimerRef = useRef(null);
 
-  const initial = useMemo(
-    () => ({ name: "", email: "", subject: "", message: "", website: "" }),
-    []
-  );
-
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState(initialForm);
   const [touched, setTouched] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [serverMsg, setServerMsg] = useState("");
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
+
   const errors = useMemo(() => {
-    const e = {};
+    const next = {};
     const name = form.name.trim();
     const email = form.email.trim();
     const message = form.message.trim();
 
-    if (!name) e.name = "Required";
-    if (!email) e.email = "Required";
-    else if (!emailRegex.test(email)) e.email = "Invalid email";
-    if (!message) e.message = "Required";
-    else if (message.length < 10) e.message = "Message is too short (min 10 chars)";
-    return e;
-  }, [form]);
+    if (!name) {
+      next.name = c.validation.required;
+    }
 
-  const canSubmit = status !== "sending" && Object.keys(errors).length === 0;
+    if (!email) {
+      next.email = c.validation.required;
+    } else if (!emailRegex.test(email)) {
+      next.email = c.validation.invalidEmail;
+    }
 
-  const onChange = (key) => (e) =>
-    setForm((p) => ({ ...p, [key]: e.target.value }));
+    if (!message) {
+      next.message = c.validation.required;
+    } else if (message.length < 10) {
+      next.message = c.validation.messageTooShort;
+    }
 
-  const onBlur = (key) => () =>
-    setTouched((p) => ({ ...p, [key]: true }));
+    return next;
+  }, [form, c.validation]);
+
+  const canSubmit =
+    status !== "sending" &&
+    Object.keys(errors).length === 0 &&
+    !!form.name.trim() &&
+    !!form.email.trim() &&
+    !!form.message.trim();
+
+  const handleChange = (key) => (e) => {
+    const value = e.target.value;
+
+    setForm((prev) => ({
+      ...prev,
+      [key]: key === "message" ? value.slice(0, MAX_MESSAGE_LENGTH) : value,
+    }));
+
+    if (status === "success" || status === "error") {
+      setStatus("idle");
+      setServerMsg("");
+    }
+  };
+
+  const handleBlur = (key) => () => {
+    setTouched((prev) => ({ ...prev, [key]: true }));
+  };
 
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(EMAIL_TO);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
+
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+
+      copyTimerRef.current = setTimeout(() => {
+        setCopied(false);
+      }, 1400);
     } catch {
-      // fallback: doe niks
+      // ignore
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setTouched({ name: true, email: true, message: true });
+  const resetFormState = () => {
+    setForm(initialForm);
+    setTouched({});
+    setServerMsg("");
+  };
 
-    if (Object.keys(errors).length > 0) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // honeypot bots
-    if (form.website) {
-      setStatus("success");
-      setServerMsg("");
-      setForm(initial);
-      setTouched({});
+  setTouched({
+    name: true,
+    email: true,
+    subject: true,
+    message: true,
+  });
+  setServerMsg("");
+
+  if (Object.keys(errors).length > 0) {
+    return;
+  }
+
+  if (form.website) {
+    setStatus("success");
+    resetFormState();
+    return;
+  }
+
+  if (!SITE_KEY) {
+    setStatus("error");
+    setServerMsg(
+      "reCAPTCHA site key ontbreekt. Voeg VITE_RECAPTCHA_SITE_KEY toe en herstart Vite."
+    );
+    return;
+  }
+
+  const recaptchaToken = recaptchaRef.current?.getValue();
+
+  if (!recaptchaToken) {
+    setStatus("error");
+    setServerMsg("Vink eerst de reCAPTCHA aan.");
+    return;
+  }
+
+  setStatus("sending");
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        subject: form.subject.trim(),
+        message: form.message.trim(),
+        website: form.website,
+        lang: lang || (t.dir === "rtl" ? "ar" : "en"),
+        recaptchaToken,
+      }),
+    });
+
+    const text = await response.text();
+    const data = safeJsonParse(text);
+
+    if (!response.ok || !data?.ok) {
+      const details = data?.details
+        ? ` details=${JSON.stringify(data.details)}`
+        : "";
+      const hostname = data?.hostname ? ` hostname=${data.hostname}` : "";
+
+      throw new Error(
+        (data?.error || `Request failed (${response.status})`) +
+          details +
+          hostname
+      );
+    }
+
+    if (data?.warning) {
+      recaptchaRef.current?.reset();
+      setStatus("error");
+      setServerMsg(data.warning);
       return;
     }
 
-    setStatus("sending");
-    setServerMsg("");
+    recaptchaRef.current?.reset();
+    setStatus("success");
+    resetFormState();
+  } catch (error) {
+    recaptchaRef.current?.reset();
+    setStatus("error");
+    setServerMsg(error?.message || c.statusText.serverError);
+  }
+};
 
-    const payload = {
-      name: form.name.trim(),
-      email: form.email.trim(),
-      subject: form.subject.trim(),
-      message: form.message.trim(),
-      website: form.website || "",
+  const messageLength = form.message.length;
+  const counterText = c.ui.counter.replace("{count}", String(messageLength));
+
+  const renderToast = () => {
+    if (status === "idle") return null;
+
+    const config = {
+      sending: {
+        className: "toast-sending",
+        icon: "fa-solid fa-paper-plane",
+        text: c.statusText.sendingToast,
+      },
+      success: {
+        className: "toast-success",
+        icon: "fa-solid fa-circle-check",
+        text: c.statusText.successToast,
+      },
+      error: {
+        className: "toast-error",
+        icon: "fa-solid fa-circle-exclamation",
+        text: serverMsg || c.statusText.errorToast,
+      },
     };
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-  name: form.name.trim(),
-  email: form.email.trim(),
-  subject: form.subject.trim(),
-  message: form.message.trim(),
-  website: form.website,
-  lang: t.dir === "rtl" ? "ar" : /* of gebruik jouw state */ "en",
-})
-      });
+    const current = config[status];
+    if (!current) return null;
 
-      const text = await res.text();
-      const data = safeJsonParse(text);
-
-      if (!res.ok || !data?.ok) {
-        throw new Error(data?.error || `Request failed (${res.status})`);
-      }
-
-      setStatus("success");
-      setForm(initial);
-      setTouched({});
-    } catch (err) {
-      console.error(err);
-      setStatus("error");
-      setServerMsg(err?.message || "Server error");
-    }
+    return (
+      <div
+        className={`contact-toast ${current.className}`}
+        role="status"
+        aria-live="polite"
+      >
+        <i className={current.icon} aria-hidden="true" />
+        <span>{current.text}</span>
+      </div>
+    );
   };
 
   return (
     <section className="contact-page contact-v2">
-      {/* HERO */}
       <header className="contact-hero">
         <div className="contact-hero-inner">
           <div className="contact-hero-badges">
             <span className="chip">
-              <i className="fa-solid fa-shield-halved" aria-hidden="true"></i>
-              Secure form
+              <i className="fa-solid fa-shield-halved" aria-hidden="true" />
+              {c.badges.secure}
             </span>
             <span className="chip">
-              <i className="fa-solid fa-bolt" aria-hidden="true"></i>
-              Reply in 24h
+              <i className="fa-solid fa-bolt" aria-hidden="true" />
+              {c.badges.reply}
             </span>
             <span className="chip">
-              <i className="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <i className="fa-solid fa-location-dot" aria-hidden="true" />
               {c.locationValue}
             </span>
           </div>
@@ -151,171 +279,176 @@ export default function Contact({ t }) {
           <p className="contact-subtitle">{c.intro}</p>
 
           <div className="contact-quick-actions">
-            <a className="quick-btn" href={`mailto:${EMAIL_TO}`} title="Email">
-              <i className="fa-solid fa-envelope" aria-hidden="true"></i>
-              <span>Email</span>
+            <a
+              className="quick-btn"
+              href={`mailto:${EMAIL_TO}`}
+              title={c.actions.email}
+            >
+              <i className="fa-solid fa-envelope" aria-hidden="true" />
+              <span>{c.actions.email}</span>
             </a>
 
             <button className="quick-btn" type="button" onClick={copyEmail}>
-              <i className="fa-solid fa-copy" aria-hidden="true"></i>
-              <span>{copied ? "Copied!" : "Copy email"}</span>
+              <i className="fa-solid fa-copy" aria-hidden="true" />
+              <span>{copied ? c.actions.copied : c.actions.copyEmail}</span>
             </button>
 
-            <a className="quick-btn" href="/cv" title="CV">
-              <i className="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
-              <span>CV</span>
+            <a className="quick-btn" href="/cv" title={c.actions.cv}>
+              <i className="fa-solid fa-file-arrow-down" aria-hidden="true" />
+              <span>{c.actions.cv}</span>
             </a>
           </div>
         </div>
       </header>
 
       <div className="contact-grid">
-        {/* FORM */}
         <section className="contact-form-card">
           <div className="card-head">
             <div>
               <h2 className="section-subtitle">{c.formTitle}</h2>
-              <p className="card-hint">
-                Fill the form and I’ll reply as soon as possible.
-              </p>
+              <p className="card-hint">{c.hint}</p>
             </div>
-            <div className="card-icon">
-              <i className="fa-solid fa-paper-plane" aria-hidden="true"></i>
+
+            <div className="card-icon" aria-hidden="true">
+              <i className="fa-solid fa-paper-plane" />
             </div>
           </div>
 
           <form className="contact-form" onSubmit={handleSubmit} noValidate>
-            {/* honeypot */}
-            <input
-              className="hp-field"
-              type="text"
-              name="website"
-              value={form.website}
-              onChange={onChange("website")}
-              tabIndex="-1"
-              autoComplete="off"
-              aria-hidden="true"
-            />
-
             <div className="form-row two">
-              <label className="contact-field">
-                <span>{c.fields.name} *</span>
+              <div className="contact-field">
+                <label htmlFor="contact-name">{c.fields.name}</label>
                 <input
+                  id="contact-name"
+                  name="name"
                   type="text"
                   value={form.name}
-                  onChange={onChange("name")}
-                  onBlur={onBlur("name")}
-                  aria-invalid={touched.name && !!errors.name}
-                  required
-                  placeholder="Your name"
+                  onChange={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  placeholder={c.placeholders.name}
+                  autoComplete="name"
+                  aria-invalid={Boolean(touched.name && errors.name)}
+                  aria-describedby={
+                    touched.name && errors.name ? "contact-name-error" : undefined
+                  }
                 />
                 {touched.name && errors.name && (
-                  <small className="field-error">{errors.name}</small>
+                  <p id="contact-name-error" className="field-error">
+                    {errors.name}
+                  </p>
                 )}
-              </label>
+              </div>
 
-              <label className="contact-field">
-                <span>{c.fields.email} *</span>
+              <div className="contact-field">
+                <label htmlFor="contact-email">{c.fields.email}</label>
                 <input
+                  id="contact-email"
+                  name="email"
                   type="email"
                   value={form.email}
-                  onChange={onChange("email")}
-                  onBlur={onBlur("email")}
-                  aria-invalid={touched.email && !!errors.email}
-                  required
-                  placeholder="you@example.com"
+                  onChange={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  placeholder={c.placeholders.email}
+                  autoComplete="email"
+                  aria-invalid={Boolean(touched.email && errors.email)}
+                  aria-describedby={
+                    touched.email && errors.email ? "contact-email-error" : undefined
+                  }
                 />
                 {touched.email && errors.email && (
-                  <small className="field-error">{errors.email}</small>
+                  <p id="contact-email-error" className="field-error">
+                    {errors.email}
+                  </p>
                 )}
-              </label>
+              </div>
             </div>
 
-            <label className="contact-field">
-              <span>{c.fields.subject}</span>
+            <div className="contact-field">
+              <label htmlFor="contact-subject">{c.fields.subject}</label>
               <input
+                id="contact-subject"
+                name="subject"
                 type="text"
                 value={form.subject}
-                onChange={onChange("subject")}
-                placeholder="(optional)"
+                onChange={handleChange("subject")}
+                onBlur={handleBlur("subject")}
+                placeholder={c.placeholders.subject}
+                autoComplete="off"
               />
-            </label>
+            </div>
 
-            <label className="contact-field">
-              <span>{c.fields.message} *</span>
+<div className="honeypot-field">
+  <label htmlFor="contact-website">Website</label>
+  <input
+    id="contact-website"
+    name="website"
+    type="text"
+    tabIndex={-1}
+    autoComplete="off"
+    value={form.website}
+    onChange={handleChange("website")}
+  />
+</div>
+
+            <div className="contact-field">
+              <label htmlFor="contact-message">{c.fields.message}</label>
               <textarea
-                rows="7"
+                id="contact-message"
+                name="message"
+                rows={7}
                 value={form.message}
-                onChange={onChange("message")}
-                onBlur={onBlur("message")}
-                aria-invalid={touched.message && !!errors.message}
-                required
-                placeholder="Write your message..."
+                onChange={handleChange("message")}
+                onBlur={handleBlur("message")}
+                placeholder={c.placeholders.message}
+                maxLength={MAX_MESSAGE_LENGTH}
+                aria-invalid={Boolean(touched.message && errors.message)}
+                aria-describedby={
+                  touched.message && errors.message
+                    ? "contact-message-error"
+                    : "contact-message-help"
+                }
               />
-              <div className="field-footer">
-                {touched.message && errors.message ? (
-                  <small className="field-error">{errors.message}</small>
-                ) : (
-                  <small className="field-muted">
-                    Tip: add your goal + deadline (if any).
-                  </small>
-                )}
-                <small className="field-muted">{form.message.trim().length}/800</small>
+
+              <div className="field-footer" id="contact-message-help">
+                <span className="field-muted">{c.ui.tip}</span>
+                <span className="field-muted">{counterText}</span>
               </div>
-            </label>
+
+              {touched.message && errors.message && (
+                <p id="contact-message-error" className="field-error">
+                  {errors.message}
+                </p>
+              )}
+            </div>
+
+            <div className="recaptcha-wrap">
+              <ReCAPTCHA ref={recaptchaRef} sitekey={SITE_KEY || ""} />
+            </div>
 
             <button
-              className="btn primary contact-submit"
               type="submit"
+              className="btn primary contact-submit"
               disabled={!canSubmit}
             >
               <i
-                className={`fas ${
-                  status === "sending" ? "fa-spinner fa-spin" : "fa-paper-plane"
-                }`}
+                className={
+                  status === "sending"
+                    ? "fa-solid fa-spinner fa-spin"
+                    : "fa-solid fa-paper-plane"
+                }
                 aria-hidden="true"
               />
-              <span>{status === "sending" ? "Sending..." : c.sendButton}</span>
+              <span>
+                {status === "sending"
+                  ? c.statusText.sendingBtn
+                  : c.sendButton}
+              </span>
             </button>
 
-            {/* Toast/status */}
-            {status !== "idle" && (
-              <div
-                className={`contact-toast ${
-                  status === "success"
-                    ? "toast-success"
-                    : status === "error"
-                    ? "toast-error"
-                    : "toast-sending"
-                }`}
-                role="status"
-              >
-                {status === "sending" && (
-                  <>
-                    <i className="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
-                    <span>Sending your message…</span>
-                  </>
-                )}
-
-                {status === "success" && (
-                  <>
-                    <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
-                    <span>Message sent! Check your inbox (and spam).</span>
-                  </>
-                )}
-
-                {status === "error" && (
-                  <>
-                    <i className="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                    <span>{serverMsg || "Something went wrong."}</span>
-                  </>
-                )}
-              </div>
-            )}
+            {renderToast()}
           </form>
         </section>
 
-        {/* SIDEBAR */}
         <aside className="contact-sidebar">
           <section className="contact-card">
             <h3>{c.infoTitle}</h3>
@@ -328,7 +461,10 @@ export default function Contact({ t }) {
                 <div>
                   <div className="contact-info-label">{c.emailLabel}</div>
                   <div className="contact-info-value">
-                    <a className="contact-email-link" href={`mailto:${EMAIL_TO}`}>
+                    <a
+                      className="contact-email-link"
+                      href={`mailto:${EMAIL_TO}`}
+                    >
                       {EMAIL_TO}
                     </a>
                   </div>
@@ -358,8 +494,8 @@ export default function Contact({ t }) {
 
             <div className="contact-mini-cta">
               <a className="btn outline w-full" href={`mailto:${EMAIL_TO}`}>
-                <i className="fa-solid fa-envelope" aria-hidden="true"></i>
-                <span>Email me</span>
+                <i className="fa-solid fa-envelope" aria-hidden="true" />
+                <span>{c.ui.emailMe}</span>
               </a>
             </div>
           </section>
@@ -367,48 +503,52 @@ export default function Contact({ t }) {
           <section className="contact-card">
             <h3>{c.followTitle}</h3>
 
-            {/* speciaal blokje */}
             <div className="social-special">
               <div className="social-special-left">
-                <i className="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <i className="fa-solid fa-hashtag" aria-hidden="true" />
               </div>
-              <div className="social-special-right">
-                <div className="social-special-title">Let’s connect</div>
-                <div className="social-special-text">
-                  Follow me for updates & new projects.
-                </div>
+              <div>
+                <div className="social-special-title">{c.ui.letsConnect}</div>
+                <div className="social-special-text">{c.ui.letsConnectSub}</div>
               </div>
             </div>
 
             <div className="contact-social-grid">
-              {SOCIAL_LINKS.map((s, idx) => (
-                <a
-                  key={s.href}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="contact-social-pill"
-                  aria-label={c.socials[idx]}
-                  title={c.socials[idx]}
-                >
-                  <span className="contact-social-icon">
-                    <i className={s.icon} aria-hidden="true" />
-                  </span>
-                  <span className="contact-social-label">{c.socials[idx]}</span>
-                  <span className="contact-social-arrow" aria-hidden="true">↗</span>
-                </a>
-              ))}
+              {SOCIAL_LINKS.map((s, idx) => {
+                const label = c.socials?.[idx] ?? "Social";
+
+                return (
+                  <a
+                    key={s.href}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="contact-social-pill"
+                    aria-label={label}
+                    title={label}
+                  >
+                    <span className="contact-social-icon">
+                      <i className={s.icon} aria-hidden="true" />
+                    </span>
+                    <span className="contact-social-label">{label}</span>
+                    <span className="contact-social-arrow" aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                );
+              })}
             </div>
           </section>
 
           <section className="contact-card">
             <h3>{c.faqTitle}</h3>
+
             <div className="contact-faq-list">
               {c.faqs.map((item, idx) => (
                 <details key={idx} className="contact-faq-item">
                   <summary>
                     <span>{item.question}</span>
-                    <i className="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    <i className="fa-solid fa-chevron-down" aria-hidden="true" />
                   </summary>
                   <p>{item.answer}</p>
                 </details>

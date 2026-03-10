@@ -22,7 +22,8 @@ export const translations = {
     },
     about: {
       title: "About Me",
-      intro: "My name is Samir Loul, and I come from Syria. I currently live in the Netherlands, where I've been building my life and pursuing my dreams. My journey has been one of resilience, growth, and determination, and I'm always open to sharing my experiences and answering your questions.",
+      intro:
+        "My name is Samir Loul, and I come from Syria. I currently live in the Netherlands, where I've been building my life and pursuing my dreams. My journey has been one of resilience, growth, and determination, and I'm always open to sharing my experiences and answering your questions.",
       educationTitle: "My Educational Journey",
       timeline: [
         {
@@ -53,7 +54,10 @@ export const translations = {
       ],
       skillsTitle: "Skills & Interests",
       skills: [
-        { title: "Programming", text: "Learning software development with passion for creating innovative solutions." },
+        {
+          title: "Programming",
+          text: "Learning software development with passion for creating innovative solutions.",
+        },
         { title: "Multilingual", text: "Fluent in Arabic, Dutch, and English." },
         { title: "Communication", text: "Love connecting with others and sharing knowledge." },
         { title: "Problem Solving", text: "Analytical thinking and creative solutions." },
@@ -63,7 +67,8 @@ export const translations = {
     },
     projects: {
       title: "My Projects",
-      intro: "Explore my journey through code and creativity. Here you'll find a collection of projects that showcase my growing skills in software development.",
+      intro:
+        "Explore my journey through code and creativity. Here you'll find a collection of projects that showcase my growing skills in software development.",
       cards: [
         {
           title: "About Me (Personal Website)",
@@ -113,7 +118,8 @@ export const translations = {
         },
       ],
       collaborationTitle: "Interested in Collaboration?",
-      collaborationText: "I'm always open to discussing new projects and opportunities. Let's create something amazing together!",
+      collaborationText:
+        "I'm always open to discussing new projects and opportunities. Let's create something amazing together!",
       collaborationButton: "Get In Touch",
       techTitle: "Technologies I'm Learning",
       technologies: ["HTML5", "CSS3", "JavaScript", "React", "SQL", "Git", "PHP", "API"],
@@ -135,14 +141,8 @@ export const translations = {
       ],
       techTitle: "Technical Skills",
       techGroups: [
-        {
-          title: "Programming Languages",
-          items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"],
-        },
-        {
-          title: "Tools & Technologies",
-          items: ["Git & Version Control", "Responsive Web Design", "ICT Support"],
-        },
+        { title: "Programming Languages", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
+        { title: "Tools & Technologies", items: ["Git & Version Control", "Responsive Web Design", "ICT Support"] },
       ],
       softTitle: "Soft Skills",
       softSkills: [
@@ -154,7 +154,8 @@ export const translations = {
         "Cultural Awareness",
       ],
       summaryTitle: "Professional Summary",
-      summaryText: "Motivated Software Development student with a diverse educational background and strong multilingual abilities. Originally from Syria and now based in the Netherlands, I bring a unique perspective shaped by resilience, adaptability, and a passion for technology. Currently pursuing my dream of becoming a software developer while building practical skills in programming and problem-solving.",
+      summaryText:
+        "Motivated Software Development student with a diverse educational background and strong multilingual abilities. Originally from Syria and now based in the Netherlands, I bring a unique perspective shaped by resilience, adaptability, and a passion for technology. Currently pursuing my dream of becoming a software developer while building practical skills in programming and problem-solving.",
       educationTitle: "Education",
       education: [
         {
@@ -184,43 +185,67 @@ export const translations = {
       ],
       qualitiesTitle: "Personal Qualities",
       qualities: [
-        {
-          title: "Cultural Adaptability",
-          text: "Successfully integrated into Dutch society while maintaining cultural identity.",
-        },
-        {
-          title: "Continuous Learner",
-          text: "Passionate about acquiring new skills and staying updated with technology trends.",
-        },
-        {
-          title: "Team Player",
-          text: "Enjoys collaborating with others and sharing knowledge across diverse teams.",
-        },
-        {
-          title: "Goal-Oriented",
-          text: "Determined to achieve career objectives in software development.",
-        },
+        { title: "Cultural Adaptability", text: "Successfully integrated into Dutch society while maintaining cultural identity." },
+        { title: "Continuous Learner", text: "Passionate about acquiring new skills and staying updated with technology trends." },
+        { title: "Team Player", text: "Enjoys collaborating with others and sharing knowledge across diverse teams." },
+        { title: "Goal-Oriented", text: "Determined to achieve career objectives in software development." },
       ],
     },
+
     contact: {
       title: "Get In Touch",
-      intro: "I'd love to hear from you! Whether you have a question, want to collaborate, or just want to say hello, feel free to reach out.",
+      intro:
+        "I'd love to hear from you! Whether you have a question, want to collaborate, or just want to say hello, feel free to reach out.",
       formTitle: "Send me a message",
-      fields: {
-        name: "Full Name",
-        email: "Email Address",
-        subject: "Subject",
-        message: "Message",
+      hint: "Fill the form and I’ll reply as soon as possible.",
+
+      fields: { name: "Full Name", email: "Email Address", subject: "Subject", message: "Message" },
+
+      placeholders: {
+        name: "Your name",
+        email: "you@example.com",
+        subject: "(optional)",
+        message: "Write your message...",
       },
+
       sendButton: "Send Message",
+
       infoTitle: "Contact Information",
       emailLabel: "Email",
       locationLabel: "Location",
       locationValue: "Netherlands",
       responseLabel: "Response Time",
       responseValue: "Usually within 24 hours",
+
       followTitle: "Follow Me",
       socials: ["Twitter", "Instagram", "TikTok", "Snapchat", "Facebook", "Threads"],
+
+      badges: { secure: "Secure form", reply: "Reply in 24h" },
+
+      actions: { email: "Email", copyEmail: "Copy email", copied: "Copied!", cv: "CV" },
+
+      ui: {
+        tip: "Tip: add your goal + deadline (if any).",
+        counter: "{count}/800",
+        emailMe: "Email me",
+        letsConnect: "Let’s connect",
+        letsConnectSub: "Follow me for updates & new projects.",
+      },
+
+      validation: {
+        required: "Required",
+        invalidEmail: "Invalid email",
+        messageTooShort: "Message is too short (min 10 chars)",
+      },
+
+      statusText: {
+        sendingBtn: "Sending...",
+        sendingToast: "Sending your message…",
+        successToast: "Message sent! Check your inbox (and spam).",
+        errorToast: "Something went wrong.",
+        serverError: "Server error",
+      },
+
       faqTitle: "Frequently Asked Questions",
       faqs: [
         {
@@ -242,14 +267,7 @@ export const translations = {
   // ================= ARABIC =================
   ar: {
     dir: "rtl",
-    nav: {
-      name: "سمير لول",
-      home: "الرئيسية",
-      about: "عني",
-      projects: "المشاريع",
-      cv: "السيرة الذاتية",
-      contact: "تواصل",
-    },
+    nav: { name: "سمير لول", home: "الرئيسية", about: "عني", projects: "المشاريع", cv: "السيرة الذاتية", contact: "تواصل" },
     hero: {
       hello: "مرحباً، أنا",
       name: "سمير لول",
@@ -260,7 +278,8 @@ export const translations = {
     },
     about: {
       title: "نبذة عني",
-      intro: "اسمي سمير لول وأنا من سوريا. أعيش حالياً في هولندا حيث أبني حياتي وأسعى لتحقيق أحلامي. كانت رحلتي رحلة صمود ونمو وتصميم، وأنا دائماً منفتح لمشاركة تجاربي والإجابة على أسئلتكم.",
+      intro:
+        "اسمي سمير لول وأنا من سوريا. أعيش حالياً في هولندا حيث أبني حياتي وأسعى لتحقيق أحلامي. كانت رحلتي رحلة صمود ونمو وتصميم، وأنا دائماً منفتح لمشاركة تجاربي والإجابة على أسئلتكم.",
       educationTitle: "رحلتي التعليمية",
       timeline: [
         {
@@ -268,21 +287,9 @@ export const translations = {
           title: "إثاكا (ISK)",
           text: "بدأت رحلتي التعليمية في هولندا في إثاكا (ISK)، حيث درست من ديسمبر 2017 إلى يونيو 2019. كان مكاناً تعلمت فيه التكيف مع بيئة جديدة وبنيت فيه الأساس لمستقبلي.",
         },
-        {
-          years: "2021 - 2023",
-          title: "النقل والمواصلات - Globe College Utrecht",
-          text: "درست النقل والمواصلات في Globe College Utrecht، حيث اكتسبت معرفة عملية حول أنظمة وحلول النقل الحديثة.",
-        },
-        {
-          years: "2023 - 2024",
-          title: "دعم تكنولوجيا المعلومات - MBO Utrecht",
-          text: "انتقلت بتركيزي إلى دعم تكنولوجيا المعلومات في MBO Utrecht، حيث غصت في عالم التكنولوجيا وحل المشكلات.",
-        },
-        {
-          years: "2024 - 2027",
-          title: "تطوير البرمجيات - MBO Utrecht",
-          text: "حالياً، أدرس تطوير البرمجيات في MBO Utrecht، حيث أسعى لتحقيق حلمي في أن أصبح مطور برمجيات.",
-        },
+        { years: "2021 - 2023", title: "النقل والمواصلات - Globe College Utrecht", text: "درست النقل والمواصلات في Globe College Utrecht، حيث اكتسبت معرفة عملية حول أنظمة وحلول النقل الحديثة." },
+        { years: "2023 - 2024", title: "دعم تكنولوجيا المعلومات - MBO Utrecht", text: "انتقلت بتركيزي إلى دعم تكنولوجيا المعلومات في MBO Utrecht، حيث غصت في عالم التكنولوجيا وحل المشكلات." },
+        { years: "2024 - 2027", title: "تطوير البرمجيات - MBO Utrecht", text: "حالياً، أدرس تطوير البرمجيات في MBO Utrecht، حيث أسعى لتحقيق حلمي في أن أصبح مطور برمجيات." },
       ],
       moreTitle: "المزيد عني",
       moreParagraphs: [
@@ -308,47 +315,23 @@ export const translations = {
           icon: "fas fa-user",
           text: "موقع شخصي أعرّف فيه بنفسي وبما أتعلمه وبالمشاريع التي أعمل عليها. تصميم نظيف ومتجاوب وسهل التصفح.",
           tags: ["HTML", "CSS", "JavaScript"],
-          links: [
-            {
-              label: "فتح الموقع",
-              href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ",
-              icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
+          links: [{ label: "فتح الموقع", href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ", icon: "fas fa-arrow-up-right-from-square" }],
         },
         {
           title: "موقع عن سوريا",
           icon: "fas fa-flag",
           text: "موقع عن سوريا - تاريخها وهويتها والثورة السورية. كما يسلط الضوء على دمشق، إحدى أقدم العواصم المأهولة باستمرار في العالم، ويشارك محتوى عن الحياة اليومية والثقافة والتراث.",
           tags: ["PHP", "MySQL", "HTML/CSS"],
-          links: [
-            {
-              label: "زيارة موقع سوريا",
-              href: "https://syriawebsite.com",
-              icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
+          links: [{ label: "زيارة موقع سوريا", href: "https://syriawebsite.com", icon: "fas fa-arrow-up-right-from-square" }],
         },
         {
           title: "بوابة الحق (القرآن وأدوات)",
           icon: "fas fa-mosque",
           text: "منصة تحتوي على محتوى القرآن، أوقات الصلاة، اتجاه القبلة، والأحاديث بلغات متعددة - بنيت لتكون واضحة وسهلة الوصول ومفيدة لمختلف المستخدمين.",
           tags: ["PHP", "MySQL", "Laravel", "API"],
-          links: [
-            {
-              label: "فتح البوابة",
-              href: "https://alhaqqportal.com/index.php",
-              icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
+          links: [{ label: "فتح البوابة", href: "https://alhaqqportal.com/index.php", icon: "fas fa-arrow-up-right-from-square" }],
         },
-        {
-          title: "مشروع مستقبلي",
-          icon: "fas fa-hourglass",
-          text: "مع استمراري في دراسة تطوير البرمجيات، سيتم إضافة المزيد من المشاريع المبتكرة إلى هذا البورتفوليو.",
-          tags: ["قيد التخطيط"],
-          links: [{ label: "قريباً", href: "#", icon: "fas fa-clock" }],
-        },
+        { title: "مشروع مستقبلي", icon: "fas fa-hourglass", text: "مع استمراري في دراسة تطوير البرمجيات، سيتم إضافة المزيد من المشاريع المبتكرة إلى هذا البورتفوليو.", tags: ["قيد التخطيط"], links: [{ label: "قريباً", href: "#", icon: "fas fa-clock" }] },
       ],
       collaborationTitle: "مهتم بالتعاون؟",
       collaborationText: "أنا دائماً منفتح لمناقشة مشاريع وفرص جديدة. لنبتكر شيئاً رائعاً معاً!",
@@ -373,106 +356,80 @@ export const translations = {
       ],
       techTitle: "المهارات التقنية",
       techGroups: [
-        {
-          title: "لغات البرمجة",
-          items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"],
-        },
-        {
-          title: "الأدوات والتقنيات",
-          items: ["Git & Version Control", "تصميم الويب المتجاوب", "دعم تكنولوجيا المعلومات"],
-        },
+        { title: "لغات البرمجة", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
+        { title: "الأدوات والتقنيات", items: ["Git & Version Control", "تصميم الويب المتجاوب", "دعم تكنولوجيا المعلومات"] },
       ],
       softTitle: "المهارات الشخصية",
-      softSkills: [
-        "حل المشكلات",
-        "التواصل",
-        "القدرة على التكيف",
-        "التعاون الجماعي",
-        "التعلم المستمر",
-        "الوعي الثقافي",
-      ],
+      softSkills: ["حل المشكلات", "التواصل", "القدرة على التكيف", "التعاون الجماعي", "التعلم المستمر", "الوعي الثقافي"],
       summaryTitle: "ملخص مهني",
-      summaryText: "طالب تطوير برمجيات متحمس ذو خلفية تعليمية متنوعة وقدرات لغوية قوية. أصلي من سوريا وأقيم حالياً في هولندا، أحمل منظوراً فريداً شكلته المرونة والتكيف والشغف بالتكنولوجيا. أسعى حالياً لتحقيق حلمي في أن أصبح مطور برمجيات مع بناء مهارات عملية في البرمجة وحل المشكلات.",
+      summaryText:
+        "طالب تطوير برمجيات متحمس ذو خلفية تعليمية متنوعة وقدرات لغوية قوية. أصلي من سوريا وأقيم حالياً في هولندا، أحمل منظوراً فريداً شكلته المرونة والتكيف والشغف بالتكنولوجيا. أسعى حالياً لتحقيق حلمي في أن أصبح مطور برمجيات مع بناء مهارات عملية في البرمجة وحل المشكلات.",
       educationTitle: "التعليم",
       education: [
-        {
-          years: "2024 - 2027",
-          title: "تطوير البرمجيات",
-          place: "MBO Utrecht",
-          text: "أتابع حالياً تعليماً شاملاً في تطوير البرمجيات، مع التركيز على أساسيات البرمجة، تطوير الويب، وممارسات هندسة البرمجيات الحديثة.",
-        },
-        {
-          years: "2023 - 2024",
-          title: "دعم تكنولوجيا المعلومات",
-          place: "MBO Utrecht",
-          text: "اكتسبت معرفة عملية في دعم تكنولوجيا المعلومات، استكشاف الأخطاء وإصلاحها، وحل المشكلات التقنية.",
-        },
-        {
-          years: "2021 - 2023",
-          title: "النقل والمواصلات",
-          place: "Globe College Utrecht",
-          text: "درست أنظمة وحلول النقل الحديثة، وطورت مهارات التفكير التحليلي والمنهجي.",
-        },
-        {
-          years: "2017 - 2019",
-          title: "الدراسات التأسيسية",
-          place: "Ithaka (ISK)",
-          text: "الأساس التعليمي الأولي في هولندا، مع التركيز على تطوير اللغة والاندماج الثقافي.",
-        },
+        { years: "2024 - 2027", title: "تطوير البرمجيات", place: "MBO Utrecht", text: "أتابع حالياً تعليماً شاملاً في تطوير البرمجيات، مع التركيز على أساسيات البرمجة، تطوير الويب، وممارسات هندسة البرمجيات الحديثة." },
+        { years: "2023 - 2024", title: "دعم تكنولوجيا المعلومات", place: "MBO Utrecht", text: "اكتسبت معرفة عملية في دعم تكنولوجيا المعلومات، استكشاف الأخطاء وإصلاحها، وحل المشكلات التقنية." },
+        { years: "2021 - 2023", title: "النقل والمواصلات", place: "Globe College Utrecht", text: "درست أنظمة وحلول النقل الحديثة، وطورت مهارات التفكير التحليلي والمنهجي." },
+        { years: "2017 - 2019", title: "الدراسات التأسيسية", place: "Ithaka (ISK)", text: "الأساس التعليمي الأولي في هولندا، مع التركيز على تطوير اللغة والاندماج الثقافي." },
       ],
       qualitiesTitle: "الصفات الشخصية",
       qualities: [
-        {
-          title: "التكيف الثقافي",
-          text: "اندمجت بنجاح في المجتمع الهولندي مع الحفاظ على الهوية الثقافية.",
-        },
-        {
-          title: "متعلم مستمر",
-          text: "شغوف باكتساب مهارات جديدة ومواكبة اتجاهات التكنولوجيا.",
-        },
-        {
-          title: "لاعب فريق",
-          text: "يستمتع بالتعاون مع الآخرين ومشاركة المعرفة عبر فرق متنوعة.",
-        },
-        {
-          title: "موجه نحو الأهداف",
-          text: "مصمم على تحقيق الأهداف المهنية في تطوير البرمجيات.",
-        },
+        { title: "التكيف الثقافي", text: "اندمجت بنجاح في المجتمع الهولندي مع الحفاظ على الهوية الثقافية." },
+        { title: "متعلم مستمر", text: "شغوف باكتساب مهارات جديدة ومواكبة اتجاهات التكنولوجيا." },
+        { title: "لاعب فريق", text: "يستمتع بالتعاون مع الآخرين ومشاركة المعرفة عبر فرق متنوعة." },
+        { title: "موجه نحو الأهداف", text: "مصمم على تحقيق الأهداف المهنية في تطوير البرمجيات." },
       ],
     },
+
     contact: {
       title: "تواصل معي",
-      intro: "يسعدني التواصل معك! سواء كان لديك سؤال، ترغب في التعاون في مشروع، أو فقط تريد إلقاء التحية، لا تتردد في إرسال رسالة.",
+      intro:
+        "يسعدني التواصل معك! سواء كان لديك سؤال، ترغب في التعاون في مشروع، أو فقط تريد إلقاء التحية، لا تتردد في إرسال رسالة.",
       formTitle: "أرسل لي رسالة",
-      fields: {
-        name: "الاسم الكامل",
-        email: "البريد الإلكتروني",
-        subject: "الموضوع",
-        message: "الرسالة",
-      },
+      hint: "املأ النموذج وسأرد عليك في أقرب وقت ممكن.",
+
+      fields: { name: "الاسم الكامل", email: "البريد الإلكتروني", subject: "الموضوع", message: "الرسالة" },
+
+      placeholders: { name: "اسمك", email: "you@example.com", subject: "(اختياري)", message: "...اكتب رسالتك" },
+
       sendButton: "إرسال الرسالة",
+
       infoTitle: "معلومات التواصل",
       emailLabel: "البريد الإلكتروني",
       locationLabel: "الموقع",
       locationValue: "هولندا",
       responseLabel: "وقت الرد",
       responseValue: "عادة خلال 24 ساعة",
+
       followTitle: "تابعني",
       socials: ["تويتر", "إنستغرام", "تيك توك", "سناب شات", "فيسبوك", "ثريدز"],
+
+      badges: { secure: "نموذج آمن", reply: "رد خلال 24 ساعة" },
+
+      actions: { email: "راسلني", copyEmail: "نسخ البريد", copied: "تم النسخ!", cv: "السيرة الذاتية" },
+
+      ui: {
+        tip: "نصيحة: أضف هدفك + الموعد النهائي (إن وجد).",
+        counter: "{count}/800",
+        emailMe: "راسلني عبر البريد",
+        letsConnect: "لنتواصل",
+        letsConnectSub: "تابعني للتحديثات والمشاريع الجديدة.",
+      },
+
+      validation: { required: "مطلوب", invalidEmail: "بريد إلكتروني غير صالح", messageTooShort: "الرسالة قصيرة جداً (الحد الأدنى 10 أحرف)" },
+
+      statusText: {
+        sendingBtn: "جارٍ الإرسال...",
+        sendingToast: "جارٍ إرسال رسالتك…",
+        successToast: "تم إرسال الرسالة! تحقق من البريد (والرسائل غير المرغوب فيها).",
+        errorToast: "حدث خطأ ما.",
+        serverError: "خطأ في الخادم",
+      },
+
       faqTitle: "الأسئلة الشائعة",
       faqs: [
-        {
-          question: "ما هي أفضل طريقة للوصول إليك؟",
-          answer: "البريد الإلكتروني هو الطريقة الأكثر موثوقية للتواصل معي. أتحقق من بريدي بانتظام وأرد خلال 24 ساعة.",
-        },
-        {
-          question: "هل أنت متاح للمشاريع؟",
-          answer: "كطالب، أنا مهتم دائماً بفرص التعلم والمشاريع التعاونية التي تتماشى مع دراستي.",
-        },
-        {
-          question: "هل تقدم التوجيه (Mentoring)؟",
-          answer: "يسعدني مشاركة تجاربي ورحلتي مع زملائي الطلاب أو أي شخص مهتم بتطوير البرمجيات.",
-        },
+        { question: "ما هي أفضل طريقة للوصول إليك؟", answer: "البريد الإلكتروني هو الطريقة الأكثر موثوقية للتواصل معي. أتحقق من بريدي بانتظام وأرد خلال 24 ساعة." },
+        { question: "هل أنت متاح للمشاريع؟", answer: "كطالب، أنا مهتم دائماً بفرص التعلم والمشاريع التعاونية التي تتماشى مع دراستي." },
+        { question: "هل تقدم التوجيه (Mentoring)؟", answer: "يسعدني مشاركة تجاربي ورحلتي مع زملائي الطلاب أو أي شخص مهتم بتطوير البرمجيات." },
       ],
     },
   },
@@ -480,14 +437,7 @@ export const translations = {
   // ================= DUTCH =================
   nl: {
     dir: "ltr",
-    nav: {
-      name: "Samir Loul",
-      home: "Home",
-      about: "Over mij",
-      projects: "Projecten",
-      cv: "CV",
-      contact: "Contact",
-    },
+    nav: { name: "Samir Loul", home: "Home", about: "Over mij", projects: "Projecten", cv: "CV", contact: "Contact" },
     hero: {
       hello: "Hallo, ik ben",
       name: "Samir Loul",
@@ -498,29 +448,14 @@ export const translations = {
     },
     about: {
       title: "Over Mij",
-      intro: "Mijn naam is Samir Loul en ik kom uit Syrië. Ik woon momenteel in Nederland, waar ik mijn leven heb opgebouwd en mijn dromen najaag. Mijn reis is er een van veerkracht, groei en vastberadenheid, en ik sta altijd open om mijn ervaringen te delen en je vragen te beantwoorden.",
+      intro:
+        "Mijn naam is Samir Loul en ik kom uit Syrië. Ik woon momenteel in Nederland, waar ik mijn leven heb opgebouwd en mijn dromen najaag. Mijn reis is er een van veerkracht, groei en vastberadenheid, en ik sta altijd open om mijn ervaringen te delen en je vragen te beantwoorden.",
       educationTitle: "Mijn Educatieve Reis",
       timeline: [
-        {
-          years: "2017 - 2019",
-          title: "Ithaka (ISK)",
-          text: "Ik begon mijn educatieve reis in Nederland bij Ithaka (ISK), waar ik studeerde van december 2017 tot juni 2019. Het was een plek waar ik leerde me aan te passen aan een nieuwe omgeving en de basis legde voor mijn toekomst.",
-        },
-        {
-          years: "2021 - 2023",
-          title: "Mobiliteit & Transport - Globe College Utrecht",
-          text: "Ik studeerde Mobiliteit & Transport aan het Globe College Utrecht, waar ik praktische kennis opdeed over moderne transportsystemen en oplossingen.",
-        },
-        {
-          years: "2023 - 2024",
-          title: "ICT Support - MBO Utrecht",
-          text: "Ik verlegde mijn focus naar ICT Support aan het MBO Utrecht, waarbij ik in de wereld van technologie en probleemoplossing dook.",
-        },
-        {
-          years: "2024 - 2027",
-          title: "Software Development - MBO Utrecht",
-          text: "Momenteel studeer ik Software Development aan het MBO Utrecht, waar ik mijn droom om softwareontwikkelaar te worden nastreef.",
-        },
+        { years: "2017 - 2019", title: "Ithaka (ISK)", text: "Ik begon mijn educatieve reis in Nederland bij Ithaka (ISK), waar ik studeerde van december 2017 tot juni 2019. Het was een plek waar ik leerde me aan te passen aan een nieuwe omgeving en de basis legde voor mijn toekomst." },
+        { years: "2021 - 2023", title: "Mobiliteit & Transport - Globe College Utrecht", text: "Ik studeerde Mobiliteit & Transport aan het Globe College Utrecht, waar ik praktische kennis opdeed over moderne transportsystemen en oplossingen." },
+        { years: "2023 - 2024", title: "ICT Support - MBO Utrecht", text: "Ik verlegde mijn focus naar ICT Support aan het MBO Utrecht, waarbij ik in de wereld van technologie en probleemoplossing dook." },
+        { years: "2024 - 2027", title: "Software Development - MBO Utrecht", text: "Momenteel studeer ik Software Development aan het MBO Utrecht, waar ik mijn droom om softwareontwikkelaar te worden nastreef." },
       ],
       moreTitle: "Meer Over Mij",
       moreParagraphs: [
@@ -539,7 +474,8 @@ export const translations = {
     },
     projects: {
       title: "Mijn Projecten",
-      intro: "Verken mijn reis door code en creativiteit. Hier vind je een verzameling projecten die mijn groeiende vaardigheden in softwareontwikkeling laten zien.",
+      intro:
+        "Verken mijn reis door code en creativiteit. Hier vind je een verzameling projecten die mijn groeiende vaardigheden in softwareontwikkeling laten zien.",
       cards: [
         {
           title: "Over Mij (Persoonlijke Website)",
@@ -559,34 +495,16 @@ export const translations = {
           icon: "fas fa-flag",
           text: "Een website over Syrië — de geschiedenis, identiteit en de Syrische revolutie. Het belicht ook Damascus, een van 's werelds oudste continu bewoonde hoofdsteden, en deelt inhoud over het dagelijks leven, cultuur en erfgoed.",
           tags: ["PHP", "MySQL", "HTML/CSS"],
-          links: [
-            {
-              label: "Bezoek Syrië Website",
-              href: "https://syriawebsite.com",
-              icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
+          links: [{ label: "Bezoek Syrië Website", href: "https://syriawebsite.com", icon: "fas fa-arrow-up-right-from-square" }],
         },
         {
           title: "AlHaqq Portal (Koran & Tools)",
           icon: "fas fa-mosque",
           text: "Een platform met Koran-inhoud, gebedstijden, Qibla-richting en Ahadith in meerdere talen — gebouwd om duidelijk, toegankelijk en nuttig te zijn voor verschillende gebruikers.",
           tags: ["PHP", "MySQL", "Laravel", "API"],
-          links: [
-            {
-              label: "Open Portaal",
-              href: "https://alhaqqportal.com/index.php",
-              icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
+          links: [{ label: "Open Portaal", href: "https://alhaqqportal.com/index.php", icon: "fas fa-arrow-up-right-from-square" }],
         },
-        {
-          title: "Toekomstig Project",
-          icon: "fas fa-hourglass",
-          text: "Terwijl ik mijn studie Software Development voortzet, zullen er meer innovatieve projecten aan dit portfolio worden toegevoegd.",
-          tags: ["TBD", "Planning"],
-          links: [{ label: "Binnenkort", href: "#", icon: "fas fa-clock" }],
-        },
+        { title: "Toekomstig Project", icon: "fas fa-hourglass", text: "Terwijl ik mijn studie Software Development voortzet, zullen er meer innovatieve projecten aan dit portfolio worden toegevoegd.", tags: ["TBD", "Planning"], links: [{ label: "Binnenkort", href: "#", icon: "fas fa-clock" }] },
       ],
       collaborationTitle: "Interesse in Samenwerking?",
       collaborationText: "Ik sta altijd open voor het bespreken van nieuwe projecten en kansen. Laten we samen iets geweldigs maken!",
@@ -611,106 +529,79 @@ export const translations = {
       ],
       techTitle: "Technische Vaardigheden",
       techGroups: [
-        {
-          title: "Programmeertalen",
-          items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"],
-        },
-        {
-          title: "Tools & Technologieën",
-          items: ["Git & Versiebeheer", "Responsief Webdesign", "ICT Support"],
-        },
+        { title: "Programmeertalen", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
+        { title: "Tools & Technologieën", items: ["Git & Versiebeheer", "Responsief Webdesign", "ICT Support"] },
       ],
       softTitle: "Soft Skills",
-      softSkills: [
-        "Probleemoplossing",
-        "Communicatie",
-        "Aanpassingsvermogen",
-        "Teamwork",
-        "Continu Leren",
-        "Cultureel Bewustzijn",
-      ],
+      softSkills: ["Probleemoplossing", "Communicatie", "Aanpassingsvermogen", "Teamwork", "Continu Leren", "Cultureel Bewustzijn"],
       summaryTitle: "Professionele Samenvatting",
-      summaryText: "Gemotiveerde Software Development student met een diverse educatieve achtergrond en sterke meertalige vaardigheden. Oorspronkelijk uit Syrië en nu gevestigd in Nederland, breng ik een uniek perspectief gevormd door veerkracht, aanpassingsvermogen en een passie voor technologie. Momenteel streef ik mijn droom na om softwareontwikkelaar te worden terwijl ik praktische vaardigheden opbouw in programmeren en probleemoplossing.",
+      summaryText:
+        "Gemotiveerde Software Development student met een diverse educatieve achtergrond en sterke meertalige vaardigheden. Oorspronkelijk uit Syrië en nu gevestigd in Nederland, breng ik een uniek perspectief gevormd door veerkracht, aanpassingsvermogen en een passie voor technologie. Momenteel streef ik mijn droom na om softwareontwikkelaar te worden terwijl ik praktische vaardigheden opbouw in programmeren en probleemoplossing.",
       educationTitle: "Opleiding",
       education: [
-        {
-          years: "2024 - 2027",
-          title: "Software Development",
-          place: "MBO Utrecht",
-          text: "Momenteel bezig met een uitgebreide opleiding softwareontwikkeling, met de focus op programmeerfundamentals, webontwikkeling en moderne software engineering praktijken.",
-        },
-        {
-          years: "2023 - 2024",
-          title: "ICT Support",
-          place: "MBO Utrecht",
-          text: "Praktische kennis opgedaan in IT-ondersteuning, probleemoplossing en technische support.",
-        },
-        {
-          years: "2021 - 2023",
-          title: "Mobiliteit & Transport",
-          place: "Globe College Utrecht",
-          text: "Moderne transportsystemen en oplossingen bestudeerd, waarbij analytisch en systematisch denken is ontwikkeld.",
-        },
-        {
-          years: "2017 - 2019",
-          title: "Basisstudies",
-          place: "Ithaka (ISK)",
-          text: "Eerste educatieve basis in Nederland, gericht op taalontwikkeling en culturele integratie.",
-        },
+        { years: "2024 - 2027", title: "Software Development", place: "MBO Utrecht", text: "Momenteel bezig met een uitgebreide opleiding softwareontwikkeling, met de focus op programmeerfundamentals, webontwikkeling en moderne software engineering praktijken." },
+        { years: "2023 - 2024", title: "ICT Support", place: "MBO Utrecht", text: "Praktische kennis opgedaan in IT-ondersteuning, probleemoplossing en technische support." },
+        { years: "2021 - 2023", title: "Mobiliteit & Transport", place: "Globe College Utrecht", text: "Moderne transportsystemen en oplossingen bestudeerd, waarbij analytisch en systematisch denken is ontwikkeld." },
+        { years: "2017 - 2019", title: "Basisstudies", place: "Ithaka (ISK)", text: "Eerste educatieve basis in Nederland, gericht op taalontwikkeling en culturele integratie." },
       ],
       qualitiesTitle: "Persoonlijke Kwaliteiten",
       qualities: [
-        {
-          title: "Cultureel Aanpassingsvermogen",
-          text: "Succesvol geïntegreerd in de Nederlandse samenleving met behoud van culturele identiteit.",
-        },
-        {
-          title: "Continu Leren",
-          text: "Gepassioneerd over het verwerven van nieuwe vaardigheden en op de hoogte blijven van technologische trends.",
-        },
-        {
-          title: "Teamspeler",
-          text: "Geniet van samenwerken met anderen en het delen van kennis in diverse teams.",
-        },
-        {
-          title: "Doelgericht",
-          text: "Vastbesloten om carrièredoelen in softwareontwikkeling te bereiken.",
-        },
+        { title: "Cultureel Aanpassingsvermogen", text: "Succesvol geïntegreerd in de Nederlandse samenleving met behoud van culturele identiteit." },
+        { title: "Continu Leren", text: "Gepassioneerd over het verwerven van nieuwe vaardigheden en op de hoogte blijven van technologische trends." },
+        { title: "Teamspeler", text: "Geniet van samenwerken met anderen en het delen van kennis in diverse teams." },
+        { title: "Doelgericht", text: "Vastbesloten om carrièredoelen in softwareontwikkeling te bereiken." },
       ],
     },
+
     contact: {
       title: "Neem Contact Op",
       intro: "Ik hoor graag van je! Of je nu een vraag hebt, wilt samenwerken of gewoon gedag wilt zeggen, neem gerust contact op.",
       formTitle: "Stuur me een bericht",
-      fields: {
-        name: "Volledige Naam",
-        email: "E-mailadres",
-        subject: "Onderwerp",
-        message: "Bericht",
-      },
+      hint: "Vul het formulier in en ik reageer zo snel mogelijk.",
+
+      fields: { name: "Volledige Naam", email: "E-mailadres", subject: "Onderwerp", message: "Bericht" },
+
+      placeholders: { name: "Je naam", email: "jij@voorbeeld.com", subject: "(optioneel)", message: "Schrijf je bericht..." },
+
       sendButton: "Bericht Verzenden",
+
       infoTitle: "Contactinformatie",
       emailLabel: "E-mail",
       locationLabel: "Locatie",
       locationValue: "Nederland",
       responseLabel: "Reactietijd",
       responseValue: "Meestal binnen 24 uur",
+
       followTitle: "Volg Mij",
       socials: ["Twitter", "Instagram", "TikTok", "Snapchat", "Facebook", "Threads"],
+
+      badges: { secure: "Veilig formulier", reply: "Reactie binnen 24u" },
+
+      actions: { email: "E-mail", copyEmail: "Kopieer e-mail", copied: "Gekopieerd!", cv: "CV" },
+
+      ui: {
+        tip: "Tip: voeg je doel + deadline toe (indien van toepassing).",
+        counter: "{count}/800",
+        emailMe: "E-mail mij",
+        letsConnect: "Laten we connecten",
+        letsConnectSub: "Volg me voor updates & nieuwe projecten.",
+      },
+
+      validation: { required: "Verplicht", invalidEmail: "Ongeldig e-mailadres", messageTooShort: "Bericht is te kort (min 10 tekens)" },
+
+      statusText: {
+        sendingBtn: "Bezig met verzenden...",
+        sendingToast: "Je bericht wordt verzonden…",
+        successToast: "Bericht verzonden! Check je inbox (en spam).",
+        errorToast: "Er ging iets mis.",
+        serverError: "Serverfout",
+      },
+
       faqTitle: "Veelgestelde Vragen",
       faqs: [
-        {
-          question: "Wat is de beste manier om je te bereiken?",
-          answer: "E-mail is de meest betrouwbare manier om contact met mij op te nemen. Ik check mijn e-mails regelmatig en reageer binnen 24 uur.",
-        },
-        {
-          question: "Ben je beschikbaar voor projecten?",
-          answer: "Als student ben ik altijd geïnteresseerd in leermogelijkheden en samenwerkingsprojecten die aansluiten bij mijn studie.",
-        },
-        {
-          question: "Bied je mentoring aan?",
-          answer: "Ik deel graag mijn ervaringen en reis met medestudenten of iedereen die geïnteresseerd is in softwareontwikkeling.",
-        },
+        { question: "Wat is de beste manier om je te bereiken?", answer: "E-mail is de meest betrouwbare manier om contact met mij op te nemen. Ik check mijn e-mails regelmatig en reageer binnen 24 uur." },
+        { question: "Ben je beschikbaar voor projecten?", answer: "Als student ben ik altijd geïnteresseerd in leermogelijkheden en samenwerkingsprojecten die aansluiten bij mijn studie." },
+        { question: "Bied je mentoring aan?", answer: "Ik deel graag mijn ervaringen en reis met medestudenten of iedereen die geïnteresseerd is in softwareontwikkeling." },
       ],
     },
   },

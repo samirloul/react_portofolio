@@ -1,4 +1,3 @@
-// server/index.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -7,25 +6,226 @@ import { Resend } from "resend";
 
 dotenv.config();
 
+function getEmailCopy(lang) {
+  const L = normalizeLang(lang);
+
+  if (L === "nl") {
+    return {
+      greeting: "Hoi",
+      confirmTitle: "Bedankt voor je bericht",
+      confirmText:
+        "Ik heb je bericht goed ontvangen. Meestal reageer ik binnen 24 uur.",
+      adminTitle: "Nieuw bericht via je portfolio",
+      adminIntro: "Je hebt een nieuw contactformulier ontvangen.",
+      name: "Naam",
+      email: "E-mail",
+      subject: "Onderwerp",
+      message: "Bericht",
+      socialsTitle: "Volg mij online",
+      footer: "Met vriendelijke groet",
+    };
+  }
+
+  if (L === "ar") {
+    return {
+      greeting: "مرحبًا",
+      confirmTitle: "شكرًا على رسالتك",
+      confirmText: "لقد استلمت رسالتك بنجاح. عادةً أرد خلال 24 ساعة.",
+      adminTitle: "رسالة جديدة عبر موقعك الشخصي",
+      adminIntro: "لقد وصلك نموذج تواصل جديد.",
+      name: "الاسم",
+      email: "البريد الإلكتروني",
+      subject: "الموضوع",
+      message: "الرسالة",
+      socialsTitle: "تابعني على المنصات",
+      footer: "مع التحية",
+    };
+  }
+
+  return {
+    greeting: "Hi",
+    confirmTitle: "Thanks for your message",
+    confirmText: "I received your message successfully. I usually reply within 24 hours.",
+    adminTitle: "New message via your portfolio",
+    adminIntro: "You received a new contact form submission.",
+    name: "Name",
+    email: "Email",
+    subject: "Subject",
+    message: "Message",
+    socialsTitle: "Follow me online",
+    footer: "Best regards",
+  };
+}
+
+function renderSocialButtons() {
+  return SOCIALS.map(
+    (item) => `
+      <a
+        href="${item.href}"
+        style="
+          display:inline-block;
+          margin:6px 8px 0 0;
+          padding:10px 14px;
+          border-radius:999px;
+          text-decoration:none;
+          font-size:13px;
+          font-weight:700;
+          color:${item.label === "Snapchat" ? "#111" : "#fff"};
+          background:${item.color};
+        "
+        target="_blank"
+      >
+        ${escapeHtml(item.label)}
+      </a>
+    `
+  ).join("");
+}
+
+function emailLayout({
+  lang = "en",
+  title,
+  intro,
+  contentHtml,
+}) {
+  const L = normalizeLang(lang);
+  const copy = getEmailCopy(L);
+  const isRTL = L === "ar";
+
+  return `
+    <div style="margin:0;padding:0;background:#f4f7fb;">
+      <div style="max-width:680px;margin:0 auto;padding:32px 16px;">
+        <div
+          style="
+            background:#ffffff;
+            border-radius:24px;
+            overflow:hidden;
+            box-shadow:0 10px 35px rgba(15,23,42,.08);
+            font-family:Arial,Helvetica,sans-serif;
+            color:#111827;
+            direction:${isRTL ? "rtl" : "ltr"};
+            text-align:${isRTL ? "right" : "left"};
+          "
+        >
+          <div
+            style="
+              background:linear-gradient(135deg,#4f46e5,#7c3aed);
+              padding:28px 24px;
+              color:#fff;
+            "
+          >
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+              <tr>
+                <td style="vertical-align:middle;width:72px;">
+                  <img
+                    src="${PROFILE_IMAGE_URL}"
+                    alt="Samir Loul"
+                    width="56"
+                    height="56"
+                    style="display:block;width:56px;height:56px;border-radius:999px;object-fit:cover;border:3px solid rgba(255,255,255,.35);"
+                  />
+                </td>
+                <td style="vertical-align:middle;">
+                  <div style="font-size:12px;opacity:.9;margin-bottom:4px;">Samir Loul</div>
+                  <div style="font-size:24px;font-weight:800;line-height:1.25;">${escapeHtml(title)}</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="padding:28px 24px;">
+            <p style="margin:0 0 18px;color:#4b5563;font-size:15px;line-height:1.8;">
+              ${escapeHtml(intro)}
+            </p>
+
+            ${contentHtml}
+
+            <div
+              style="
+                margin-top:28px;
+                padding:18px;
+                border-radius:18px;
+                background:#f8fafc;
+                border:1px solid #e5e7eb;
+              "
+            >
+              <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:#111827;">
+                ${escapeHtml(copy.socialsTitle)}
+              </div>
+              ${renderSocialButtons()}
+            </div>
+          </div>
+
+          <div
+            style="
+              padding:18px 24px;
+              border-top:1px solid #e5e7eb;
+              background:#fcfcfd;
+              color:#6b7280;
+              font-size:13px;
+              line-height:1.7;
+            "
+          >
+            ${escapeHtml(copy.footer)}<br>
+            <strong style="color:#111827;">Samir Loul</strong><br>
+            <a href="mailto:${TO_EMAIL}" style="color:#4f46e5;text-decoration:none;">${TO_EMAIL}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 const app = express();
+app.use((req, res, next) => {
+  console.log(`[REQ] ${req.method} ${req.url}`);
+  next();
+});
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 /** =========================
- *  Config
- *  ========================= */
+ * Config
+ * ========================= */
 const PORT = process.env.PORT || 8080;
-const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
-const FROM_EMAIL = process.env.FROM_EMAIL || "Samir Loul <onboarding@resend.dev>";
-const ALLOWED_ORIGIN = process.env.CORS_ORIGIN || "*"; // later: zet je echte domein
 
+const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
+const FROM_EMAIL =
+  process.env.FROM_EMAIL || "Samir Loul <no-reply@samirprofile.com>";
+    const ALLOWED_ORIGIN = process.env.CORS_ORIGIN || "*";
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+
+console.log("ENV check:");
+console.log("- RESEND_API_KEY set?", !!process.env.RESEND_API_KEY);
+console.log("- RECAPTCHA_SECRET_KEY set?", !!RECAPTCHA_SECRET_KEY);
+console.log("- TO_EMAIL:", TO_EMAIL);
+console.log("- FROM_EMAIL:", FROM_EMAIL);
+console.log("- CORS_ORIGIN:", ALLOWED_ORIGIN);
+
+/** =========================
+ * Middleware
+ * ========================= */
 app.use(
   cors({
-    origin: ALLOWED_ORIGIN,
+    origin: ALLOWED_ORIGIN === "*" ? true : ALLOWED_ORIGIN,
   })
 );
+const PROFILE_IMAGE_URL = "https://samirprofile.com/samir.jpg";
+const SOCIALS = [
+  { label: "X", href: "https://x.com/samirloul", color: "#111111" },
+  { label: "Instagram", href: "https://www.instagram.com/samirloul/", color: "#E1306C" },
+  { label: "TikTok", href: "https://www.tiktok.com/@samirloul1", color: "#111111" },
+  {
+    label: "Snapchat",
+    href: "https://www.snapchat.com/@samir631s?invite_id=IGIAfg18&locale=nl_NL&share_id=UlqVPeOXRemffu3e4daVWg&sid=a9060b8fe1be4d028dfc489f2633a308",
+    color: "#FFFC00",
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/people/Samir-Loul/pfbid0229Fmoew6U5a5a5CKW5ctUqiL3dXeo3RKj9rsM5kWhAodTzeHpE6tUUQrGBeyHUA2l/",
+    color: "#1877F2",
+  },
+  { label: "Threads", href: "https://www.threads.com/@samirloul", color: "#000000" },
+];
 app.use(express.json({ limit: "200kb" }));
 
-// anti-spam (rate limit)
 app.use(
   "/api/contact",
   rateLimit({
@@ -33,12 +233,16 @@ app.use(
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
+    message: {
+      ok: false,
+      error: "Too many requests. Please try again in a minute.",
+    },
   })
 );
 
 /** =========================
- *  Helpers
- *  ========================= */
+ * Helpers
+ * ========================= */
 function escapeHtml(str = "") {
   return String(str)
     .replaceAll("&", "&amp;")
@@ -48,13 +252,12 @@ function escapeHtml(str = "") {
     .replaceAll("'", "&#039;");
 }
 
-// super basic email check
 function isValidEmail(email = "") {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
 }
 
-function clampLen(s = "", max = 2000) {
-  const str = String(s);
+function clampLen(value = "", max = 2000) {
+  const str = String(value);
   return str.length > max ? str.slice(0, max) : str;
 }
 
@@ -65,343 +268,237 @@ function normalizeLang(lang) {
   return "en";
 }
 
-/** =========================
- *  Social links + SVG icons (werkt in email clients)
- *  ========================= */
-const SOCIAL = [
-  {
-    key: "x",
-    label: { en: "X", nl: "X", ar: "إكس" },
-    href: "https://x.com/samirloul",
-    svg: (color) => `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18.244 2H21.56l-7.29 8.337L22.8 22h-6.67l-5.22-6.81L4.95 22H1.63l7.8-8.92L1.2 2h6.84l4.72 6.23L18.244 2Zm-1.17 18h1.84L6.86 3.88H4.89L17.074 20Z"/>
-      </svg>`,
-  },
-  {
-    key: "instagram",
-    label: { en: "Instagram", nl: "Instagram", ar: "إنستغرام" },
-    href: "https://www.instagram.com/samirloul/",
-    svg: (color) => `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm-5 4.5A5.5 5.5 0 1 1 6.5 14 5.5 5.5 0 0 1 12 8.5Zm0 2A3.5 3.5 0 1 0 15.5 14 3.5 3.5 0 0 0 12 10.5ZM18 6.75a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 18 6.75Z"/>
-      </svg>`,
-  },
-  {
-    key: "tiktok",
-    label: { en: "TikTok", nl: "TikTok", ar: "تيك توك" },
-    href: "https://www.tiktok.com/@samirloul1",
-    svg: (color) => `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.7 5.6a4.8 4.8 0 0 0 2.9 1V9a7.5 7.5 0 0 1-3-0.7v7.3a6.2 6.2 0 1 1-5.8-6.2v2.6a3.6 3.6 0 1 0 3.2 3.6V2h2.7c0.1 1.5 0.6 2.6 1 3.6Z"/>
-      </svg>`,
-  },
-  {
-    key: "threads",
-    label: { en: "Threads", nl: "Threads", ar: "ثريدز" },
-    href: "https://www.threads.net/@samirloul",
-    svg: (color) => `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2c5 0 9 4 9 9 0 5.6-3.7 11-9 11S3 16.6 3 11c0-5 4-9 9-9Zm0 2C8.1 4 5 7.1 5 11c0 4.6 3.1 9 7 9s7-4.4 7-9c0-3.9-3.1-7-7-7Zm.2 4.3c2.4 0 4.2 1.3 4.7 3.3l-2 .6c-.3-1.1-1.2-1.8-2.7-1.8-1.8 0-3 .9-3 2.2 0 1.2.8 1.9 2.3 2.2l1.6.3c2.1.4 3.5 1.6 3.5 3.6 0 2.3-2 4-4.9 4-2.6 0-4.6-1.3-5.2-3.6l2.1-.5c.4 1.4 1.6 2.1 3.1 2.1 1.7 0 2.7-.8 2.7-1.9 0-1-.7-1.6-2.2-1.9l-1.7-.3c-2.2-.4-3.6-1.8-3.6-3.9 0-2.4 2.1-4.1 5-4.1Z"/>
-      </svg>`,
-  },
-];
+async function verifyRecaptcha(token, remoteip) {
+  if (!RECAPTCHA_SECRET_KEY) {
+    return { ok: false, error: "Missing RECAPTCHA_SECRET_KEY" };
+  }
 
-function socialButtonsHTML(lang, { pillBg = "#ffffff", border = "#e5e7eb", text = "#111827", icon = "#4f46e5" } = {}) {
-  return SOCIAL.map((s) => {
-    const label = s.label[lang] || s.label.en;
-    const svg = s.svg(icon);
-    return `
-      <a href="${s.href}"
-        style="display:inline-block;margin:6px 8px 0 0;padding:10px 12px;border-radius:999px;border:1px solid ${border};
-               background:${pillBg};color:${text};text-decoration:none;font-family:Arial,sans-serif;font-size:13px;line-height:1;">
-        <span style="display:inline-block;vertical-align:middle;margin-right:8px;">${svg}</span>
-        <span style="display:inline-block;vertical-align:middle;">${escapeHtml(label)} ↗</span>
-      </a>
-    `;
-  }).join("");
+  if (!token) {
+    return { ok: false, error: "Missing recaptcha token" };
+  }
+
+  const params = new URLSearchParams();
+  params.append("secret", RECAPTCHA_SECRET_KEY);
+  params.append("response", token);
+
+  if (remoteip) {
+    params.append("remoteip", remoteip);
+  }
+
+  const resp = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  });
+
+  const data = await resp.json();
+  console.log("captcha result:", data);
+
+  return {
+    ok: !!data.success,
+    data,
+  };
 }
 
 /** =========================
- *  i18n strings for emails
- *  ========================= */
-const MAIL_TEXT = {
-  en: {
-    you_title: "New message from your portfolio",
-    you_sub: "Someone sent you a message from your website contact form.",
-    you_sender: "Sender",
-    you_message: "Message",
-    you_reply: "Reply",
+ * Email templates
+ * ========================= */
+function adminEmailHTML({ name, email, subject, message, lang = "en" }) {
+  const copy = getEmailCopy(lang);
 
-    user_top: "Thanks for your message",
-    user_hi: (name) => `Hi ${name}! ✅`,
-    user_body:
-      "I received your message and I usually reply within <b>24 hours</b>.",
-    user_contact: "Contact",
-    user_follow: "Follow me",
-    user_auto: "This is an automatic confirmation email.",
+  const contentHtml = `
+    <div
+      style="
+        margin-top:8px;
+        border:1px solid #e5e7eb;
+        border-radius:18px;
+        overflow:hidden;
+      "
+    >
+      <div style="padding:16px 18px;border-bottom:1px solid #e5e7eb;background:#fafafa;">
+        <strong>${escapeHtml(copy.adminIntro)}</strong>
+      </div>
 
-    labels: { name: "Name", email: "Email", subject: "Subject" },
-    footer: "Samir Loul • Portfolio",
-  },
-  nl: {
-    you_title: "Nieuw bericht via je portfolio",
-    you_sub: "Iemand heeft je een bericht gestuurd via je website contactformulier.",
-    you_sender: "Afzender",
-    you_message: "Bericht",
-    you_reply: "Beantwoord",
+      <div style="padding:18px;">
+        <p style="margin:0 0 12px;font-size:15px;line-height:1.7;">
+          <strong>${escapeHtml(copy.name)}:</strong> ${escapeHtml(name)}
+        </p>
+        <p style="margin:0 0 12px;font-size:15px;line-height:1.7;">
+          <strong>${escapeHtml(copy.email)}:</strong> ${escapeHtml(email)}
+        </p>
+        <p style="margin:0 0 12px;font-size:15px;line-height:1.7;">
+          <strong>${escapeHtml(copy.subject)}:</strong> ${escapeHtml(subject || "-")}
+        </p>
 
-    user_top: "Bedankt voor je bericht",
-    user_hi: (name) => `Hoi ${name}! ✅`,
-    user_body:
-      "Ik heb je bericht ontvangen en reageer meestal binnen <b>24 uur</b>.",
-    user_contact: "Contact",
-    user_follow: "Volg mij",
-    user_auto: "Dit is een automatische bevestiging.",
+        <div
+          style="
+            margin-top:16px;
+            padding:16px;
+            border-radius:14px;
+            background:#f8fafc;
+            border:1px solid #e5e7eb;
+          "
+        >
+          <div style="font-weight:700;margin-bottom:8px;">${escapeHtml(copy.message)}</div>
+          <div style="color:#374151;font-size:15px;line-height:1.8;">
+            ${escapeHtml(message).replaceAll("\n", "<br>")}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
-    labels: { name: "Naam", email: "E-mail", subject: "Onderwerp" },
-    footer: "Samir Loul • Portfolio",
-  },
-  ar: {
-    you_title: "رسالة جديدة من موقعك",
-    you_sub: "قام شخص بإرسال رسالة عبر نموذج التواصل في موقعك.",
-    you_sender: "المرسل",
-    you_message: "الرسالة",
-    you_reply: "الرد",
-
-    user_top: "شكرًا لتواصلك",
-    user_hi: (name) => `مرحبًا ${name}! ✅`,
-    user_body:
-      "تم استلام رسالتك وسأقوم بالرد عادة خلال <b>24 ساعة</b>.",
-    user_contact: "معلومات التواصل",
-    user_follow: "تابعني",
-    user_auto: "هذه رسالة تأكيد تلقائية.",
-
-    labels: { name: "الاسم", email: "البريد الإلكتروني", subject: "الموضوع" },
-    footer: "سمير لول • Portfolio",
-  },
-};
-
-/** =========================
- *  Templates
- *  ========================= */
-function emailToYouTemplate({ name, email, subject, message, lang = "en" }) {
-  const T = MAIL_TEXT[lang] || MAIL_TEXT.en;
-
-  const safeSubject = escapeHtml(subject || "No subject");
-  const safeMsg = escapeHtml(message || "").replaceAll("\n", "<br/>");
-
-  const replySubject = encodeURIComponent(`Re: ${subject || "Your message"}`);
-  const replyHref = `mailto:${escapeHtml(email)}?subject=${replySubject}`;
-
-  return `
-  <div style="margin:0;padding:0;background:#f5f7fb;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f7fb;padding:26px 12px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:640px;max-width:640px;background:#ffffff;border-radius:18px;border:1px solid #e5e7eb;overflow:hidden;">
-            
-            <tr>
-              <td style="padding:18px 20px;background:linear-gradient(135deg,#4f46e5,#a855f7);color:#fff;">
-                <div style="font-family:Arial,sans-serif;font-size:14px;opacity:.92;">${escapeHtml(T.you_title)}</div>
-                <div style="font-family:Arial,sans-serif;font-size:20px;font-weight:800;margin-top:4px;">
-                  ${safeSubject}
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding:18px 20px;font-family:Arial,sans-serif;color:#111827;">
-                <p style="margin:0 0 12px;color:#374151;line-height:1.6;">
-                  ${T.you_sub}
-                </p>
-
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:10px 0 14px;">
-                  <tr>
-                    <td style="padding:12px;border:1px solid #e5e7eb;border-radius:14px;background:#f9fafb;">
-                      <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">${escapeHtml(
-                        T.you_sender
-                      )}</div>
-                      <div style="margin-top:6px;font-size:14px;line-height:1.7;">
-                        <b style="color:#111827;">${escapeHtml(
-                          T.labels.name
-                        )}:</b> ${escapeHtml(name)}<br/>
-                        <b style="color:#111827;">${escapeHtml(
-                          T.labels.email
-                        )}:</b>
-                        <a href="mailto:${escapeHtml(email)}" style="color:#4f46e5;text-decoration:none;">${escapeHtml(
-                          email
-                        )}</a><br/>
-                        <b style="color:#111827;">${escapeHtml(
-                          T.labels.subject
-                        )}:</b> ${safeSubject}
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-
-                <div style="padding:14px;border:1px solid #e5e7eb;border-radius:14px;background:#ffffff;">
-                  <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">${escapeHtml(
-                    T.you_message
-                  )}</div>
-                  <div style="margin-top:10px;font-size:14px;line-height:1.75;color:#111827;">
-                    ${safeMsg || "<i style='color:#6b7280'>No message</i>"}
-                  </div>
-                </div>
-
-                <div style="margin-top:16px;">
-                  <a href="${replyHref}"
-                     style="display:inline-block;background:#4f46e5;color:#fff;text-decoration:none;padding:10px 14px;border-radius:999px;font-weight:800;font-size:14px;">
-                    ${escapeHtml(T.you_reply)} ↩
-                  </a>
-                </div>
-
-                <p style="margin:16px 0 0;color:#9ca3af;font-size:12px;line-height:1.6;">
-                  ${escapeHtml(T.footer)}
-                </p>
-              </td>
-            </tr>
-
-          </table>
-        </td>
-      </tr>
-    </table>
-  </div>`;
+  return emailLayout({
+    lang,
+    title: copy.adminTitle,
+    intro: copy.adminIntro,
+    contentHtml,
+  });
 }
 
-function autoReplyTemplate({ name, lang = "en" }) {
+function autoReplyHTML({ name, lang }) {
+  const copy = getEmailCopy(lang);
+
+  const contentHtml = `
+    <div
+      style="
+        padding:20px;
+        border-radius:18px;
+        background:linear-gradient(180deg,#f8fafc,#ffffff);
+        border:1px solid #e5e7eb;
+      "
+    >
+      <p style="margin:0 0 10px;font-size:16px;line-height:1.8;">
+        ${escapeHtml(copy.greeting)} ${escapeHtml(name)} 👋
+      </p>
+
+      <p style="margin:0;color:#374151;font-size:15px;line-height:1.9;">
+        ${escapeHtml(copy.confirmText)}
+      </p>
+    </div>
+  `;
+
+  return emailLayout({
+    lang,
+    title: copy.confirmTitle,
+    intro: copy.confirmText,
+    contentHtml,
+  });
+}
+
+function autoReplySubject(lang) {
   const L = normalizeLang(lang);
-  const T = MAIL_TEXT[L] || MAIL_TEXT.en;
 
-  const safeName = escapeHtml(name || "there");
-
-  // AR: rtl + Cairo font (werkt als fallback; niet elke client laadt fonts)
-  const isRTL = L === "ar";
-  const dir = isRTL ? "rtl" : "ltr";
-  const align = isRTL ? "right" : "left";
-  const font = isRTL
-    ? `'Cairo', Arial, sans-serif`
-    : `Arial, sans-serif`;
-
-  return `
-  <div style="margin:0;padding:0;background:#f5f7fb;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f7fb;padding:26px 12px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:640px;max-width:640px;background:#ffffff;border-radius:18px;border:1px solid #e5e7eb;overflow:hidden;" dir="${dir}">
-            
-            <tr>
-              <td style="padding:18px 20px;background:linear-gradient(135deg,#4f46e5,#a855f7);color:#fff;text-align:${align};font-family:${font};">
-                <div style="font-size:14px;opacity:.92;">${escapeHtml(T.user_top)}</div>
-                <div style="font-size:20px;font-weight:900;margin-top:4px;">
-                  ${T.user_hi(safeName)}
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding:18px 20px;color:#111827;text-align:${align};font-family:${font};">
-                <p style="margin:0 0 12px;color:#374151;line-height:1.75;">
-                  ${T.user_body}
-                </p>
-
-                <div style="padding:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f9fafb;">
-                  <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">${escapeHtml(
-                    T.user_contact
-                  )}</div>
-                  <div style="margin-top:8px;font-size:14px;line-height:1.75;">
-                    Email:
-                    <a href="mailto:${escapeHtml(TO_EMAIL)}" style="color:#4f46e5;text-decoration:none;">
-                      ${escapeHtml(TO_EMAIL)}
-                    </a><br/>
-                    ${isRTL ? "الموقع" : "Location"}: ${isRTL ? "هولندا" : "Netherlands"}
-                  </div>
-                </div>
-
-                <div style="margin-top:16px;">
-                  <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">
-                    ${escapeHtml(T.user_follow)}
-                  </div>
-
-                  ${socialButtonsHTML(L, {
-                    pillBg: "#ffffff",
-                    border: "#e5e7eb",
-                    text: "#111827",
-                    icon: "#4f46e5",
-                  })}
-                </div>
-
-                <p style="margin:16px 0 0;color:#9ca3af;font-size:12px;line-height:1.6;">
-                  ${escapeHtml(T.user_auto)}
-                </p>
-
-                <p style="margin:10px 0 0;color:#9ca3af;font-size:12px;">
-                  ${escapeHtml(T.footer)}
-                </p>
-              </td>
-            </tr>
-
-          </table>
-        </td>
-      </tr>
-    </table>
-  </div>`;
+  if (L === "nl") return "Bedankt! Ik heb je bericht ontvangen ✅";
+  if (L === "ar") return "شكرًا! تم استلام رسالتك ✅";
+  return "Thanks! I received your message ✅";
 }
 
-/** =========================
- *  Routes
- *  ========================= */
-app.get("/api/contact", (req, res) => {
-  res.json({ ok: true, message: "API is working. Use POST to send messages." });
-});
+function autoReplyText({ name, lang, toEmail }) {
+  const L = normalizeLang(lang);
 
+  if (L === "nl") {
+    return `Hoi ${name},
+
+Bedankt voor je bericht! Ik heb het goed ontvangen en reageer meestal binnen 24 uur.
+
+Samir Loul
+${toEmail}`;
+  }
+
+  if (L === "ar") {
+    return `مرحبًا ${name}
+
+شكرًا لرسالتك! لقد استلمتها وسأرد عادة خلال 24 ساعة.
+
+سمير لول
+${toEmail}`;
+  }
+
+  return `Hi ${name},
+
+Thanks for your message! I received it successfully and usually reply within 24 hours.
+
+Samir Loul
+${toEmail}`;
+}
+/** =========================
+ * Routes
+ * ========================= */
+app.get("/api/contact", (req, res) => {
+  return res.json({
+    ok: true,
+    message: "API is working. Use POST to send messages.",
+  });
+});
 app.post("/api/contact", async (req, res) => {
   try {
+    console.log("POST /api/contact body:", req.body);
+
     const {
       name,
       email,
       subject = "",
       message,
       website = "",
-      lang = "en", // IMPORTANT: stuur dit vanuit React mee (en/nl/ar)
+      lang = "en",
+      recaptchaToken,
     } = req.body || {};
 
-    // honeypot (anti-bot): als "website" ingevuld is => bot
-    if (website) return res.status(200).json({ ok: true });
-
-    const L = normalizeLang(lang);
-
-    // basic validation
-    const cleanName = clampLen(String(name || "").trim(), 80);
-    const cleanEmail = clampLen(String(email || "").trim(), 120);
-    const cleanSubject = clampLen(String(subject || "").trim(), 120);
-    const cleanMessage = clampLen(String(message || "").trim(), 5000);
-
-    if (!cleanName || !cleanEmail || !cleanMessage) {
-      return res.status(400).json({ ok: false, error: "Missing fields" });
+    if (website) {
+      return res.status(200).json({ ok: true });
     }
-    if (!isValidEmail(cleanEmail)) {
+
+    if (!recaptchaToken) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing captcha token",
+      });
+    }
+
+    const captcha = await verifyRecaptcha(recaptchaToken, req.ip);
+
+    if (!captcha.ok) {
+      return res.status(400).json({
+        ok: false,
+        error: captcha.error || "Captcha failed",
+        details: captcha.data?.["error-codes"] || null,
+        hostname: captcha.data?.hostname || null,
+      });
+    }
+
+const cleanName = clampLen(String(name || "").trim(), 80);
+const cleanEmail = clampLen(String(email || "").trim(), 254).toLowerCase();
+const cleanSubject = clampLen(String(subject || "").trim(), 120);
+const cleanMessage = clampLen(String(message || "").trim(), 5000);
+const L = normalizeLang(lang);
+
+    if (!cleanName) {
+      return res.status(400).json({ ok: false, error: "Missing name" });
+    }
+
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
       return res.status(400).json({ ok: false, error: "Invalid email" });
     }
-    if (cleanMessage.length < 10) {
-      return res
-        .status(400)
-        .json({ ok: false, error: "Message too short" });
+
+    if (!cleanMessage || cleanMessage.length < 10) {
+      return res.status(400).json({ ok: false, error: "Message too short" });
     }
 
-    // 1) mail naar jou (admin)
-    await resend.emails.send({
+    const adminResult = await resend.emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
       replyTo: cleanEmail,
       subject: `Website contact: ${cleanSubject || "No subject"} — ${cleanName}`,
-      html: emailToYouTemplate({
-        name: cleanName,
-        email: cleanEmail,
-        subject: cleanSubject,
-        message: cleanMessage,
-        lang: L,
-      }),
+html: adminEmailHTML({
+  name: cleanName,
+  email: cleanEmail,
+  subject: cleanSubject,
+  message: cleanMessage,
+  lang: L,
+}),
       text: `New message via portfolio
 
 Name: ${cleanName}
@@ -413,48 +510,54 @@ ${cleanMessage}
 `,
     });
 
-    // 2) auto reply naar gebruiker (zelfde taal als website)
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: cleanEmail,
-      subject:
-        L === "nl"
-          ? "Bedankt! Ik heb je bericht ontvangen ✅"
-          : L === "ar"
-          ? "شكرًا! تم استلام رسالتك ✅"
-          : "Thanks! I received your message ✅",
-      html: autoReplyTemplate({ name: cleanName, lang: L }),
-      text:
-        L === "nl"
-          ? `Hoi ${cleanName},
+    console.log("Resend admin mail:", JSON.stringify(adminResult, null, 2));
 
-Bedankt voor je bericht! Ik reageer meestal binnen 24 uur.
+    if (adminResult?.error) {
+      return res.status(500).json({
+        ok: false,
+        error: "Resend error (admin)",
+        details: adminResult.error,
+      });
+    }
+const userResult = await resend.emails.send({
+  from: FROM_EMAIL,
+  to: cleanEmail,
+  subject: autoReplySubject(L),
+  html: autoReplyHTML({
+    name: cleanName,
+    lang: L,
+  }),
+  text: autoReplyText({
+    name: cleanName,
+    lang: L,
+    toEmail: TO_EMAIL,
+  }),
+});
 
-Samir Loul
-${TO_EMAIL}`
-          : L === "ar"
-          ? `مرحبًا ${cleanName}
+console.log("Resend user mail:", JSON.stringify(userResult, null, 2));
 
-شكرًا لرسالتك! عادةً أرد خلال 24 ساعة.
-
-سمير لول
-${TO_EMAIL}`
-          : `Hi ${cleanName},
-
-Thanks for your message! I usually reply within 24 hours.
-
-Samir Loul
-${TO_EMAIL}`,
-    });
-
-    res.json({ ok: true });
+if (userResult?.error) {
+  return res.json({
+    ok: true,
+    warning: "Bericht naar jou is verstuurd, maar bevestigingsmail naar afzender mislukte.",
+    details: userResult.error,
+  });
+}
+    return res.json({ ok: true });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: "Server error" });
+    console.error("SERVER ERROR:", err);
+
+    return res.status(500).json({
+      ok: false,
+      error: "Server error",
+      details: String(err?.message || err),
+    });
   }
 });
 
 /** =========================
- *  Start
- *  ========================= */
-app.listen(PORT, () => console.log("API running on", PORT));
+ * Start
+ * ========================= */
+app.listen(PORT, () => {
+  console.log("API running on", PORT);
+});
