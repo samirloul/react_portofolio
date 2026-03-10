@@ -15,6 +15,7 @@ const SOCIAL_LINKS = [
 
 const EMAIL_TO = "sameerloul2010@gmail.com";
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 const MAX_MESSAGE_LENGTH = 800;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -168,7 +169,7 @@ const handleSubmit = async (e) => {
   setStatus("sending");
 
   try {
-    const response = await fetch("/api/contact", {
+    const response = await fetch(`${API_BASE}/api/contact`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
