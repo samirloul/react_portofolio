@@ -32,7 +32,7 @@ export default function Home({ t }) {
         <p className="hero-desc">{hero.text}</p>
 
         <div className="hero-buttons">
-          <Link className="btn primary" to="/projects">
+          <Link className="btn primary" to="/about">
             {hero.primaryButton}
           </Link>
 
