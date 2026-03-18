@@ -80,8 +80,11 @@ export const translations = {
               label: "Open Website",
               href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ",
               icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
+            },            {
+              label: "GitHub",
+              href: "https://github.com/SamirLoul",
+              icon: "fab fa-github",
+            },          ],
         },
         {
           title: "Syria Website",
@@ -262,6 +265,36 @@ export const translations = {
         },
       ],
     },
+    skills: {
+      title: "Technical Skills",
+      frontend: {
+        title: "Frontend",
+        items: ["HTML5", "CSS3", "JavaScript", "React", "Responsive Design"],
+      },
+      backend: {
+        title: "Backend",
+        items: ["PHP", "SQL", "MySQL", "Laravel", "API Development"],
+      },
+      tools: {
+        title: "Tools & DevOps",
+        items: ["Git", "GitHub", "VS Code", "Vite", "npm/yarn"],
+      },
+      soft: {
+        title: "Soft Skills",
+        items: ["Problem Solving", "Communication", "Team Work", "Time Management", "Adaptability"],
+      },
+    },
+    funFacts: {
+      title: "Fun Facts About Me",
+      facts: [
+        { emoji: "🎮", text: "Gaming enthusiast who loves strategy games" },
+        { emoji: "🌍", text: "Passionate about bridging cultures and languages" },
+        { emoji: "💡", text: "Love solving puzzles and creative problems" },
+        { emoji: "🎬", text: "Enjoy watching tech and educational content" },
+        { emoji: "📚", text: "Continuous learner - currently exploring AI basics" },
+        { emoji: "🤝", text: "Big believer in community and collaboration" },
+      ],
+    },
   },
 
   // ================= ARABIC =================
@@ -315,7 +348,10 @@ export const translations = {
           icon: "fas fa-user",
           text: "موقع شخصي أعرّف فيه بنفسي وبما أتعلمه وبالمشاريع التي أعمل عليها. تصميم نظيف ومتجاوب وسهل التصفح.",
           tags: ["HTML", "CSS", "JavaScript"],
-          links: [{ label: "فتح الموقع", href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ", icon: "fas fa-arrow-up-right-from-square" }],
+          links: [
+            { label: "فتح الموقع", href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ", icon: "fas fa-arrow-up-right-from-square" },
+            { label: "GitHub", href: "https://github.com/SamirLoul", icon: "fab fa-github" }
+          ],
         },
         {
           title: "موقع عن سوريا",
@@ -432,6 +468,36 @@ export const translations = {
         { question: "هل تقدم التوجيه (Mentoring)؟", answer: "يسعدني مشاركة تجاربي ورحلتي مع زملائي الطلاب أو أي شخص مهتم بتطوير البرمجيات." },
       ],
     },
+    skills: {
+      title: "المهارات التقنية",
+      frontend: {
+        title: "Frontend",
+        items: ["HTML5", "CSS3", "JavaScript", "React", "تصميم متجاوب"],
+      },
+      backend: {
+        title: "Backend",
+        items: ["PHP", "SQL", "MySQL", "Laravel", "تطوير API"],
+      },
+      tools: {
+        title: "الأدوات",
+        items: ["Git", "GitHub", "VS Code", "Vite", "npm/yarn"],
+      },
+      soft: {
+        title: "المهارات الشخصية",
+        items: ["حل المشكلات", "التواصل", "العمل الجماعي", "إدارة الوقت", "القدرة على التكيف"],
+      },
+    },
+    funFacts: {
+      title: "حقائق ممتعة عني",
+      facts: [
+        { emoji: "🎮", text: "عشاق الألعاب الذي يحب ألعاب الإستراتيجية" },
+        { emoji: "🌍", text: "شغوف بجسر الثقافات واللغات" },
+        { emoji: "💡", text: "أحب حل الألغاز والمشاكل الإبداعية" },
+        { emoji: "🎬", text: "أستمتع بمشاهدة محتوى تقني وتعليمي" },
+        { emoji: "📚", text: "متعلم مستمر - استكشف أساسيات الذكاء الاصطناعي حالياً" },
+        { emoji: "🤝", text: "مؤمن قوي بالمجتمع والتعاون" },
+      ],
+    },
   },
 
   // ================= DUTCH =================
@@ -487,6 +553,11 @@ export const translations = {
               label: "Open Website",
               href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ",
               icon: "fas fa-arrow-up-right-from-square",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/SamirLoul",
+              icon: "fab fa-github",
             },
           ],
         },
@@ -602,6 +673,36 @@ export const translations = {
         { question: "Wat is de beste manier om je te bereiken?", answer: "E-mail is de meest betrouwbare manier om contact met mij op te nemen. Ik check mijn e-mails regelmatig en reageer binnen 24 uur." },
         { question: "Ben je beschikbaar voor projecten?", answer: "Als student ben ik altijd geïnteresseerd in leermogelijkheden en samenwerkingsprojecten die aansluiten bij mijn studie." },
         { question: "Bied je mentoring aan?", answer: "Ik deel graag mijn ervaringen en reis met medestudenten of iedereen die geïnteresseerd is in softwareontwikkeling." },
+      ],
+    },
+    skills: {
+      title: "Technische Vaardigheden",
+      frontend: {
+        title: "Frontend",
+        items: ["HTML5", "CSS3", "JavaScript", "React", "Responsief Design"],
+      },
+      backend: {
+        title: "Backend",
+        items: ["PHP", "SQL", "MySQL", "Laravel", "API Ontwikkeling"],
+      },
+      tools: {
+        title: "Tools & DevOps",
+        items: ["Git", "GitHub", "VS Code", "Vite", "npm/yarn"],
+      },
+      soft: {
+        title: "Soft Skills",
+        items: ["Probleemoplossing", "Communicatie", "Teamwerk", "Tijd Management", "Aanpassingsvermogen"],
+      },
+    },
+    funFacts: {
+      title: "Leuke Weetjes Over Mij",
+      facts: [
+        { emoji: "🎮", text: "Gaming enthusiast die van strategiespellen houdt" },
+        { emoji: "🌍", text: "Gepassioneerd over culturen en talen overbruggen" },
+        { emoji: "💡", text: "Hou van puzzels en creatieve problemen oplossen" },
+        { emoji: "🎬", text: "Geniet van tech en educatieve content kijken" },
+        { emoji: "📚", text: "Continu leerling - verken momenteel AI-basics" },
+        { emoji: "🤝", text: "Groot geloof in gemeenschap en samenwerking" },
       ],
     },
   },

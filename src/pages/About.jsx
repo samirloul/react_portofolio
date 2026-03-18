@@ -1,5 +1,6 @@
 import React from "react";
 import profileImg from "../assets/samirHomePage.jpeg";
+import FunFacts from "./FunFacts";
 
 // Icons automatisch koppelen aan skill-titels
 const getSkillIcon = (title) => {
@@ -127,6 +128,8 @@ const AboutPage = ({ t }) => {
           </div>
         </div>
       </section>
+
+      <FunFacts t={t} />
     </main>
   );
 };

@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { translations } from "./i18n";
+import "./animations.css";
+import "./styles/animations-components.css";
+import "./styles/skills.css";
+import "./styles/fun-facts.css";
+import "./styles/about-timeline.css";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
 import Projects from "./pages/Projects.jsx";
 import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
+import Skills from "./pages/Skills.jsx";
+import FunFacts from "./pages/FunFacts.jsx";
 
 export default function App() {
   const [lang, setLang] = useState(() => {

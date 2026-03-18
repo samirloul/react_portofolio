@@ -1,0 +1,152 @@
+/* =================== ANIMATIONS =================== */
+
+/* Fade In animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hover animations */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.6));
+  }
+}
+
+/* Utility classes for animations */
+.fade-in {
+  animation: fadeIn 0.6s ease-in forwards;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.fade-in-down {
+  animation: fadeInDown 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.scale-in {
+  animation: scaleIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Hover effects */
+.btn:hover {
+  animation: none !important;
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  animation: pulse 0.6s ease-in-out;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button, a, input, textarea {
+  transition: all 0.3s ease;
+}
+
+/* Scroll animations */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in-up {
+    animation-timeline: view();
+    animation-range: entry 0% cover 25%;
+    animation-fill-mode: both;
+  }
+}
