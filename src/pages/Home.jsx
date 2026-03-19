@@ -19,8 +19,41 @@ const SOCIAL_LINKS = [
   { icon: "fa-brands fa-threads", href: "https://www.threads.net/@samirloul", label: "Threads" },
 ];
 
-export default function Home({ t }) {
+export default function Home({ t, lang = "en" }) {
   const hero = t.hero;
+  const fallbackStatsByLang = {
+    en: {
+      title: "My Journey in Numbers",
+      items: [
+        { label: "Projects Built", suffix: "+" },
+        { label: "Years of Passion", suffix: "+" },
+        { label: "Skills Mastered", suffix: "+" },
+        { label: "Dedication", suffix: "%" },
+      ],
+    },
+    ar: {
+      title: "رحلتي في أرقام",
+      items: [
+        { label: "مشاريع منجزة", suffix: "+" },
+        { label: "سنوات الشغف", suffix: "+" },
+        { label: "مهارات متقنة", suffix: "+" },
+        { label: "الالتزام", suffix: "%" },
+      ],
+    },
+    nl: {
+      title: "Mijn Reis in Getallen",
+      items: [
+        { label: "Projecten Gebouwd", suffix: "+" },
+        { label: "Jaren Passie", suffix: "+" },
+        { label: "Vaardigheden Beheerst", suffix: "+" },
+        { label: "Inzet", suffix: "%" },
+      ],
+    },
+  };
+
+  const defaultStats = fallbackStatsByLang[lang] || fallbackStatsByLang.en;
+  const stats = t?.stats || defaultStats;
+  const statsItems = stats.items || defaultStats.items;
 
   return (
     <>
@@ -78,12 +111,12 @@ export default function Home({ t }) {
       {/* Stats Section */}
       <section className="stats-section">
         <div className="container">
-          <h2 className="section-title">{t.stats.title}</h2>
+          <h2 className="section-title">{stats.title}</h2>
           <div className="stats-grid">
-            <Counter end={3} duration={2500} label="Projects Built" suffix="+" />
-            <Counter end={3} duration={2000} label={t.stats.items[1].label} suffix={t.stats.items[1].suffix} />
-            <Counter end={8} duration={2500} label={t.stats.items[2].label} suffix={t.stats.items[2].suffix} />
-            <Counter end={100} duration={2000} label={t.stats.items[3].label} suffix={t.stats.items[3].suffix} />
+            <Counter end={3} duration={2500} label={statsItems[0].label} suffix={statsItems[0].suffix} />
+            <Counter end={3} duration={2000} label={statsItems[1].label} suffix={statsItems[1].suffix} />
+            <Counter end={8} duration={2500} label={statsItems[2].label} suffix={statsItems[2].suffix} />
+            <Counter end={100} duration={2000} label={statsItems[3].label} suffix={statsItems[3].suffix} />
           </div>
         </div>
       </section>

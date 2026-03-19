@@ -120,7 +120,7 @@ export default function App() {
 
       <main className="page">
         <Routes>
-          <Route path="/" element={<Home t={t} />} />
+          <Route path="/" element={<Home t={t} lang={lang} />} />
           <Route path="/about" element={<About t={t} />} />
           <Route path="/projects" element={<Projects t={t} />} />
           <Route path="/cv" element={<Cv t={t} lang={lang} />} />
