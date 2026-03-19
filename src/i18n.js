@@ -63,7 +63,7 @@ export const translations = {
         { title: "Problem Solving", text: "Analytical thinking and creative solutions." },
       ],
       connectTitle: "Connect With Me",
-      socials: ["Twitter", "Instagram", "TikTok", "Snapchat", "Facebook", "Threads"],
+      socials: ["Twitter", "Instagram", "LinkedIn", "TikTok", "Snapchat", "Facebook", "Threads"],
     },
     projects: {
       title: "My Projects",
@@ -221,7 +221,7 @@ export const translations = {
       responseValue: "Usually within 24 hours",
 
       followTitle: "Follow Me",
-      socials: ["Twitter", "Instagram", "TikTok", "Snapchat", "Facebook", "Threads"],
+      socials: ["Twitter", "Instagram", "LinkedIn", "TikTok", "Snapchat", "Facebook", "Threads"],
 
       badges: { secure: "Secure form", reply: "Reply in 24h" },
 
@@ -337,7 +337,7 @@ export const translations = {
         { title: "حل المشكلات", text: "تفكير تحليلي وحلول إبداعية." },
       ],
       connectTitle: "تواصل معي",
-      socials: ["تويتر", "إنستغرام", "تيك توك", "سناب شات", "فيسبوك", "ثريدز"],
+      socials: ["تويتر", "إنستغرام", "لينكدإن", "تيك توك", "سناب شات", "فيسبوك", "ثريدز"],
     },
     projects: {
       title: "مشاريعي",
@@ -437,7 +437,7 @@ export const translations = {
       responseValue: "عادة خلال 24 ساعة",
 
       followTitle: "تابعني",
-      socials: ["تويتر", "إنستغرام", "تيك توك", "سناب شات", "فيسبوك", "ثريدز"],
+      socials: ["تويتر", "إنستغرام", "لينكدإن", "تيك توك", "سناب شات", "فيسبوك", "ثريدز"],
 
       badges: { secure: "نموذج آمن", reply: "رد خلال 24 ساعة" },
 
@@ -536,7 +536,7 @@ export const translations = {
         { title: "Probleemoplossing", text: "Analytisch denken en creatieve oplossingen." },
       ],
       connectTitle: "Connect Met Mij",
-      socials: ["Twitter", "Instagram", "TikTok", "Snapchat", "Facebook", "Threads"],
+      socials: ["Twitter", "Instagram", "LinkedIn", "TikTok", "Snapchat", "Facebook", "Threads"],
     },
     projects: {
       title: "Mijn Projecten",
@@ -644,7 +644,7 @@ export const translations = {
       responseValue: "Meestal binnen 24 uur",
 
       followTitle: "Volg Mij",
-      socials: ["Twitter", "Instagram", "TikTok", "Snapchat", "Facebook", "Threads"],
+      socials: ["Twitter", "Instagram", "LinkedIn", "TikTok", "Snapchat", "Facebook", "Threads"],
 
       badges: { secure: "Veilig formulier", reply: "Reactie binnen 24u" },
 
