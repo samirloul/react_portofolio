@@ -3,10 +3,12 @@ import samirPhoto from "../assets/samirHomePage.jpeg";
 import { Link } from "react-router-dom";
 import Skills from "./Skills";
 import FunFacts from "./FunFacts";
+import Counter from "../components/Counter";
 
 const SOCIAL_LINKS = [
   { icon: "fa-brands fa-x-twitter", href: "https://x.com/samirloul", label: "X" },
   { icon: "fa-brands fa-instagram", href: "https://www.instagram.com/samirloul/", label: "Instagram" },
+  { icon: "fa-brands fa-linkedin", href: "https://www.linkedin.com/in/samir-loul-083ab53b0/", label: "LinkedIn" },
   { icon: "fa-brands fa-tiktok", href: "https://www.tiktok.com/@samirloul1", label: "TikTok" },
   { icon: "fa-brands fa-snapchat", href: "https://snapchat.com/t/zMfZUL7e", label: "Snapchat" },
   {
@@ -72,6 +74,20 @@ export default function Home({ t }) {
       </section>
 
       <Skills t={t} />
+
+      {/* Stats Section */}
+      <section className="stats-section">
+        <div className="container">
+          <h2 className="section-title">My Journey in Numbers</h2>
+          <div className="stats-grid">
+            <Counter end={5} duration={2500} label="Projects Built" suffix="+" />
+            <Counter end={3} duration={2000} label="Years of Passion" suffix="+" />
+            <Counter end={8} duration={2500} label="Skills Mastered" suffix="+" />
+            <Counter end={100} duration={2000} label="Dedication %" />
+          </div>
+        </div>
+      </section>
+
       <FunFacts t={t} />
     </>
   );

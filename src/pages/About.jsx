@@ -18,6 +18,7 @@ const getSkillIcon = (title) => {
 const SOCIAL_LINKS = [
   { icon: "fab fa-twitter", href: "https://x.com/samirloul" },
   { icon: "fab fa-instagram", href: "https://www.instagram.com/samirloul/" },
+  { icon: "fab fa-linkedin", href: "https://www.linkedin.com/in/samir-loul-083ab53b0/" },
   { icon: "fab fa-tiktok", href: "https://www.tiktok.com/@samirloul1" },
   { icon: "fab fa-snapchat", href: "https://snapchat.com/t/zMfZUL7e" },
   {

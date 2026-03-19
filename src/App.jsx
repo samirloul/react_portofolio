@@ -6,6 +6,7 @@ import "./styles/animations-components.css";
 import "./styles/skills.css";
 import "./styles/fun-facts.css";
 import "./styles/about-timeline.css";
+import "./styles/new-features.css";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
 import Projects from "./pages/Projects.jsx";
@@ -13,6 +14,9 @@ import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
 import Skills from "./pages/Skills.jsx";
 import FunFacts from "./pages/FunFacts.jsx";
+import BackToTop from "./components/BackToTop.jsx";
+import ScrollProgress from "./components/ScrollProgress.jsx";
+import FloatingContactButton from "./components/FloatingContactButton.jsx";
 
 export default function App() {
   const [lang, setLang] = useState(() => {
@@ -55,6 +59,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <ScrollProgress />
       <header className="navbar">
         <div className="navbar-left">
           <span className="brand">{t.nav.name}</span>
@@ -122,6 +127,9 @@ export default function App() {
           <Route path="/contact" element={<Contact t={t} lang={lang} />} />
         </Routes>
       </main>
+
+      <BackToTop />
+      <FloatingContactButton />
     </div>
   );
 }

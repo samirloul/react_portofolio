@@ -4,6 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 const SOCIAL_LINKS = [
   { href: "https://x.com/samirloul", icon: "fa-brands fa-x-twitter" },
   { href: "https://www.instagram.com/samirloul/", icon: "fa-brands fa-instagram" },
+  { href: "https://www.linkedin.com/in/samir-loul-083ab53b0/", icon: "fa-brands fa-linkedin" },
   { href: "https://www.tiktok.com/@samirloul1", icon: "fa-brands fa-tiktok" },
   { href: "https://snapchat.com/t/zMfZUL7e", icon: "fa-brands fa-snapchat" },
   {
