@@ -32,6 +32,11 @@ export const translations = {
           text: "I began my educational journey in the Netherlands at Ithaka (ISK), where I studied from December 2017 to June 2019. It was a place where I learned to adapt to a new environment and built the foundation for my future.",
         },
         {
+          years: "2019 - 2021",
+          title: "Preparation & Integration Year",
+          text: "A period of personal growth and adaptation where I prepared for higher education and strengthened my Dutch language skills while building my confidence in the Netherlands.",
+        },
+        {
           years: "2021 - 2023",
           title: "Mobility & Transport - Globe College Utrecht",
           text: "I studied Mobility & Transport at Globe College Utrecht, where I gained practical knowledge about modern transport systems and solutions.",
@@ -320,6 +325,7 @@ export const translations = {
           title: "إثاكا (ISK)",
           text: "بدأت رحلتي التعليمية في هولندا في إثاكا (ISK)، حيث درست من ديسمبر 2017 إلى يونيو 2019. كان مكاناً تعلمت فيه التكيف مع بيئة جديدة وبنيت فيه الأساس لمستقبلي.",
         },
+        { years: "2019 - 2021", title: "سنة التحضير والاندماج", text: "فترة من النمو الشخصي التكيف حيث تحضرت للتعليم العالي وقويت مهارات اللغة الهولندية لدي مع بناء ثقتي في هولندا." },
         { years: "2021 - 2023", title: "النقل والمواصلات - Globe College Utrecht", text: "درست النقل والمواصلات في Globe College Utrecht، حيث اكتسبت معرفة عملية حول أنظمة وحلول النقل الحديثة." },
         { years: "2023 - 2024", title: "دعم تكنولوجيا المعلومات - MBO Utrecht", text: "انتقلت بتركيزي إلى دعم تكنولوجيا المعلومات في MBO Utrecht، حيث غصت في عالم التكنولوجيا وحل المشكلات." },
         { years: "2024 - 2027", title: "تطوير البرمجيات - MBO Utrecht", text: "حالياً، أدرس تطوير البرمجيات في MBO Utrecht، حيث أسعى لتحقيق حلمي في أن أصبح مطور برمجيات." },
@@ -393,7 +399,7 @@ export const translations = {
       techTitle: "المهارات التقنية",
       techGroups: [
         { title: "لغات البرمجة", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
-        { title: "الأدوات والتقنيات", items: ["Git & Version Control", "تصميم الويب المتجاوب", "دعم تكنولوجيا المعلومات"] },
+        { title: "الأدوات والتقنيات", items: ["Git و التحكم بالإصدارات", "تصميم الويب المتجاوب", "دعم تكنولوجيا المعلومات"] },
       ],
       softTitle: "المهارات الشخصية",
       softSkills: ["حل المشكلات", "التواصل", "القدرة على التكيف", "التعاون الجماعي", "التعلم المستمر", "الوعي الثقافي"],
@@ -405,6 +411,7 @@ export const translations = {
         { years: "2024 - 2027", title: "تطوير البرمجيات", place: "MBO Utrecht", text: "أتابع حالياً تعليماً شاملاً في تطوير البرمجيات، مع التركيز على أساسيات البرمجة، تطوير الويب، وممارسات هندسة البرمجيات الحديثة." },
         { years: "2023 - 2024", title: "دعم تكنولوجيا المعلومات", place: "MBO Utrecht", text: "اكتسبت معرفة عملية في دعم تكنولوجيا المعلومات، استكشاف الأخطاء وإصلاحها، وحل المشكلات التقنية." },
         { years: "2021 - 2023", title: "النقل والمواصلات", place: "Globe College Utrecht", text: "درست أنظمة وحلول النقل الحديثة، وطورت مهارات التفكير التحليلي والمنهجي." },
+        { years: "2019 - 2021", title: "التحضير والأساس", place: "النمو الشخصي", text: "فترة انتقال ونمو شخصي، تعزيز مهارات اللغة والتحضير للتعليم المهني." },
         { years: "2017 - 2019", title: "الدراسات التأسيسية", place: "Ithaka (ISK)", text: "الأساس التعليمي الأولي في هولندا، مع التركيز على تطوير اللغة والاندماج الثقافي." },
       ],
       qualitiesTitle: "الصفات الشخصية",
@@ -519,6 +526,7 @@ export const translations = {
       educationTitle: "Mijn Educatieve Reis",
       timeline: [
         { years: "2017 - 2019", title: "Ithaka (ISK)", text: "Ik begon mijn educatieve reis in Nederland bij Ithaka (ISK), waar ik studeerde van december 2017 tot juni 2019. Het was een plek waar ik leerde me aan te passen aan een nieuwe omgeving en de basis legde voor mijn toekomst." },
+        { years: "2019 - 2021", title: "Voorbereiding & Integratiejaar", text: "Een periode van persoonlijke groei en aanpassing waarin ik me voorbereidde op hoger onderwijs en mijn Nederlandse taalvaardigheden versterkte terwijl ik mijn vertrouwen in Nederland opbouwde." },
         { years: "2021 - 2023", title: "Mobiliteit & Transport - Globe College Utrecht", text: "Ik studeerde Mobiliteit & Transport aan het Globe College Utrecht, waar ik praktische kennis opdeed over moderne transportsystemen en oplossingen." },
         { years: "2023 - 2024", title: "ICT Support - MBO Utrecht", text: "Ik verlegde mijn focus naar ICT Support aan het MBO Utrecht, waarbij ik in de wereld van technologie en probleemoplossing dook." },
         { years: "2024 - 2027", title: "Software Development - MBO Utrecht", text: "Momenteel studeer ik Software Development aan het MBO Utrecht, waar ik mijn droom om softwareontwikkelaar te worden nastreef." },
@@ -597,6 +605,11 @@ export const translations = {
         { name: "Arabisch", levelLabel: "Moedertaal (5/5)", percent: 100 },
         { name: "Nederlands", levelLabel: "Geavanceerd (4/5)", percent: 80 },
         { name: "Engels", levelLabel: "Gemiddeld (3/5)", percent: 60 },
+      ],
+      techTitle: "Technische Vaardigheden",
+      techGroups: [
+        { title: "Programmeertalen", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
+        { title: "Hulpmiddelen en technologieën", items: ["Git & Version Control", "Responsief webdesign", "ICT-ondersteuning"] },
       ],
       techTitle: "Technische Vaardigheden",
       techGroups: [
