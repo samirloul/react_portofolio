@@ -78,12 +78,12 @@ export default function Home({ t }) {
       {/* Stats Section */}
       <section className="stats-section">
         <div className="container">
-          <h2 className="section-title">My Journey in Numbers</h2>
+          <h2 className="section-title">{t.stats.title}</h2>
           <div className="stats-grid">
-            <Counter end={5} duration={2500} label="Projects Built" suffix="+" />
-            <Counter end={3} duration={2000} label="Years of Passion" suffix="+" />
-            <Counter end={8} duration={2500} label="Skills Mastered" suffix="+" />
-            <Counter end={100} duration={2000} label="Dedication %" />
+            <Counter end={3} duration={2500} label="Projects Built" suffix="+" />
+            <Counter end={3} duration={2000} label={t.stats.items[1].label} suffix={t.stats.items[1].suffix} />
+            <Counter end={8} duration={2500} label={t.stats.items[2].label} suffix={t.stats.items[2].suffix} />
+            <Counter end={100} duration={2000} label={t.stats.items[3].label} suffix={t.stats.items[3].suffix} />
           </div>
         </div>
       </section>
