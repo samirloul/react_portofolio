@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /server/
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://alhaqqportal.com/sitemap.xml
