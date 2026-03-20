@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Routes, Route, NavLink, useLocation } from "react-router-dom";
-import Skills from "./pages/Skills.jsx";
-import FunFacts from "./pages/FunFacts.jsx";
 import { translations } from "./i18n";
 import "./animations.css";
 import "./styles/animations-components.css";
@@ -15,8 +13,6 @@ import Projects from "./pages/Projects.jsx";
 import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
-import Skills from "./pages/Skills.jsx";
-import FunFacts from "./pages/FunFacts.jsx";
 import BackToTop from "./components/BackToTop.jsx";
 import FloatingContactButton from "./components/FloatingContactButton.jsx";
 import DebugPanel from "./components/DebugPanel.jsx";
@@ -51,6 +47,7 @@ export default function App() {
     localStorage.setItem("portfolio-theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
+  
   useEffect(() => {
     let title = "Samir Loul - Developer Portfolio";
     let description =
