@@ -16,7 +16,6 @@ import BlogPost from "./pages/BlogPost.jsx";
 import Skills from "./pages/Skills.jsx";
 import FunFacts from "./pages/FunFacts.jsx";
 import BackToTop from "./components/BackToTop.jsx";
-import ScrollProgress from "./components/ScrollProgress.jsx";
 import FloatingContactButton from "./components/FloatingContactButton.jsx";
 import DebugPanel from "./components/DebugPanel.jsx";
 
@@ -82,7 +81,6 @@ export default function App() {
 
   return (
     <div className="app">
-      <ScrollProgress />
       <header className="navbar">
         <div className="navbar-left">
           <span className="brand">{t.nav.name}</span>

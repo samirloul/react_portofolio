@@ -73,6 +73,11 @@ export default function Contact({ t, lang }) {
     };
   }, []);
 
+  useEffect(() => {
+    // When language changes, force a fresh captcha state for the new locale.
+    recaptchaRef.current?.reset();
+  }, [recaptchaLang]);
+
   const errors = useMemo(() => {
     const next = {};
     const name = form.name.trim();
@@ -438,7 +443,12 @@ const handleSubmit = async (e) => {
             </div>
 
             <div className="recaptcha-wrap">
-              <ReCAPTCHA ref={recaptchaRef} sitekey={SITE_KEY || ""} hl={recaptchaLang} />
+              <ReCAPTCHA
+                key={`recaptcha-${recaptchaLang}`}
+                ref={recaptchaRef}
+                sitekey={SITE_KEY || ""}
+                hl={recaptchaLang}
+              />
             </div>
 
             <button
