@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import Skills from "./Skills";
 import FunFacts from "./FunFacts";
 import Counter from "../components/Counter";
+import VisitorStats from "../components/VisitorStats";
+import NewsletterSignup from "../components/NewsletterSignup";
+import FeedbackForm from "../components/FeedbackForm";
+import BlogPreview from "../components/BlogPreview";
 
 const SOCIAL_LINKS = [
   { icon: "fa-brands fa-x-twitter", href: "https://x.com/samirloul", label: "X" },
@@ -122,6 +126,26 @@ export default function Home({ t, lang = "en" }) {
       </section>
 
       <FunFacts t={t} />
+
+      {/* Visitor Stats */}
+      <section className="container" style={{ marginTop: "3rem" }}>
+        <VisitorStats t={t} />
+      </section>
+
+      {/* Blog Preview */}
+      <section className="container" style={{ marginTop: "3rem" }}>
+        <BlogPreview t={t} />
+      </section>
+
+      {/* Newsletter */}
+      <section className="container" style={{ marginTop: "3rem" }}>
+        <NewsletterSignup t={t} />
+      </section>
+
+      {/* Feedback Form */}
+      <section className="container" style={{ marginTop: "3rem" }}>
+        <FeedbackForm t={t} />
+      </section>
     </>
   );
 }

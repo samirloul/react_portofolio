@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, NavLink } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Routes, Route, NavLink, useLocation } from "react-router-dom";
 import { translations } from "./i18n";
 import "./animations.css";
 import "./styles/animations-components.css";
@@ -12,13 +12,18 @@ import About from "./pages/About.jsx";
 import Projects from "./pages/Projects.jsx";
 import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
+import BlogPost from "./pages/BlogPost.jsx";
 import Skills from "./pages/Skills.jsx";
 import FunFacts from "./pages/FunFacts.jsx";
 import BackToTop from "./components/BackToTop.jsx";
 import ScrollProgress from "./components/ScrollProgress.jsx";
 import FloatingContactButton from "./components/FloatingContactButton.jsx";
+import DebugPanel from "./components/DebugPanel.jsx";
 
 export default function App() {
+  const location = useLocation();
+  const previousRouteRef = useRef(null);
+
   const [lang, setLang] = useState(() => {
     return localStorage.getItem("portfolio-lang") || "en";
   });
@@ -45,6 +50,24 @@ export default function App() {
     localStorage.setItem("portfolio-theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
+
+  // Scroll behavior:
+  // - Initial load / browser refresh: keep browser-native restored position.
+  // - Client-side route change: scroll to top.
+  useEffect(() => {
+    window.history.scrollRestoration = "auto";
+
+    const currentRouteKey = `${location.pathname}${location.search}${location.hash}`;
+    if (previousRouteRef.current === null) {
+      previousRouteRef.current = currentRouteKey;
+      return;
+    }
+
+    if (previousRouteRef.current !== currentRouteKey) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      previousRouteRef.current = currentRouteKey;
+    }
+  }, [location.pathname, location.search, location.hash]);
 
   //  menu dicht bij resize naar desktop
   useEffect(() => {
@@ -125,11 +148,13 @@ export default function App() {
           <Route path="/projects" element={<Projects t={t} />} />
           <Route path="/cv" element={<Cv t={t} lang={lang} />} />
           <Route path="/contact" element={<Contact t={t} lang={lang} />} />
+          <Route path="/blog/:slug" element={<BlogPost t={t} lang={lang} />} />
         </Routes>
       </main>
 
       <BackToTop />
       <FloatingContactButton />
+      <DebugPanel t={t} />
     </div>
   );
 }

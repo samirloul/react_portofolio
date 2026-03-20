@@ -1,6 +1,7 @@
 import React from "react";
 import profileImg from "../assets/samirHomePage.jpeg";
 import FunFacts from "./FunFacts";
+import Testimonials from "../components/Testimonials";
 
 // Icons automatisch koppelen aan skill-titels
 const getSkillIcon = (title) => {
@@ -131,6 +132,30 @@ const AboutPage = ({ t }) => {
       </section>
 
       <FunFacts t={t} />
+
+      {/* Testimonials */}
+      <section className="container" style={{ marginTop: "3rem" }}>
+        <Testimonials 
+          testimonials={[
+            {
+              message: t?.testimonials?.sampleMessage1 || "Samir is a talented developer with great problem-solving skills.",
+              author: t?.testimonials?.sampleAuthor1 || "Friend",
+              role: "Developer",
+            },
+            {
+              message: t?.testimonials?.sampleMessage2 || "His passion for learning is inspiring and his code quality is excellent.",
+              author: t?.testimonials?.sampleAuthor2 || "Mentor",
+              role: "Senior Developer",
+            },
+            {
+              message: t?.testimonials?.sampleMessage3 || "Working with Samir has been a great pleasure. Highly recommended!",
+              author: t?.testimonials?.sampleAuthor3 || "Colleague",
+              role: "Project Manager",
+            },
+          ]} 
+          t={t} 
+        />
+      </section>
     </main>
   );
 };

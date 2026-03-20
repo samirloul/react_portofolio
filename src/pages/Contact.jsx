@@ -40,6 +40,22 @@ export default function Contact({ t, lang }) {
   if (!t?.contact) return null;
 
   const c = t.contact;
+  const recaptchaLang = lang === "ar" ? "ar" : lang === "nl" ? "nl" : "en";
+  const captchaMessages = {
+    en: {
+      missingSiteKey: "reCAPTCHA site key is missing. Add VITE_RECAPTCHA_SITE_KEY and restart Vite.",
+      checkCaptcha: "Please complete the reCAPTCHA first.",
+    },
+    nl: {
+      missingSiteKey: "reCAPTCHA site key ontbreekt. Voeg VITE_RECAPTCHA_SITE_KEY toe en herstart Vite.",
+      checkCaptcha: "Vink eerst de reCAPTCHA aan.",
+    },
+    ar: {
+      missingSiteKey: "مفتاح reCAPTCHA غير موجود. أضف VITE_RECAPTCHA_SITE_KEY ثم أعد تشغيل Vite.",
+      checkCaptcha: "يرجى إكمال reCAPTCHA أولاً.",
+    },
+  };
+  const msg = captchaMessages[recaptchaLang] || captchaMessages.en;
   const recaptchaRef = useRef(null);
   const copyTimerRef = useRef(null);
 
@@ -153,9 +169,7 @@ const handleSubmit = async (e) => {
 
   if (!SITE_KEY) {
     setStatus("error");
-    setServerMsg(
-      "reCAPTCHA site key ontbreekt. Voeg VITE_RECAPTCHA_SITE_KEY toe en herstart Vite."
-    );
+    setServerMsg(msg.missingSiteKey);
     return;
   }
 
@@ -163,7 +177,7 @@ const handleSubmit = async (e) => {
 
   if (!recaptchaToken) {
     setStatus("error");
-    setServerMsg("Vink eerst de reCAPTCHA aan.");
+    setServerMsg(msg.checkCaptcha);
     return;
   }
 
@@ -424,7 +438,7 @@ const handleSubmit = async (e) => {
             </div>
 
             <div className="recaptcha-wrap">
-              <ReCAPTCHA ref={recaptchaRef} sitekey={SITE_KEY || ""} />
+              <ReCAPTCHA ref={recaptchaRef} sitekey={SITE_KEY || ""} hl={recaptchaLang} />
             </div>
 
             <button

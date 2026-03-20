@@ -1,8 +1,11 @@
 // src/pages/Projects.jsx
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Skills from "./Skills";
 import FunFacts from "./FunFacts";
+import ProjectFilters from "../components/ProjectFilters";
+import ShareButtons from "../components/ShareButtons";
+import ProjectRating from "../components/ProjectRating";
 
 const TECH_ICONS = {
   HTML5: "fab fa-html5",
@@ -22,12 +25,15 @@ const isDisabled = (href) => !href || href === "#";
 
 export default function Projects({ t }) {
   const p = t.projects;
+  const [filteredProjects, setFilteredProjects] = useState(null);
 
   const technologies = useMemo(() => {
     const base = Array.isArray(p.technologies) ? p.technologies : [];
     // Zorg dat Laravel er altijd bij zit (zoals je al wilde)
     return Array.from(new Set([...base, "Laravel"]));
   }, [p.technologies]);
+
+  const projectsToDisplay = filteredProjects || (p.cards || []);
 
   return (
     <>
@@ -38,9 +44,12 @@ export default function Projects({ t }) {
           <p className="lead center">{p.intro}</p>
         </header>
 
+        {/* Project Filters */}
+        <ProjectFilters projects={p.cards || []} onFilter={setFilteredProjects} t={t} />
+
         {/* Project cards */}
         <div className="project-grid">
-          {(p.cards || []).map((card) => (
+          {projectsToDisplay.map((card) => (
             <article key={card.title} className="project-card">
               <div className="project-icon" aria-hidden="true">
                 <i className={card.icon || "fas fa-code"} />
@@ -87,6 +96,10 @@ export default function Projects({ t }) {
                   })}
                 </div>
               )}
+
+              {/* Share & Rate */}
+              <ShareButtons url={`/projects#${card.title}`} t={t} />
+              <ProjectRating projectId={card.title} t={t} />
             </article>
           ))}
         </div>

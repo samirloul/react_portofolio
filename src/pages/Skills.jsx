@@ -14,23 +14,23 @@ export default function Skills({ t }) {
   ];
 
   return (
-    <section className="skills-section">
+    <section className="tech-skills-section">
       <div className="container">
         <h2 className="section-title">{skills.title}</h2>
-        <div className="skills-grid">
+        <div className="tech-skills-grid">
           {skillCategories.map((category) => {
             const categoryData = skills[category.key];
             if (!categoryData) return null;
             return (
-              <div key={category.key} className="skill-card fade-in-up">
-                <div className="skill-icon">
+              <div key={category.key} className="tech-skill-card fade-in-up">
+                <div className="tech-skill-icon">
                   <i className={category.icon}></i>
                 </div>
                 <h3>{categoryData.title}</h3>
-                <ul className="skill-list">
+                <ul className="tech-skill-list">
                   {categoryData.items.map((item, idx) => (
-                    <li key={idx} className="skill-item">
-                      <span className="skill-badge">{item}</span>
+                    <li key={idx} className="tech-skill-item">
+                      <span className="tech-skill-badge">{item}</span>
                     </li>
                   ))}
                 </ul>
