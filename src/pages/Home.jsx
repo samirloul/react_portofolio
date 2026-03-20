@@ -1,4 +1,5 @@
 // src/pages/Home.jsx
+import { useEffect } from "react";
 import samirPhoto from "../assets/samirHomePage.jpeg";
 import { Link } from "react-router-dom";
 import Skills from "./Skills";
@@ -24,6 +25,38 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Home({ t, lang = "en" }) {
+    useEffect(() => {
+    let title = "Samir Loul - Developer Portfolio";
+    let description =
+      "Samir Loul portfolio website. Software developer, web developer, React developer and programmer.";
+
+    if (lang === "ar") {
+      title = "سمير لول - الملف الشخصي لمطور ويب";
+      description =
+        "الموقع الشخصي لسمير لول، مطور ويب ومطور برمجيات باستخدام React و JavaScript.";
+      document.documentElement.lang = "ar";
+      document.documentElement.dir = "rtl";
+    } else if (lang === "nl") {
+      title = "Samir Loul - Portfolio van webontwikkelaar";
+      description =
+        "Portfolio van Samir Loul, webontwikkelaar en software developer met React en JavaScript.";
+      document.documentElement.lang = "nl";
+      document.documentElement.dir = "ltr";
+    } else {
+      document.documentElement.lang = "en";
+      document.documentElement.dir = "ltr";
+    }
+
+    document.title = title;
+
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement("meta");
+      metaDescription.setAttribute("name", "description");
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute("content", description);
+  }, [lang]);
   const hero = t.hero;
   const fallbackStatsByLang = {
     en: {
