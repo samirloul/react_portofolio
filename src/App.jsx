@@ -49,7 +49,78 @@ export default function App() {
     localStorage.setItem("portfolio-theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
+  useEffect(() => {
+    let title = "Samir Loul - Developer Portfolio";
+    let description =
+      "Portfolio website of Samir Loul, web developer, software developer and React developer.";
 
+    if (location.pathname === "/about") {
+      if (lang === "ar") {
+        title = "من أنا - سمير لول";
+        description = "تعرف على سمير لول، مطور ويب ومطور برمجيات وخبراته ومهاراته.";
+      } else if (lang === "nl") {
+        title = "Over mij - Samir Loul";
+        description = "Lees meer over Samir Loul, webontwikkelaar, software developer en zijn ervaring.";
+      } else {
+        title = "About - Samir Loul";
+        description = "Learn more about Samir Loul, web developer, software developer and his experience.";
+      }
+    } else if (location.pathname === "/projects") {
+      if (lang === "ar") {
+        title = "المشاريع - سمير لول";
+        description = "استكشف مشاريع سمير لول في تطوير الويب والبرمجة وReact.";
+      } else if (lang === "nl") {
+        title = "Projecten - Samir Loul";
+        description = "Bekijk projecten van Samir Loul in webontwikkeling, programmeren en React.";
+      } else {
+        title = "Projects - Samir Loul";
+        description = "Explore projects by Samir Loul in web development, programming and React.";
+      }
+    } else if (location.pathname === "/cv") {
+      if (lang === "ar") {
+        title = "السيرة الذاتية - سمير لول";
+        description = "السيرة الذاتية لسمير لول، مطور ويب ومطور برمجيات.";
+      } else if (lang === "nl") {
+        title = "CV - Samir Loul";
+        description = "Bekijk het cv van Samir Loul, webontwikkelaar en software developer.";
+      } else {
+        title = "CV - Samir Loul";
+        description = "View the CV of Samir Loul, web developer and software developer.";
+      }
+    } else if (location.pathname === "/contact") {
+      if (lang === "ar") {
+        title = "تواصل - سمير لول";
+        description = "تواصل مع سمير لول لمشاريع تطوير الويب والبرمجة.";
+      } else if (lang === "nl") {
+        title = "Contact - Samir Loul";
+        description = "Neem contact op met Samir Loul voor webdevelopment en programmeerprojecten.";
+      } else {
+        title = "Contact - Samir Loul";
+        description = "Contact Samir Loul for web development and programming projects.";
+      }
+    } else {
+      if (lang === "ar") {
+        title = "سمير لول - الملف الشخصي لمطور ويب";
+        description = "الموقع الشخصي لسمير لول، مطور ويب ومطور برمجيات باستخدام React وJavaScript.";
+      } else if (lang === "nl") {
+        title = "Samir Loul - Portfolio van webontwikkelaar";
+        description = "Portfolio van Samir Loul, webontwikkelaar en software developer met React en JavaScript.";
+      } else {
+        title = "Samir Loul - Developer Portfolio";
+        description = "Portfolio website of Samir Loul, web developer, software developer and React developer.";
+      }
+    }
+
+    document.title = title;
+
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement("meta");
+      metaDescription.setAttribute("name", "description");
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute("content", description);
+  }, [lang, location.pathname]);
   // Scroll behavior:
   // - Initial load / browser refresh: keep browser-native restored position.
   // - Client-side route change: scroll to top.
