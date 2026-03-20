@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Routes, Route, NavLink, useLocation } from "react-router-dom";
+import Skills from "./pages/Skills.jsx";
+import FunFacts from "./pages/FunFacts.jsx";
 import { translations } from "./i18n";
 import "./animations.css";
 import "./styles/animations-components.css";
