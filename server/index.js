@@ -189,7 +189,11 @@ const PORT = process.env.PORT || 8080;
 const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
 const FROM_EMAIL =
   process.env.FROM_EMAIL || "Samir Loul <no-reply@samirprofile.com>";
-    const ALLOWED_ORIGIN = process.env.CORS_ORIGIN || "*";
+const RAW_ALLOWED_ORIGINS = process.env.CORS_ORIGIN || "*";
+const ALLOWED_ORIGINS = RAW_ALLOWED_ORIGINS
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 console.log("ENV check:");
@@ -197,14 +201,35 @@ console.log("- RESEND_API_KEY set?", !!process.env.RESEND_API_KEY);
 console.log("- RECAPTCHA_SECRET_KEY set?", !!RECAPTCHA_SECRET_KEY);
 console.log("- TO_EMAIL:", TO_EMAIL);
 console.log("- FROM_EMAIL:", FROM_EMAIL);
-console.log("- CORS_ORIGIN:", ALLOWED_ORIGIN);
+console.log("- CORS_ORIGIN(raw):", RAW_ALLOWED_ORIGINS);
+console.log("- CORS_ORIGIN(parsed):", ALLOWED_ORIGINS);
 
 /** =========================
  * Middleware
  * ========================= */
 app.use(
   cors({
-    origin: ALLOWED_ORIGIN === "*" ? true : ALLOWED_ORIGIN,
+    origin: (origin, callback) => {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      if (ALLOWED_ORIGINS.includes("*")) {
+        callback(null, true);
+        return;
+      }
+
+      const normalizedOrigin = String(origin).replace(/\/+$/, "");
+      if (ALLOWED_ORIGINS.includes(normalizedOrigin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origin not allowed by CORS: ${origin}`));
+    },
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 const PROFILE_IMAGE_URL = "https://samirprofile.com/samir.jpg";
@@ -469,6 +494,15 @@ function feedbackSubject(lang) {
 /** =========================
  * Routes
  * ========================= */
+app.get("/", (req, res) => {
+  return res.json({
+    ok: true,
+    service: "contact-api",
+    message: "API is running",
+    endpoints: ["/api/health", "/api/contact", "/api/newsletter", "/api/feedback"],
+  });
+});
+
 app.get("/api/contact", (req, res) => {
   return res.json({
     ok: true,

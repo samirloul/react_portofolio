@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+const API_ROOT = API_BASE_URL
+  ? API_BASE_URL.endsWith("/api")
+    ? API_BASE_URL
+    : `${API_BASE_URL}/api`
+  : "/api";
 
 function safeJsonParse(text) {
   try {
@@ -35,7 +40,7 @@ export default function FeedbackForm({ t, lang = "en" }) {
     setErrorMsg("");
 
     try {
-      const response = await fetch(`${API_BASE}/api/feedback`, {
+      const response = await fetch(`${API_ROOT}/feedback`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
