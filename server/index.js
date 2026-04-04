@@ -239,7 +239,7 @@ app.use(
       callback(new Error(`Origin not allowed by CORS: ${origin}`));
     },
     methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Admin-Token"],
   })
 );
 const PROFILE_IMAGE_URL = "https://samirprofile.com/samir.jpg";
