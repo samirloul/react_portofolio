@@ -35,6 +35,7 @@ export default function FeedbackForm({ t }) {
 
   const styles = {
     container: {
+      boxSizing: "border-box",
       padding: "2rem",
       background: isDark ? "#1a1a2e" : "#f8f8f8",
       borderRadius: "0.5rem",
@@ -61,7 +62,8 @@ export default function FeedbackForm({ t }) {
       color: isDark ? "#fff" : "#000",
     },
     ratingContainer: {
-      display: "flex",
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
       gap: "1rem",
     },
     ratingButton: (isActive) => ({
@@ -71,10 +73,13 @@ export default function FeedbackForm({ t }) {
       color: isActive ? "white" : isDark ? "#fff" : "inherit",
       borderRadius: "0.5rem",
       cursor: "pointer",
-      flex: 1,
+      minWidth: 0,
+      width: "100%",
+      textAlign: "center",
       transition: "all 0.2s ease",
     }),
     textarea: {
+      boxSizing: "border-box",
       width: "100%",
       minHeight: "100px",
       padding: "0.75rem",
