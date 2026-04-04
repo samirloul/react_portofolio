@@ -240,6 +240,34 @@ app.use(
   })
 );
 
+app.use(
+  "/api/newsletter",
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      ok: false,
+      error: "Too many requests. Please try again in a minute.",
+    },
+  })
+);
+
+app.use(
+  "/api/feedback",
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      ok: false,
+      error: "Too many requests. Please try again in a minute.",
+    },
+  })
+);
+
 /** =========================
  * Helpers
  * ========================= */
@@ -424,6 +452,20 @@ Thanks for your message! I received it successfully and usually reply within 24 
 Samir Loul
 ${toEmail}`;
 }
+
+function newsletterSubject(lang) {
+  const L = normalizeLang(lang);
+  if (L === "nl") return "Nieuwe nieuwsbrief-inschrijving";
+  if (L === "ar") return "اشتراك جديد في النشرة البريدية";
+  return "New newsletter subscription";
+}
+
+function feedbackSubject(lang) {
+  const L = normalizeLang(lang);
+  if (L === "nl") return "Nieuwe portfolio feedback";
+  if (L === "ar") return "ملاحظات جديدة على الملف الشخصي";
+  return "New portfolio feedback";
+}
 /** =========================
  * Routes
  * ========================= */
@@ -431,6 +473,15 @@ app.get("/api/contact", (req, res) => {
   return res.json({
     ok: true,
     message: "API is working. Use POST to send messages.",
+  });
+});
+
+app.get("/api/health", (req, res) => {
+  return res.json({
+    ok: true,
+    service: "contact-api",
+    uptimeSeconds: Math.round(process.uptime()),
+    timestamp: new Date().toISOString(),
   });
 });
 app.post("/api/contact", async (req, res) => {
@@ -552,6 +603,92 @@ if (userResult?.error) {
       error: "Server error",
       details: String(err?.message || err),
     });
+  }
+});
+
+app.post("/api/newsletter", async (req, res) => {
+  try {
+    const { email, lang = "en", website = "" } = req.body || {};
+
+    if (website) {
+      return res.status(200).json({ ok: true });
+    }
+
+    const cleanEmail = clampLen(String(email || "").trim(), 254).toLowerCase();
+    const L = normalizeLang(lang);
+
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      return res.status(400).json({ ok: false, error: "Invalid email" });
+    }
+
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: TO_EMAIL,
+      subject: `${newsletterSubject(L)}: ${cleanEmail}`,
+      replyTo: cleanEmail,
+      html: `
+        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111;">
+          <h2 style="margin:0 0 10px;">${escapeHtml(newsletterSubject(L))}</h2>
+          <p style="margin:0 0 8px;"><strong>Email:</strong> ${escapeHtml(cleanEmail)}</p>
+          <p style="margin:0;"><strong>Time:</strong> ${new Date().toISOString()}</p>
+        </div>
+      `,
+      text: `Newsletter subscription\n\nEmail: ${cleanEmail}\nTime: ${new Date().toISOString()}`,
+    });
+
+    if (result?.error) {
+      return res.status(500).json({ ok: false, error: "Resend error", details: result.error });
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
+  }
+});
+
+app.post("/api/feedback", async (req, res) => {
+  try {
+    const { rating, message = "", lang = "en", website = "" } = req.body || {};
+
+    if (website) {
+      return res.status(200).json({ ok: true });
+    }
+
+    const cleanRating = Number(rating);
+    const cleanMessage = clampLen(String(message || "").trim(), 2000);
+    const L = normalizeLang(lang);
+
+    if (!Number.isFinite(cleanRating) || cleanRating < 1 || cleanRating > 5) {
+      return res.status(400).json({ ok: false, error: "Invalid rating" });
+    }
+
+    if (!cleanMessage || cleanMessage.length < 3) {
+      return res.status(400).json({ ok: false, error: "Feedback message too short" });
+    }
+
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: TO_EMAIL,
+      subject: `${feedbackSubject(L)} (${cleanRating}/5)`,
+      html: `
+        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111;">
+          <h2 style="margin:0 0 10px;">${escapeHtml(feedbackSubject(L))}</h2>
+          <p style="margin:0 0 8px;"><strong>Rating:</strong> ${cleanRating}/5</p>
+          <p style="margin:0 0 8px;"><strong>Message:</strong></p>
+          <div style="padding:12px;border:1px solid #ddd;border-radius:10px;background:#f8f8f8;white-space:pre-wrap;">${escapeHtml(cleanMessage)}</div>
+          <p style="margin:10px 0 0;"><strong>Time:</strong> ${new Date().toISOString()}</p>
+        </div>
+      `,
+      text: `Portfolio feedback\n\nRating: ${cleanRating}/5\nMessage:\n${cleanMessage}\n\nTime: ${new Date().toISOString()}`,
+    });
+
+    if (result?.error) {
+      return res.status(500).json({ ok: false, error: "Resend error", details: result.error });
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
   }
 });
 

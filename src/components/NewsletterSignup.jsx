@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 
-export default function NewsletterSignup({ t }) {
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
+function safeJsonParse(text) {
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return null;
+  }
+}
+
+export default function NewsletterSignup({ t, lang = "en" }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
   const [message, setMessage] = useState("");
@@ -13,7 +23,7 @@ export default function NewsletterSignup({ t }) {
     setIsDark(darkModePreference);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setStatus("error");
@@ -22,18 +32,34 @@ export default function NewsletterSignup({ t }) {
     }
 
     setStatus("loading");
-    // Simulate API call
-    setTimeout(() => {
-      const subscribers = JSON.parse(localStorage.getItem("newsletter_subscribers") || "[]");
-      if (!subscribers.includes(email)) {
-        subscribers.push(email);
-        localStorage.setItem("newsletter_subscribers", JSON.stringify(subscribers));
+    try {
+      const response = await fetch(`${API_BASE}/api/newsletter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          lang,
+          website: "",
+        }),
+      });
+
+      const text = await response.text();
+      const data = safeJsonParse(text);
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.error || `Request failed (${response.status})`);
       }
+
       setStatus("success");
       setMessage(t?.newsletter?.success || "Thank you for subscribing!");
       setEmail("");
       setTimeout(() => setStatus("idle"), 3000);
-    }, 500);
+    } catch (error) {
+      setStatus("error");
+      setMessage(error?.message || "Server error");
+    }
   };
 
   const styles = {

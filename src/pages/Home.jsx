@@ -140,12 +140,12 @@ export default function Home({ t, lang = "en" }) {
 
       {/* Newsletter */}
       <section className="container" style={{ marginTop: "3rem" }}>
-        <NewsletterSignup t={t} />
+        <NewsletterSignup t={t} lang={lang} />
       </section>
 
       {/* Feedback Form */}
       <section className="container" style={{ marginTop: "3rem" }}>
-        <FeedbackForm t={t} />
+        <FeedbackForm t={t} lang={lang} />
       </section>
     </>
   );

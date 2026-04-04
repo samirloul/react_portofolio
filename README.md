@@ -81,3 +81,61 @@ I am passionate, adaptable, and always eager to learn new technologies.
 ---
 
 ✨ *Thank you for visiting my portfolio!*
+
+---
+
+## Render Deployment (Frontend + API)
+
+### 1) API service on Render
+- Root Directory: `server`
+- Build Command: `npm install`
+- Start Command: `npm run start`
+- Health Check Path: `/api/health`
+
+Set these environment variables in Render API service:
+- `RESEND_API_KEY`
+- `TO_EMAIL`
+- `FROM_EMAIL`
+- `CORS_ORIGIN` = jouw frontend URL (bijv. `https://jouw-portfolio.onrender.com`)
+- `RECAPTCHA_SECRET_KEY`
+
+### 2) Frontend service on Render
+- Build Command: `npm install && npm run build`
+- Publish Directory: `dist`
+
+Set these environment variables in Render frontend service:
+- `VITE_API_BASE_URL` = jouw API URL (bijv. `https://jouw-api.onrender.com`)
+- `VITE_RECAPTCHA_SITE_KEY`
+
+## How To Test That It Really Works
+
+### A. Health check
+Open in browser:
+- `https://jouw-api.onrender.com/api/health`
+
+Expected:
+- JSON with `ok: true`
+
+### B. Newsletter test
+1. Open live website.
+2. Vul nieuwsbrief email in en verstuur.
+3. Controleer of je een nieuwe mail ontvangt op `TO_EMAIL`.
+4. Als het faalt, check Render logs van API service.
+
+### C. Feedback test
+1. Open live website.
+2. Kies rating + schrijf tekst + verstuur.
+3. Controleer of je een nieuwe feedback mail ontvangt op `TO_EMAIL`.
+4. Als het faalt, check Render logs van API service.
+
+### D. Contact form test
+1. Vul contactformulier in + reCAPTCHA.
+2. Verwacht 2 mails:
+- 1 naar jou (admin mail)
+- 1 bevestiging naar bezoeker
+
+## Troubleshooting
+- `CORS` error: zet `CORS_ORIGIN` exact gelijk aan je frontend URL.
+- `Request failed (404)`: `VITE_API_BASE_URL` wijst naar verkeerde URL.
+- `Resend error`: controleer of je domein/from-email geverifieerd is in Resend.
+- `Captcha failed`: controleer site key + secret key en domeinbinding in Google reCAPTCHA.

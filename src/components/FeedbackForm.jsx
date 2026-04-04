@@ -1,8 +1,19 @@
 import { useState, useEffect } from "react";
 
-export default function FeedbackForm({ t }) {
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
+function safeJsonParse(text) {
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return null;
+  }
+}
+
+export default function FeedbackForm({ t, lang = "en" }) {
   const [feedback, setFeedback] = useState({ rating: 5, message: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -12,18 +23,47 @@ export default function FeedbackForm({ t }) {
     setIsDark(darkModePreference);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Store feedback (in real app: send to backend)
-    const allFeedback = JSON.parse(localStorage.getItem("portfolio_feedback") || "[]");
-    allFeedback.push({ ...feedback, timestamp: new Date().toISOString() });
-    localStorage.setItem("portfolio_feedback", JSON.stringify(allFeedback));
-    
-    setSubmitted(true);
-    setTimeout(() => {
+    if (!feedback.message.trim() || feedback.message.trim().length < 3) {
+      setStatus("error");
+      setErrorMsg("Feedback message too short");
+      return;
+    }
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const response = await fetch(`${API_BASE}/api/feedback`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rating: feedback.rating,
+          message: feedback.message.trim(),
+          lang,
+          website: "",
+        }),
+      });
+
+      const text = await response.text();
+      const data = safeJsonParse(text);
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.error || `Request failed (${response.status})`);
+      }
+
+      setStatus("success");
       setFeedback({ rating: 5, message: "" });
-      setSubmitted(false);
-    }, 2000);
+      setTimeout(() => {
+        setStatus("idle");
+      }, 2000);
+    } catch (error) {
+      setStatus("error");
+      setErrorMsg(error?.message || "Server error");
+    }
   };
 
   const ratings = [
@@ -118,7 +158,7 @@ export default function FeedbackForm({ t }) {
       <h3 style={styles.title}>{t?.feedback?.title || "Quick Feedback"}</h3>
       <p style={styles.subtitle}>{t?.feedback?.subtitle || "Help me improve"}</p>
 
-      {submitted ? (
+      {status === "success" ? (
         <div style={styles.successMsg}>
           ✓ {t?.feedback?.thanks || "Thank you for your feedback!"}
         </div>
@@ -152,13 +192,23 @@ export default function FeedbackForm({ t }) {
               placeholder={t?.feedback?.placeholder || "Tell me what you think..."}
               style={styles.textarea}
             />
+            {status === "error" && (
+              <p style={{ color: isDark ? "#f87171" : "#dc3545", marginTop: "0.5rem", marginBottom: 0 }}>
+                {errorMsg}
+              </p>
+            )}
           </div>
 
           <button
             type="submit"
-            style={styles.submitButton}
+            disabled={status === "loading"}
+            style={{
+              ...styles.submitButton,
+              opacity: status === "loading" ? 0.7 : 1,
+              cursor: status === "loading" ? "not-allowed" : "pointer",
+            }}
           >
-            {t?.feedback?.submit || "Submit Feedback"}
+            {status === "loading" ? "..." : t?.feedback?.submit || "Submit Feedback"}
           </button>
         </form>
       )}

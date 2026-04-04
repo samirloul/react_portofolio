@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: samir-portfolio-api
+    env: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: RESEND_API_KEY
+        sync: false
+      - key: TO_EMAIL
+        sync: false
+      - key: FROM_EMAIL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: RECAPTCHA_SECRET_KEY
+        sync: false
