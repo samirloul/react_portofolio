@@ -13,6 +13,7 @@ import Projects from "./pages/Projects.jsx";
 import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
+import Admin from "./pages/Admin.jsx";
 import BackToTop from "./components/BackToTop.jsx";
 import FloatingContactButton from "./components/FloatingContactButton.jsx";
 import DebugPanel from "./components/DebugPanel.jsx";
@@ -217,6 +218,7 @@ export default function App() {
           <Route path="/cv" element={<Cv t={t} lang={lang} />} />
           <Route path="/contact" element={<Contact t={t} lang={lang} />} />
           <Route path="/blog/:slug" element={<BlogPost t={t} lang={lang} />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
 

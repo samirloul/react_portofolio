@@ -98,6 +98,7 @@ Set these environment variables in Render API service:
 - `FROM_EMAIL`
 - `CORS_ORIGIN` = jouw frontend URL (bijv. `https://jouw-portfolio.onrender.com`)
 - `RECAPTCHA_SECRET_KEY`
+- `ADMIN_TOKEN` = lang geheim wachtwoord voor `/admin`
 
 ### 2) Frontend service on Render
 - Build Command: `npm install && npm run build`
@@ -127,6 +128,13 @@ Expected:
 2. Kies rating + schrijf tekst + verstuur.
 3. Controleer of je een nieuwe feedback mail ontvangt op `TO_EMAIL`.
 4. Als het faalt, check Render logs van API service.
+
+### C2. Admin dashboard + broadcast test
+1. Open je website op `/admin`.
+2. Login met dezelfde waarde als `ADMIN_TOKEN` in je backend env.
+3. Controleer of je subscribers en feedback ziet.
+4. Vul onderwerp + bericht in en klik `Preview Recipients`.
+5. Klik `Send To All Subscribers` om update-mail naar iedereen te sturen.
 
 ### D. Contact form test
 1. Vul contactformulier in + reCAPTCHA.

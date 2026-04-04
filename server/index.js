@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import { Resend } from "resend";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 dotenv.config();
 
@@ -185,6 +188,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * Config
  * ========================= */
 const PORT = process.env.PORT || 8080;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DATA_DIR = path.join(__dirname, "data");
+const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
+const FEEDBACK_FILE = path.join(DATA_DIR, "feedback.json");
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 
 const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
 const FROM_EMAIL =
@@ -203,6 +212,7 @@ console.log("- TO_EMAIL:", TO_EMAIL);
 console.log("- FROM_EMAIL:", FROM_EMAIL);
 console.log("- CORS_ORIGIN(raw):", RAW_ALLOWED_ORIGINS);
 console.log("- CORS_ORIGIN(parsed):", ALLOWED_ORIGINS);
+console.log("- ADMIN_TOKEN set?", !!ADMIN_TOKEN);
 
 /** =========================
  * Middleware
@@ -293,6 +303,20 @@ app.use(
   })
 );
 
+app.use(
+  "/api/admin",
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      ok: false,
+      error: "Too many requests. Please try again in a minute.",
+    },
+  })
+);
+
 /** =========================
  * Helpers
  * ========================= */
@@ -319,6 +343,90 @@ function normalizeLang(lang) {
   if (l === "ar") return "ar";
   if (l === "nl") return "nl";
   return "en";
+}
+
+async function ensureDataFiles() {
+  await mkdir(DATA_DIR, { recursive: true });
+
+  const filesToInit = [
+    { filePath: SUBSCRIBERS_FILE, initial: [] },
+    { filePath: FEEDBACK_FILE, initial: [] },
+  ];
+
+  for (const file of filesToInit) {
+    try {
+      await readFile(file.filePath, "utf8");
+    } catch {
+      await writeFile(file.filePath, JSON.stringify(file.initial, null, 2), "utf8");
+    }
+  }
+}
+
+async function readJsonArray(filePath) {
+  try {
+    const raw = await readFile(filePath, "utf8");
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+async function writeJsonArray(filePath, data) {
+  await mkdir(DATA_DIR, { recursive: true });
+  await writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
+}
+
+async function addSubscriber(email, lang) {
+  const current = await readJsonArray(SUBSCRIBERS_FILE);
+  const existing = current.find((item) => item.email === email);
+
+  if (existing) {
+    existing.lang = lang;
+    existing.updatedAt = new Date().toISOString();
+  } else {
+    current.push({
+      email,
+      lang,
+      subscribedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  await writeJsonArray(SUBSCRIBERS_FILE, current);
+  return current;
+}
+
+async function addFeedback({ rating, message, lang }) {
+  const current = await readJsonArray(FEEDBACK_FILE);
+  current.push({
+    rating,
+    message,
+    lang,
+    createdAt: new Date().toISOString(),
+  });
+  await writeJsonArray(FEEDBACK_FILE, current);
+  return current;
+}
+
+function getAdminToken(req) {
+  const bearer = req.headers.authorization || "";
+  const bearerToken = bearer.startsWith("Bearer ") ? bearer.slice(7).trim() : "";
+  const headerToken = String(req.headers["x-admin-token"] || "").trim();
+  return headerToken || bearerToken;
+}
+
+function requireAdmin(req, res, next) {
+  if (!ADMIN_TOKEN) {
+    return res.status(500).json({ ok: false, error: "Missing ADMIN_TOKEN on server" });
+  }
+
+  const token = getAdminToken(req);
+  if (!token || token !== ADMIN_TOKEN) {
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
+  }
+
+  return next();
 }
 
 async function verifyRecaptcha(token, remoteip) {
@@ -491,6 +599,18 @@ function feedbackSubject(lang) {
   if (L === "ar") return "ملاحظات جديدة على الملف الشخصي";
   return "New portfolio feedback";
 }
+
+function broadcastHtml({ subject, message }) {
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.65;color:#111827;max-width:680px;margin:0 auto;">
+      <div style="padding:20px 0;">
+        <h1 style="margin:0 0 12px;font-size:24px;">${escapeHtml(subject)}</h1>
+        <div style="padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;white-space:pre-wrap;">${escapeHtml(message)}</div>
+      </div>
+      <p style="color:#6b7280;font-size:13px;">You are receiving this email because you subscribed on samirprofile.com.</p>
+    </div>
+  `;
+}
 /** =========================
  * Routes
  * ========================= */
@@ -655,6 +775,8 @@ app.post("/api/newsletter", async (req, res) => {
       return res.status(400).json({ ok: false, error: "Invalid email" });
     }
 
+    const subscribers = await addSubscriber(cleanEmail, L);
+
     const result = await resend.emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
@@ -674,7 +796,7 @@ app.post("/api/newsletter", async (req, res) => {
       return res.status(500).json({ ok: false, error: "Resend error", details: result.error });
     }
 
-    return res.json({ ok: true });
+    return res.json({ ok: true, totalSubscribers: subscribers.length });
   } catch (err) {
     return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
   }
@@ -700,6 +822,12 @@ app.post("/api/feedback", async (req, res) => {
       return res.status(400).json({ ok: false, error: "Feedback message too short" });
     }
 
+    const feedbackItems = await addFeedback({
+      rating: cleanRating,
+      message: cleanMessage,
+      lang: L,
+    });
+
     const result = await resend.emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
@@ -720,7 +848,88 @@ app.post("/api/feedback", async (req, res) => {
       return res.status(500).json({ ok: false, error: "Resend error", details: result.error });
     }
 
-    return res.json({ ok: true });
+    return res.json({ ok: true, totalFeedback: feedbackItems.length });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
+  }
+});
+
+app.get("/api/admin/overview", requireAdmin, async (req, res) => {
+  const subscribers = await readJsonArray(SUBSCRIBERS_FILE);
+  const feedback = await readJsonArray(FEEDBACK_FILE);
+
+  return res.json({
+    ok: true,
+    counts: {
+      subscribers: subscribers.length,
+      feedback: feedback.length,
+    },
+    recentSubscribers: [...subscribers].reverse().slice(0, 20),
+    recentFeedback: [...feedback].reverse().slice(0, 20),
+  });
+});
+
+app.get("/api/admin/subscribers", requireAdmin, async (req, res) => {
+  const subscribers = await readJsonArray(SUBSCRIBERS_FILE);
+  return res.json({ ok: true, items: [...subscribers].reverse() });
+});
+
+app.get("/api/admin/feedback", requireAdmin, async (req, res) => {
+  const feedback = await readJsonArray(FEEDBACK_FILE);
+  return res.json({ ok: true, items: [...feedback].reverse() });
+});
+
+app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
+  try {
+    const { subject = "", message = "", previewOnly = false } = req.body || {};
+    const cleanSubject = clampLen(String(subject || "").trim(), 120);
+    const cleanMessage = clampLen(String(message || "").trim(), 5000);
+
+    if (!cleanSubject) {
+      return res.status(400).json({ ok: false, error: "Missing subject" });
+    }
+
+    if (!cleanMessage || cleanMessage.length < 3) {
+      return res.status(400).json({ ok: false, error: "Message too short" });
+    }
+
+    const subscribers = await readJsonArray(SUBSCRIBERS_FILE);
+    const emails = [...new Set(subscribers.map((item) => String(item.email || "").trim().toLowerCase()).filter(Boolean))];
+
+    if (!emails.length) {
+      return res.status(400).json({ ok: false, error: "No subscribers found" });
+    }
+
+    if (previewOnly) {
+      return res.json({ ok: true, preview: true, totalRecipients: emails.length });
+    }
+
+    let sent = 0;
+    const failures = [];
+
+    for (const email of emails) {
+      const result = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: email,
+        subject: cleanSubject,
+        html: broadcastHtml({ subject: cleanSubject, message: cleanMessage }),
+        text: cleanMessage,
+      });
+
+      if (result?.error) {
+        failures.push({ email, error: result.error });
+      } else {
+        sent += 1;
+      }
+    }
+
+    return res.json({
+      ok: true,
+      totalRecipients: emails.length,
+      sent,
+      failed: failures.length,
+      failures,
+    });
   } catch (err) {
     return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
   }
@@ -731,4 +940,8 @@ app.post("/api/feedback", async (req, res) => {
  * ========================= */
 app.listen(PORT, "0.0.0.0", () => {
   console.log("API running on", PORT);
+});
+
+ensureDataFiles().catch((err) => {
+  console.error("Failed to initialize data files:", err);
 });

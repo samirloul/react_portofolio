@@ -19,6 +19,7 @@ dist
 # server env
 server/.env
 server/.env.*
+server/data/
 
 
 # Editor directories and files
