@@ -99,6 +99,9 @@ Set these environment variables in Render API service:
 - `CORS_ORIGIN` = jouw frontend URL (bijv. `https://jouw-portfolio.onrender.com`)
 - `RECAPTCHA_SECRET_KEY`
 - `ADMIN_TOKEN` = lang geheim wachtwoord voor `/admin`
+- `APP_BASE_URL` = jouw frontend domein (bijv. `https://samirprofile.com`)
+- `DATABASE_URL` = Postgres connection string (optioneel, maar aanbevolen)
+- `PG_SSL` = `true` op Render
 
 ### 2) Frontend service on Render
 - Build Command: `npm install && npm run build`
@@ -135,6 +138,16 @@ Expected:
 3. Controleer of je subscribers en feedback ziet.
 4. Vul onderwerp + bericht in en klik `Preview Recipients`.
 5. Klik `Send To All Subscribers` om update-mail naar iedereen te sturen.
+6. Gebruik `Export Subscribers CSV` en `Export Feedback CSV` voor export.
+
+## Professional Upgrades Included
+
+- Security headers via `helmet`.
+- Admin API met token-auth, search en paginatie.
+- CSV export voor subscribers en feedback.
+- Unsubscribe-link in broadcast emails (`/api/newsletter/unsubscribe`).
+- Optionele PostgreSQL mode via `DATABASE_URL` (fallback naar JSON files als `DATABASE_URL` leeg is).
+- GitHub Actions CI workflow voor frontend build + backend syntax check.
 
 ### D. Contact form test
 1. Vul contactformulier in + reCAPTCHA.

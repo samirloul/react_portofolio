@@ -3,9 +3,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import { Resend } from "resend";
+import helmet from "helmet";
+import crypto from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import pg from "pg";
 
 dotenv.config();
 
@@ -194,6 +197,11 @@ const DATA_DIR = path.join(__dirname, "data");
 const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
 const FEEDBACK_FILE = path.join(DATA_DIR, "feedback.json");
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const DATABASE_URL = process.env.DATABASE_URL || "";
+const APP_BASE_URL = (process.env.APP_BASE_URL || "https://samirprofile.com").replace(/\/+$/, "");
+const PG_SSL = String(process.env.PG_SSL || "true").toLowerCase() !== "false";
+
+let db = null;
 
 const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
 const FROM_EMAIL =
@@ -213,10 +221,16 @@ console.log("- FROM_EMAIL:", FROM_EMAIL);
 console.log("- CORS_ORIGIN(raw):", RAW_ALLOWED_ORIGINS);
 console.log("- CORS_ORIGIN(parsed):", ALLOWED_ORIGINS);
 console.log("- ADMIN_TOKEN set?", !!ADMIN_TOKEN);
+console.log("- DATABASE_URL set?", !!DATABASE_URL);
+console.log("- APP_BASE_URL:", APP_BASE_URL);
 
 /** =========================
  * Middleware
  * ========================= */
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
+
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -362,6 +376,39 @@ async function ensureDataFiles() {
   }
 }
 
+async function initDatabase() {
+  if (!DATABASE_URL) return false;
+
+  const { Pool } = pg;
+  db = new Pool({
+    connectionString: DATABASE_URL,
+    ssl: PG_SSL ? { rejectUnauthorized: false } : false,
+  });
+
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS subscribers (
+      id BIGSERIAL PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      lang VARCHAR(8) NOT NULL DEFAULT 'en',
+      unsubscribe_token TEXT NOT NULL UNIQUE,
+      subscribed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS feedback_items (
+      id BIGSERIAL PRIMARY KEY,
+      rating SMALLINT NOT NULL,
+      message TEXT NOT NULL,
+      lang VARCHAR(8) NOT NULL DEFAULT 'en',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  return true;
+}
+
 async function readJsonArray(filePath) {
   try {
     const raw = await readFile(filePath, "utf8");
@@ -377,7 +424,37 @@ async function writeJsonArray(filePath, data) {
   await writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
 }
 
+function generateUnsubscribeToken() {
+  return crypto.randomBytes(24).toString("hex");
+}
+
+function toSafeInt(value, fallback = 1) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.trunc(n);
+}
+
+function normalizeSearch(search) {
+  return clampLen(String(search || "").trim(), 120);
+}
+
 async function addSubscriber(email, lang) {
+  if (db) {
+    const token = generateUnsubscribeToken();
+    await db.query(
+      `
+        INSERT INTO subscribers (email, lang, unsubscribe_token, subscribed_at, updated_at)
+        VALUES ($1, $2, $3, NOW(), NOW())
+        ON CONFLICT (email)
+        DO UPDATE SET lang = EXCLUDED.lang, updated_at = NOW()
+      `,
+      [email, lang, token]
+    );
+
+    const count = await db.query("SELECT COUNT(*)::int AS total FROM subscribers");
+    return { total: count.rows?.[0]?.total || 0 };
+  }
+
   const current = await readJsonArray(SUBSCRIBERS_FILE);
   const existing = current.find((item) => item.email === email);
 
@@ -385,19 +462,34 @@ async function addSubscriber(email, lang) {
     existing.lang = lang;
     existing.updatedAt = new Date().toISOString();
   } else {
+    const unsubscribeToken = generateUnsubscribeToken();
     current.push({
       email,
       lang,
+      unsubscribeToken,
       subscribedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
   }
 
   await writeJsonArray(SUBSCRIBERS_FILE, current);
-  return current;
+  return { total: current.length };
 }
 
 async function addFeedback({ rating, message, lang }) {
+  if (db) {
+    await db.query(
+      `
+        INSERT INTO feedback_items (rating, message, lang, created_at)
+        VALUES ($1, $2, $3, NOW())
+      `,
+      [rating, message, lang]
+    );
+
+    const count = await db.query("SELECT COUNT(*)::int AS total FROM feedback_items");
+    return { total: count.rows?.[0]?.total || 0 };
+  }
+
   const current = await readJsonArray(FEEDBACK_FILE);
   current.push({
     rating,
@@ -406,7 +498,165 @@ async function addFeedback({ rating, message, lang }) {
     createdAt: new Date().toISOString(),
   });
   await writeJsonArray(FEEDBACK_FILE, current);
-  return current;
+  return { total: current.length };
+}
+
+async function getSubscribers({ page = 1, pageSize = 20, search = "" } = {}) {
+  const safePageSize = Math.min(Math.max(toSafeInt(pageSize, 20), 1), 100);
+  const safePage = Math.max(toSafeInt(page, 1), 1);
+  const safeSearch = normalizeSearch(search);
+  const offset = (safePage - 1) * safePageSize;
+
+  if (db) {
+    const where = safeSearch ? "WHERE email ILIKE $1" : "";
+    const params = safeSearch ? [`%${safeSearch}%`] : [];
+
+    const countQ = await db.query(
+      `SELECT COUNT(*)::int AS total FROM subscribers ${where}`,
+      params
+    );
+
+    const listQ = await db.query(
+      `
+        SELECT email, lang, subscribed_at AS "subscribedAt", updated_at AS "updatedAt"
+        FROM subscribers
+        ${where}
+        ORDER BY subscribed_at DESC
+        LIMIT $${params.length + 1} OFFSET $${params.length + 2}
+      `,
+      [...params, safePageSize, offset]
+    );
+
+    return {
+      items: listQ.rows,
+      total: countQ.rows?.[0]?.total || 0,
+      page: safePage,
+      pageSize: safePageSize,
+      search: safeSearch,
+    };
+  }
+
+  const all = await readJsonArray(SUBSCRIBERS_FILE);
+  const filtered = safeSearch
+    ? all.filter((item) => String(item.email || "").toLowerCase().includes(safeSearch.toLowerCase()))
+    : all;
+
+  const sorted = [...filtered].reverse();
+  const items = sorted.slice(offset, offset + safePageSize).map((item) => ({
+    email: item.email,
+    lang: item.lang,
+    subscribedAt: item.subscribedAt || item.updatedAt,
+    updatedAt: item.updatedAt,
+  }));
+
+  return {
+    items,
+    total: filtered.length,
+    page: safePage,
+    pageSize: safePageSize,
+    search: safeSearch,
+  };
+}
+
+async function getFeedback({ page = 1, pageSize = 20, search = "" } = {}) {
+  const safePageSize = Math.min(Math.max(toSafeInt(pageSize, 20), 1), 100);
+  const safePage = Math.max(toSafeInt(page, 1), 1);
+  const safeSearch = normalizeSearch(search);
+  const offset = (safePage - 1) * safePageSize;
+
+  if (db) {
+    const where = safeSearch ? "WHERE message ILIKE $1" : "";
+    const params = safeSearch ? [`%${safeSearch}%`] : [];
+
+    const countQ = await db.query(
+      `SELECT COUNT(*)::int AS total FROM feedback_items ${where}`,
+      params
+    );
+
+    const listQ = await db.query(
+      `
+        SELECT rating, message, lang, created_at AS "createdAt"
+        FROM feedback_items
+        ${where}
+        ORDER BY created_at DESC
+        LIMIT $${params.length + 1} OFFSET $${params.length + 2}
+      `,
+      [...params, safePageSize, offset]
+    );
+
+    return {
+      items: listQ.rows,
+      total: countQ.rows?.[0]?.total || 0,
+      page: safePage,
+      pageSize: safePageSize,
+      search: safeSearch,
+    };
+  }
+
+  const all = await readJsonArray(FEEDBACK_FILE);
+  const filtered = safeSearch
+    ? all.filter((item) => String(item.message || "").toLowerCase().includes(safeSearch.toLowerCase()))
+    : all;
+  const sorted = [...filtered].reverse();
+  const items = sorted.slice(offset, offset + safePageSize);
+
+  return {
+    items,
+    total: filtered.length,
+    page: safePage,
+    pageSize: safePageSize,
+    search: safeSearch,
+  };
+}
+
+async function getSubscriberCount() {
+  if (db) {
+    const result = await db.query("SELECT COUNT(*)::int AS total FROM subscribers");
+    return result.rows?.[0]?.total || 0;
+  }
+  const all = await readJsonArray(SUBSCRIBERS_FILE);
+  return all.length;
+}
+
+async function unsubscribeByToken(token) {
+  const cleanToken = clampLen(String(token || "").trim(), 120);
+  if (!cleanToken) return false;
+
+  if (db) {
+    const result = await db.query(
+      "DELETE FROM subscribers WHERE unsubscribe_token = $1 RETURNING id",
+      [cleanToken]
+    );
+    return (result.rowCount || 0) > 0;
+  }
+
+  const all = await readJsonArray(SUBSCRIBERS_FILE);
+  const before = all.length;
+  const next = all.filter((item) => String(item.unsubscribeToken || "") !== cleanToken);
+  if (next.length === before) return false;
+  await writeJsonArray(SUBSCRIBERS_FILE, next);
+  return true;
+}
+
+async function getAllSubscriberEmailsWithTokens() {
+  if (db) {
+    const result = await db.query(
+      `
+        SELECT email, unsubscribe_token AS "unsubscribeToken"
+        FROM subscribers
+        ORDER BY subscribed_at DESC
+      `
+    );
+    return result.rows || [];
+  }
+
+  const all = await readJsonArray(SUBSCRIBERS_FILE);
+  return all
+    .map((item) => ({
+      email: String(item.email || "").trim().toLowerCase(),
+      unsubscribeToken: item.unsubscribeToken || "",
+    }))
+    .filter((item) => item.email);
 }
 
 function getAdminToken(req) {
@@ -600,7 +850,8 @@ function feedbackSubject(lang) {
   return "New portfolio feedback";
 }
 
-function broadcastHtml({ subject, message }) {
+function broadcastHtml({ subject, message, unsubscribeToken = "" }) {
+  const unsubscribeUrl = `${APP_BASE_URL}/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
   return `
     <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.65;color:#111827;max-width:680px;margin:0 auto;">
       <div style="padding:20px 0;">
@@ -608,6 +859,7 @@ function broadcastHtml({ subject, message }) {
         <div style="padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;white-space:pre-wrap;">${escapeHtml(message)}</div>
       </div>
       <p style="color:#6b7280;font-size:13px;">You are receiving this email because you subscribed on samirprofile.com.</p>
+      <p style="color:#6b7280;font-size:13px;">No longer interested? <a href="${unsubscribeUrl}">Unsubscribe here</a>.</p>
     </div>
   `;
 }
@@ -796,10 +1048,21 @@ app.post("/api/newsletter", async (req, res) => {
       return res.status(500).json({ ok: false, error: "Resend error", details: result.error });
     }
 
-    return res.json({ ok: true, totalSubscribers: subscribers.length });
+    return res.json({ ok: true, totalSubscribers: subscribers.total });
   } catch (err) {
     return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
   }
+});
+
+app.get("/api/newsletter/unsubscribe", async (req, res) => {
+  const token = String(req.query.token || "").trim();
+  const removed = await unsubscribeByToken(token);
+
+  if (!removed) {
+    return res.status(404).send("This unsubscribe link is invalid or already used.");
+  }
+
+  return res.send("You have been unsubscribed successfully.");
 });
 
 app.post("/api/feedback", async (req, res) => {
@@ -848,35 +1111,75 @@ app.post("/api/feedback", async (req, res) => {
       return res.status(500).json({ ok: false, error: "Resend error", details: result.error });
     }
 
-    return res.json({ ok: true, totalFeedback: feedbackItems.length });
+    return res.json({ ok: true, totalFeedback: feedbackItems.total });
   } catch (err) {
     return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
   }
 });
 
 app.get("/api/admin/overview", requireAdmin, async (req, res) => {
-  const subscribers = await readJsonArray(SUBSCRIBERS_FILE);
-  const feedback = await readJsonArray(FEEDBACK_FILE);
+  const subscribersData = await getSubscribers({ page: 1, pageSize: 20, search: "" });
+  const feedbackData = await getFeedback({ page: 1, pageSize: 20, search: "" });
 
   return res.json({
     ok: true,
     counts: {
-      subscribers: subscribers.length,
-      feedback: feedback.length,
+      subscribers: subscribersData.total,
+      feedback: feedbackData.total,
     },
-    recentSubscribers: [...subscribers].reverse().slice(0, 20),
-    recentFeedback: [...feedback].reverse().slice(0, 20),
+    recentSubscribers: subscribersData.items,
+    recentFeedback: feedbackData.items,
   });
 });
 
 app.get("/api/admin/subscribers", requireAdmin, async (req, res) => {
-  const subscribers = await readJsonArray(SUBSCRIBERS_FILE);
-  return res.json({ ok: true, items: [...subscribers].reverse() });
+  const page = req.query.page;
+  const pageSize = req.query.pageSize;
+  const search = req.query.search;
+  const data = await getSubscribers({ page, pageSize, search });
+  return res.json({ ok: true, ...data });
 });
 
 app.get("/api/admin/feedback", requireAdmin, async (req, res) => {
-  const feedback = await readJsonArray(FEEDBACK_FILE);
-  return res.json({ ok: true, items: [...feedback].reverse() });
+  const page = req.query.page;
+  const pageSize = req.query.pageSize;
+  const search = req.query.search;
+  const data = await getFeedback({ page, pageSize, search });
+  return res.json({ ok: true, ...data });
+});
+
+app.get("/api/admin/export/subscribers.csv", requireAdmin, async (req, res) => {
+  const data = await getSubscribers({ page: 1, pageSize: 10000, search: "" });
+  const lines = ["email,lang,subscribedAt,updatedAt"];
+
+  for (const item of data.items) {
+    lines.push(
+      [item.email, item.lang, item.subscribedAt || "", item.updatedAt || ""]
+        .map((value) => `"${String(value || "").replaceAll('"', '""')}"`)
+        .join(",")
+    );
+  }
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", "attachment; filename=subscribers.csv");
+  return res.send(lines.join("\n"));
+});
+
+app.get("/api/admin/export/feedback.csv", requireAdmin, async (req, res) => {
+  const data = await getFeedback({ page: 1, pageSize: 10000, search: "" });
+  const lines = ["rating,lang,message,createdAt"];
+
+  for (const item of data.items) {
+    lines.push(
+      [item.rating, item.lang, item.message, item.createdAt || ""]
+        .map((value) => `"${String(value || "").replaceAll('"', '""')}"`)
+        .join(",")
+    );
+  }
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", "attachment; filename=feedback.csv");
+  return res.send(lines.join("\n"));
 });
 
 app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
@@ -893,31 +1196,40 @@ app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
       return res.status(400).json({ ok: false, error: "Message too short" });
     }
 
-    const subscribers = await readJsonArray(SUBSCRIBERS_FILE);
-    const emails = [...new Set(subscribers.map((item) => String(item.email || "").trim().toLowerCase()).filter(Boolean))];
+    const subscribers = await getAllSubscriberEmailsWithTokens();
+    const recipients = subscribers
+      .map((item) => ({
+        email: String(item.email || "").trim().toLowerCase(),
+        unsubscribeToken: String(item.unsubscribeToken || ""),
+      }))
+      .filter((item) => item.email);
 
-    if (!emails.length) {
+    if (!recipients.length) {
       return res.status(400).json({ ok: false, error: "No subscribers found" });
     }
 
     if (previewOnly) {
-      return res.json({ ok: true, preview: true, totalRecipients: emails.length });
+      return res.json({ ok: true, preview: true, totalRecipients: recipients.length });
     }
 
     let sent = 0;
     const failures = [];
 
-    for (const email of emails) {
+    for (const recipient of recipients) {
       const result = await resend.emails.send({
         from: FROM_EMAIL,
-        to: email,
+        to: recipient.email,
         subject: cleanSubject,
-        html: broadcastHtml({ subject: cleanSubject, message: cleanMessage }),
+        html: broadcastHtml({
+          subject: cleanSubject,
+          message: cleanMessage,
+          unsubscribeToken: recipient.unsubscribeToken,
+        }),
         text: cleanMessage,
       });
 
       if (result?.error) {
-        failures.push({ email, error: result.error });
+        failures.push({ email: recipient.email, error: result.error });
       } else {
         sent += 1;
       }
@@ -925,7 +1237,7 @@ app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      totalRecipients: emails.length,
+      totalRecipients: recipients.length,
       sent,
       failed: failures.length,
       failures,
@@ -938,10 +1250,24 @@ app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
 /** =========================
  * Start
  * ========================= */
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("API running on", PORT);
-});
+async function startServer() {
+  try {
+    await ensureDataFiles();
 
-ensureDataFiles().catch((err) => {
-  console.error("Failed to initialize data files:", err);
-});
+    if (DATABASE_URL) {
+      await initDatabase();
+      console.log("Database mode: PostgreSQL");
+    } else {
+      console.log("Database mode: JSON file fallback");
+    }
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log("API running on", PORT);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
