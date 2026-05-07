@@ -104,19 +104,7 @@ export const translations = {
             },
           ],
         },
-        {
-          title: "AlHaqq Portal (Quran & Tools)",
-          icon: "fas fa-mosque",
-          text: "A platform with Quran content, prayer times, Qibla direction, and Ahadith in multiple languages — built to be clear, accessible, and useful for different users.",
-          tags: ["PHP", "MySQL", "Laravel", "API"],
-          links: [
-            {
-              label: "Open Portal",
-              href: "https://alhaqqportal.com/index.php",
-              icon: "fas fa-arrow-up-right-from-square",
-            },
-          ],
-        },
+
         {
           title: "Future Project",
           icon: "fas fa-hourglass",
@@ -449,13 +437,7 @@ export const translations = {
           tags: ["PHP", "MySQL", "HTML/CSS"],
           links: [{ label: "زيارة موقع سوريا", href: "https://syriawebsite.com", icon: "fas fa-arrow-up-right-from-square" }],
         },
-        {
-          title: "بوابة الحق (القرآن وأدوات)",
-          icon: "fas fa-mosque",
-          text: "منصة تحتوي على محتوى القرآن، أوقات الصلاة، اتجاه القبلة، والأحاديث بلغات متعددة - بنيت لتكون واضحة وسهلة الوصول ومفيدة لمختلف المستخدمين.",
-          tags: ["PHP", "MySQL", "Laravel", "API"],
-          links: [{ label: "فتح البوابة", href: "https://alhaqqportal.com/index.php", icon: "fas fa-arrow-up-right-from-square" }],
-        },
+
         { title: "مشروع مستقبلي", icon: "fas fa-hourglass", text: "مع استمراري في دراسة تطوير البرمجيات، سيتم إضافة المزيد من المشاريع المبتكرة إلى هذا البورتفوليو.", tags: ["قيد التخطيط"], links: [{ label: "قريباً", href: "#", icon: "fas fa-clock" }] },
       ],
       collaborationTitle: "مهتم بالتعاون؟",
@@ -736,13 +718,7 @@ export const translations = {
           tags: ["PHP", "MySQL", "HTML/CSS"],
           links: [{ label: "Bezoek Syrië Website", href: "https://syriawebsite.com", icon: "fas fa-arrow-up-right-from-square" }],
         },
-        {
-          title: "AlHaqq Portal (Koran & Tools)",
-          icon: "fas fa-mosque",
-          text: "Een platform met Koran-inhoud, gebedstijden, Qibla-richting en Ahadith in meerdere talen — gebouwd om duidelijk, toegankelijk en nuttig te zijn voor verschillende gebruikers.",
-          tags: ["PHP", "MySQL", "Laravel", "API"],
-          links: [{ label: "Open Portaal", href: "https://alhaqqportal.com/index.php", icon: "fas fa-arrow-up-right-from-square" }],
-        },
+
         { title: "Toekomstig Project", icon: "fas fa-hourglass", text: "Terwijl ik mijn studie Software Development voortzet, zullen er meer innovatieve projecten aan dit portfolio worden toegevoegd.", tags: ["TBD", "Planning"], links: [{ label: "Binnenkort", href: "#", icon: "fas fa-clock" }] },
       ],
       collaborationTitle: "Interesse in Samenwerking?",
