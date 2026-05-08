@@ -91,17 +91,17 @@ function noReplyFooterCopy(lang) {
   const L = normalizeLang(lang);
   if (L === "nl") return {
     noReply: "Dit is een automatisch verzonden e-mail. <strong>Reageer niet op dit bericht</strong> — dit e-mailadres ontvangt geen berichten.",
-    contact: 'Wil je contact opnemen? Ga naar <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a> en stuur je bericht via het contactformulier.',
+    contact: 'Wil je contact opnemen? Ga naar <a href="https://samirprofile.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofile.com/contact</a> en stuur je bericht via het contactformulier.',
     footer: "Met vriendelijke groet",
   };
   if (L === "ar") return {
     noReply: "هذا بريد إلكتروني تلقائي. <strong>لا تردّ على هذه الرسالة</strong> — هذا العنوان لا يستقبل الردود.",
-    contact: 'هل تريد التواصل؟ زر <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a> وأرسل رسالتك عبر نموذج الاتصال.',
+    contact: 'هل تريد التواصل؟ زر <a href="https://samirprofile.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofile.com/contact</a> وأرسل رسالتك عبر نموذج الاتصال.',
     footer: "مع التحية",
   };
   return {
     noReply: "This is an automated email. <strong>Do not reply to this message</strong> — this address does not receive replies.",
-    contact: 'Want to get in touch? Visit <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a> and send your message via the contact form.',
+    contact: 'Want to get in touch? Visit <a href="https://samirprofile.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofile.com/contact</a> and send your message via the contact form.',
     footer: "Best regards",
   };
 }
@@ -195,7 +195,7 @@ function emailLayout({
           <td class="email-footer" style="padding:20px 28px 24px;border-top:1px solid #f1f5f9;background:#fcfcfd;color:#6b7280;font-size:13px;line-height:1.7;">
             ${escapeHtml(nrCopy.footer)},<br>
             <strong style="color:#111827;font-size:14px;">Samir Loul</strong><br>
-            <a href="https://samirprofiel.com" style="color:#4f46e5;text-decoration:none;">samirprofiel.com</a>
+            <a href="https://samirprofile.com" style="color:#4f46e5;text-decoration:none;">samirprofile.com</a>
           </td>
         </tr>
 
@@ -931,8 +931,17 @@ function broadcastHtml({ subject, message, unsubscribeToken = "" }) {
         <!-- BODY -->
         <tr>
           <td class="bc-body" style="padding:28px 28px;">
+            <p style="margin:0 0 14px;color:#4b5563;font-size:15px;line-height:1.75;">
+              Hi there, thanks for subscribing to updates from Samir Loul. Here is a new update from my portfolio:
+            </p>
             <div style="padding:20px;border-radius:14px;background:#f8fafc;border:1px solid #e5e7eb;font-size:15px;line-height:1.9;color:#374151;">
               ${messageHtml}
+            </div>
+
+            <div style="margin-top:14px;padding:14px 16px;border-radius:12px;background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;font-size:14px;line-height:1.7;">
+              Want to collaborate, ask a question, or start a project together? Visit
+              <a href="https://samirprofile.com/contact" style="color:#312e81;text-decoration:none;font-weight:700;"> samirprofile.com/contact</a>
+              and send me a message.
             </div>
 
             <div style="margin-top:24px;padding:18px 20px;border-radius:16px;background:#f8fafc;border:1px solid #e5e7eb;">
@@ -947,7 +956,7 @@ function broadcastHtml({ subject, message, unsubscribeToken = "" }) {
           <td style="padding:0 28px 4px;">
             <div style="padding:14px 16px;background:#fef9ec;border:1px solid #fde68a;border-radius:12px;font-size:13px;color:#92400e;line-height:1.6;">
               ⚠️ Dit is een automatisch verzonden e-mail. <strong>Reageer niet op dit bericht</strong> — dit adres ontvangt geen berichten.<br>
-              <span style="margin-top:4px;display:inline-block;">Wil je iets vragen of melden? Ga naar <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a>.</span>
+              <span style="margin-top:4px;display:inline-block;">Wil je iets vragen of melden? Ga naar <a href="https://samirprofile.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofile.com/contact</a>.</span>
             </div>
           </td>
         </tr>
@@ -955,9 +964,9 @@ function broadcastHtml({ subject, message, unsubscribeToken = "" }) {
         <!-- FOOTER -->
         <tr>
           <td class="bc-footer" style="padding:20px 28px 24px;border-top:1px solid #f1f5f9;background:#fcfcfd;color:#6b7280;font-size:13px;line-height:1.7;">
-            Je ontvangt deze e-mail omdat je je hebt ingeschreven op <a href="https://samirprofiel.com" style="color:#4f46e5;text-decoration:none;">samirprofiel.com</a>.<br>
+            Je ontvangt deze e-mail omdat je je hebt ingeschreven op <a href="https://samirprofile.com" style="color:#4f46e5;text-decoration:none;">samirprofile.com</a>.<br>
             Niet meer geïnteresseerd? <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">Uitschrijven</a> · 
-            <a href="https://samirprofiel.com" style="color:#4f46e5;text-decoration:none;">Bezoek de website</a>
+            <a href="https://samirprofile.com" style="color:#4f46e5;text-decoration:none;">Bezoek de website</a>
           </td>
         </tr>
 
@@ -1159,7 +1168,7 @@ app.post("/api/newsletter", async (req, res) => {
         <p style="margin:0;font-size:13px;color:#6b7280;">Totaal abonnees: <strong>${subscribers.total}</strong></p>
       </td></tr>
       <tr><td style="padding:16px 24px 20px;border-top:1px solid #f1f5f9;background:#fcfcfd;font-size:13px;color:#9ca3af;">
-        Beheer je abonnees via je <a href="https://samirprofiel.com/admin" style="color:#4f46e5;text-decoration:none;">admin dashboard</a>.
+        Beheer je abonnees via je <a href="https://samirprofile.com/admin" style="color:#4f46e5;text-decoration:none;">admin dashboard</a>.
       </td></tr>
     </table>
   </td></tr>
@@ -1239,7 +1248,7 @@ app.post("/api/feedback", async (req, res) => {
         <p style="margin:12px 0 0;font-size:13px;color:#6b7280;">Totaal feedback: <strong>${feedbackItems.total}</strong></p>
       </td></tr>
       <tr><td style="padding:16px 24px 20px;border-top:1px solid #f1f5f9;background:#fcfcfd;font-size:13px;color:#9ca3af;">
-        Bekijk alle feedback via je <a href="https://samirprofiel.com/admin" style="color:#4f46e5;text-decoration:none;">admin dashboard</a>.
+        Bekijk alle feedback via je <a href="https://samirprofile.com/admin" style="color:#4f46e5;text-decoration:none;">admin dashboard</a>.
       </td></tr>
     </table>
   </td></tr>

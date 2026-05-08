@@ -498,7 +498,7 @@ select:disabled {
 
 .about-content {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 1fr);
   gap: 3rem;
   align-items: center;
 }
@@ -518,6 +518,7 @@ html[dir="rtl"] .about-content {
   color: var(--text-muted);
   line-height: 1.8;
   font-size: 1.1rem; /* Iets groter voor betere leesbaarheid */
+  overflow-wrap: anywhere;
 }
 
 /* Arabische tekst optimalisatie */
@@ -529,11 +530,13 @@ html[dir="rtl"] .about-intro {
 .about-image {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .about-profile-img {
-  width: 280px;
-  height: 360px;
+  width: min(100%, 320px);
+  aspect-ratio: 4 / 5;
+  height: auto;
   object-fit: cover;
   border-radius: 2rem;
   box-shadow: var(--shadow-strong);
@@ -1568,13 +1571,24 @@ html[dir="rtl"] .contact-grid {
     justify-content: center;
   }
 
+  .container {
+    padding-inline: 1rem;
+  }
+
   .page {
-    padding-inline: 0;
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+    padding-inline: 0.35rem;
   }
 
   .about-content {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 1.5rem;
+  }
+
+  html[dir="rtl"] .about-content {
+    text-align: right;
   }
 
   .about-image {
@@ -1592,8 +1606,7 @@ html[dir="rtl"] .contact-grid {
   }
 
   .about-profile-img {
-    width: 240px;
-    height: 320px;
+    width: min(100%, 250px);
   }
 
   .cv-header {
@@ -1634,6 +1647,27 @@ html[dir="rtl"] .contact-grid {
 }
 
 @media (max-width: 600px) {
+  .container {
+    padding-inline: 0.85rem;
+  }
+
+  .section-title {
+    font-size: 1.55rem;
+    line-height: 1.3;
+  }
+
+  .about-intro,
+  .personal-content p,
+  .timeline-content p {
+    font-size: 0.98rem;
+    line-height: 1.85;
+  }
+
+  .btn {
+    min-height: 42px;
+    padding-inline: 1.1rem;
+  }
+
   .hero-photo-wrapper {
     width: 230px;
     height: 230px;
@@ -1737,6 +1771,55 @@ html.rtl .cv-meta-row {
   direction: ltr;
   unicode-bidi: isolate;
   text-align: right; /* blijft rechts uitgelijnd, maar leest LTR */
+}
+
+html[dir="rtl"] .about-text,
+html[dir="rtl"] .personal-content,
+html[dir="rtl"] .timeline-content,
+html[dir="rtl"] .skill-item,
+html[dir="rtl"] .social-link {
+  text-align: right;
+}
+
+html[dir="rtl"] .timeline::before {
+  left: auto;
+  right: 24px;
+}
+
+html[dir="rtl"] .timeline-item {
+  grid-template-columns: 1fr 110px;
+  padding-left: 0;
+  padding-right: 1.75rem;
+  column-gap: 1.2rem;
+}
+
+html[dir="rtl"] .timeline-date {
+  grid-column: 2;
+  text-align: right;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+html[dir="rtl"] .timeline-content {
+  grid-column: 1;
+  text-align: right;
+}
+
+html[dir="rtl"] .timeline-item::before {
+  left: auto;
+  right: 20px;
+}
+
+@media (max-width: 900px) {
+  html[dir="rtl"] .timeline-item {
+    grid-template-columns: 1fr;
+    padding-right: 2.5rem;
+  }
+
+  html[dir="rtl"] .timeline-date,
+  html[dir="rtl"] .timeline-content {
+    grid-column: auto;
+  }
 }
 .project-actions {
   margin-top: 0.8rem;
