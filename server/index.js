@@ -87,98 +87,124 @@ function renderSocialButtons() {
   ).join("");
 }
 
+function noReplyFooterCopy(lang) {
+  const L = normalizeLang(lang);
+  if (L === "nl") return {
+    noReply: "Dit is een automatisch verzonden e-mail. <strong>Reageer niet op dit bericht</strong> — dit e-mailadres ontvangt geen berichten.",
+    contact: 'Wil je contact opnemen? Ga naar <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a> en stuur je bericht via het contactformulier.',
+    footer: "Met vriendelijke groet",
+  };
+  if (L === "ar") return {
+    noReply: "هذا بريد إلكتروني تلقائي. <strong>لا تردّ على هذه الرسالة</strong> — هذا العنوان لا يستقبل الردود.",
+    contact: 'هل تريد التواصل؟ زر <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a> وأرسل رسالتك عبر نموذج الاتصال.',
+    footer: "مع التحية",
+  };
+  return {
+    noReply: "This is an automated email. <strong>Do not reply to this message</strong> — this address does not receive replies.",
+    contact: 'Want to get in touch? Visit <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a> and send your message via the contact form.',
+    footer: "Best regards",
+  };
+}
+
 function emailLayout({
   lang = "en",
   title,
   intro,
   contentHtml,
+  showSocials = true,
+  showNoReply = true,
 }) {
   const L = normalizeLang(lang);
   const copy = getEmailCopy(L);
+  const nrCopy = noReplyFooterCopy(L);
   const isRTL = L === "ar";
 
-  return `
-    <div style="margin:0;padding:0;background:#f4f7fb;">
-      <div style="max-width:680px;margin:0 auto;padding:32px 16px;">
-        <div
-          style="
-            background:#ffffff;
-            border-radius:24px;
-            overflow:hidden;
-            box-shadow:0 10px 35px rgba(15,23,42,.08);
-            font-family:Arial,Helvetica,sans-serif;
-            color:#111827;
-            direction:${isRTL ? "rtl" : "ltr"};
-            text-align:${isRTL ? "right" : "left"};
-          "
-        >
-          <div
-            style="
-              background:linear-gradient(135deg,#4f46e5,#7c3aed);
-              padding:28px 24px;
-              color:#fff;
-            "
-          >
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+  return `<!DOCTYPE html>
+<html lang="${L}" dir="${isRTL ? "rtl" : "ltr"}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>${escapeHtml(title)}</title>
+<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+<style>
+  @media only screen and (max-width:600px){
+    .email-wrapper{padding:16px 8px !important;}
+    .email-card{border-radius:16px !important;}
+    .email-header{padding:22px 18px !important;}
+    .email-body{padding:22px 18px !important;}
+    .email-footer{padding:16px 18px !important;}
+    .header-avatar{width:44px !important;height:44px !important;}
+    .header-title{font-size:19px !important;}
+    .social-btn{padding:8px 11px !important;font-size:12px !important;margin:4px 5px 0 0 !important;}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f0f4fb;-webkit-text-size-adjust:100%;mso-line-height-rule:exactly;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f0f4fb;">
+  <tr>
+    <td class="email-wrapper" align="center" style="padding:32px 16px;">
+      <table role="presentation" class="email-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(15,23,42,.10);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#111827;direction:${isRTL ? "rtl" : "ltr"};text-align:${isRTL ? "right" : "left"};">
+
+        <!-- HEADER -->
+        <tr>
+          <td class="email-header" style="background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);padding:28px 28px;color:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
               <tr>
-                <td style="vertical-align:middle;width:72px;">
-                  <img
-                    src="${PROFILE_IMAGE_URL}"
-                    alt="Samir Loul"
-                    width="56"
-                    height="56"
-                    style="display:block;width:56px;height:56px;border-radius:999px;object-fit:cover;border:3px solid rgba(255,255,255,.35);"
-                  />
+                <td style="vertical-align:middle;width:60px;padding-${isRTL ? "left" : "right"}:16px;">
+                  <img class="header-avatar" src="${PROFILE_IMAGE_URL}" alt="Samir Loul" width="52" height="52"
+                    style="display:block;width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.4);" />
                 </td>
                 <td style="vertical-align:middle;">
-                  <div style="font-size:12px;opacity:.9;margin-bottom:4px;">Samir Loul</div>
-                  <div style="font-size:24px;font-weight:800;line-height:1.25;">${escapeHtml(title)}</div>
+                  <div style="font-size:12px;opacity:.85;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase;">Samir Loul</div>
+                  <div class="header-title" style="font-size:22px;font-weight:800;line-height:1.3;color:#ffffff;">${escapeHtml(title)}</div>
                 </td>
               </tr>
             </table>
-          </div>
+          </td>
+        </tr>
 
-          <div style="padding:28px 24px;">
-            <p style="margin:0 0 18px;color:#4b5563;font-size:15px;line-height:1.8;">
+        <!-- BODY -->
+        <tr>
+          <td class="email-body" style="padding:28px 28px;">
+            <p style="margin:0 0 20px;color:#4b5563;font-size:15px;line-height:1.8;">
               ${escapeHtml(intro)}
             </p>
-
             ${contentHtml}
-
-            <div
-              style="
-                margin-top:28px;
-                padding:18px;
-                border-radius:18px;
-                background:#f8fafc;
-                border:1px solid #e5e7eb;
-              "
-            >
-              <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:#111827;">
-                ${escapeHtml(copy.socialsTitle)}
-              </div>
+            ${showSocials ? `
+            <div style="margin-top:28px;padding:18px 20px;border-radius:16px;background:#f8fafc;border:1px solid #e5e7eb;">
+              <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#374151;text-transform:uppercase;letter-spacing:.4px;">${escapeHtml(copy.socialsTitle)}</div>
               ${renderSocialButtons()}
-            </div>
-          </div>
+            </div>` : ""}
+          </td>
+        </tr>
 
-          <div
-            style="
-              padding:18px 24px;
-              border-top:1px solid #e5e7eb;
-              background:#fcfcfd;
-              color:#6b7280;
-              font-size:13px;
-              line-height:1.7;
-            "
-          >
-            ${escapeHtml(copy.footer)}<br>
-            <strong style="color:#111827;">Samir Loul</strong><br>
-            <a href="mailto:${TO_EMAIL}" style="color:#4f46e5;text-decoration:none;">${TO_EMAIL}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
+        ${showNoReply ? `
+        <!-- NO-REPLY NOTICE -->
+        <tr>
+          <td style="padding:0 28px 4px;">
+            <div style="padding:14px 16px;background:#fef9ec;border:1px solid #fde68a;border-radius:12px;font-size:13px;color:#92400e;line-height:1.6;">
+              ⚠️ ${nrCopy.noReply}<br>
+              <span style="margin-top:4px;display:inline-block;">${nrCopy.contact}</span>
+            </div>
+          </td>
+        </tr>` : ""}
+
+        <!-- FOOTER -->
+        <tr>
+          <td class="email-footer" style="padding:20px 28px 24px;border-top:1px solid #f1f5f9;background:#fcfcfd;color:#6b7280;font-size:13px;line-height:1.7;">
+            ${escapeHtml(nrCopy.footer)},<br>
+            <strong style="color:#111827;font-size:14px;">Samir Loul</strong><br>
+            <a href="https://samirprofiel.com" style="color:#4f46e5;text-decoration:none;">samirprofiel.com</a>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`;
 }
 const app = express();
 app.use((req, res, next) => {
@@ -766,28 +792,31 @@ function adminEmailHTML({ name, email, subject, message, lang = "en" }) {
     title: copy.adminTitle,
     intro: copy.adminIntro,
     contentHtml,
+    showNoReply: false,
   });
 }
 
 function autoReplyHTML({ name, lang }) {
   const copy = getEmailCopy(lang);
+  const L = normalizeLang(lang);
+
+  const checkItems = L === "nl"
+    ? ["Je bericht is succesvol ontvangen ✅", "Ik reageer doorgaans binnen 24 uur 🕐", "Houd je inbox in de gaten 📬"]
+    : L === "ar"
+    ? ["تم استلام رسالتك بنجاح ✅", "أرد عادةً خلال 24 ساعة 🕐", "راقب صندوق الوارد لديك 📬"]
+    : ["Your message was received successfully ✅", "I usually reply within 24 hours 🕐", "Keep an eye on your inbox 📬"];
 
   const contentHtml = `
-    <div
-      style="
-        padding:20px;
-        border-radius:18px;
-        background:linear-gradient(180deg,#f8fafc,#ffffff);
-        border:1px solid #e5e7eb;
-      "
-    >
-      <p style="margin:0 0 10px;font-size:16px;line-height:1.8;">
+    <div style="padding:20px;border-radius:16px;background:linear-gradient(160deg,#f0fdf4,#ffffff);border:1px solid #bbf7d0;">
+      <p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#111827;">
         ${escapeHtml(copy.greeting)} ${escapeHtml(name)} 👋
       </p>
-
-      <p style="margin:0;color:#374151;font-size:15px;line-height:1.9;">
+      <p style="margin:0 0 18px;color:#374151;font-size:15px;line-height:1.9;">
         ${escapeHtml(copy.confirmText)}
       </p>
+      <ul style="margin:0;padding:0;list-style:none;">
+        ${checkItems.map(item => `<li style="padding:7px 0;font-size:14px;color:#374151;border-bottom:1px solid #e5e7eb;">${escapeHtml(item)}</li>`).join("")}
+      </ul>
     </div>
   `;
 
@@ -796,6 +825,7 @@ function autoReplyHTML({ name, lang }) {
     title: copy.confirmTitle,
     intro: copy.confirmText,
     contentHtml,
+    showNoReply: true,
   });
 }
 
@@ -852,16 +882,91 @@ function feedbackSubject(lang) {
 
 function broadcastHtml({ subject, message, unsubscribeToken = "" }) {
   const unsubscribeUrl = `${APP_BASE_URL}/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
-  return `
-    <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.65;color:#111827;max-width:680px;margin:0 auto;">
-      <div style="padding:20px 0;">
-        <h1 style="margin:0 0 12px;font-size:24px;">${escapeHtml(subject)}</h1>
-        <div style="padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;white-space:pre-wrap;">${escapeHtml(message)}</div>
-      </div>
-      <p style="color:#6b7280;font-size:13px;">You are receiving this email because you subscribed on samirprofile.com.</p>
-      <p style="color:#6b7280;font-size:13px;">No longer interested? <a href="${unsubscribeUrl}">Unsubscribe here</a>.</p>
-    </div>
-  `;
+  const messageHtml = escapeHtml(message).replaceAll("\n", "<br>");
+
+  return `<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>${escapeHtml(subject)}</title>
+<style>
+  @media only screen and (max-width:600px){
+    .bc-wrapper{padding:16px 8px !important;}
+    .bc-card{border-radius:16px !important;}
+    .bc-header{padding:22px 18px !important;}
+    .bc-body{padding:22px 18px !important;}
+    .bc-footer{padding:16px 18px !important;}
+    .bc-avatar{width:44px !important;height:44px !important;}
+    .bc-title{font-size:19px !important;}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f0f4fb;-webkit-text-size-adjust:100%;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f0f4fb;">
+  <tr>
+    <td class="bc-wrapper" align="center" style="padding:32px 16px;">
+      <table role="presentation" class="bc-card" width="100%" cellspacing="0" cellpadding="0" border="0"
+        style="max-width:620px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(15,23,42,.10);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#111827;">
+
+        <!-- HEADER -->
+        <tr>
+          <td class="bc-header" style="background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);padding:28px 28px;color:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td style="vertical-align:middle;width:60px;padding-right:16px;">
+                  <img class="bc-avatar" src="${PROFILE_IMAGE_URL}" alt="Samir Loul" width="52" height="52"
+                    style="display:block;width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.4);" />
+                </td>
+                <td style="vertical-align:middle;">
+                  <div style="font-size:11px;opacity:.85;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase;">Samir Loul · Nieuwsbrief</div>
+                  <div class="bc-title" style="font-size:22px;font-weight:800;line-height:1.3;color:#ffffff;">${escapeHtml(subject)}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- BODY -->
+        <tr>
+          <td class="bc-body" style="padding:28px 28px;">
+            <div style="padding:20px;border-radius:14px;background:#f8fafc;border:1px solid #e5e7eb;font-size:15px;line-height:1.9;color:#374151;">
+              ${messageHtml}
+            </div>
+
+            <div style="margin-top:24px;padding:18px 20px;border-radius:16px;background:#f8fafc;border:1px solid #e5e7eb;">
+              <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#374151;text-transform:uppercase;letter-spacing:.4px;">Volg mij online</div>
+              ${renderSocialButtons()}
+            </div>
+          </td>
+        </tr>
+
+        <!-- NO-REPLY NOTICE -->
+        <tr>
+          <td style="padding:0 28px 4px;">
+            <div style="padding:14px 16px;background:#fef9ec;border:1px solid #fde68a;border-radius:12px;font-size:13px;color:#92400e;line-height:1.6;">
+              ⚠️ Dit is een automatisch verzonden e-mail. <strong>Reageer niet op dit bericht</strong> — dit adres ontvangt geen berichten.<br>
+              <span style="margin-top:4px;display:inline-block;">Wil je iets vragen of melden? Ga naar <a href="https://samirprofiel.com/contact" style="color:#4f46e5;text-decoration:none;font-weight:600;">samirprofiel.com/contact</a>.</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+          <td class="bc-footer" style="padding:20px 28px 24px;border-top:1px solid #f1f5f9;background:#fcfcfd;color:#6b7280;font-size:13px;line-height:1.7;">
+            Je ontvangt deze e-mail omdat je je hebt ingeschreven op <a href="https://samirprofiel.com" style="color:#4f46e5;text-decoration:none;">samirprofiel.com</a>.<br>
+            Niet meer geïnteresseerd? <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">Uitschrijven</a> · 
+            <a href="https://samirprofiel.com" style="color:#4f46e5;text-decoration:none;">Bezoek de website</a>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`;
 }
 /** =========================
  * Routes
@@ -1034,14 +1139,33 @@ app.post("/api/newsletter", async (req, res) => {
       to: TO_EMAIL,
       subject: `${newsletterSubject(L)}: ${cleanEmail}`,
       replyTo: cleanEmail,
-      html: `
-        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111;">
-          <h2 style="margin:0 0 10px;">${escapeHtml(newsletterSubject(L))}</h2>
-          <p style="margin:0 0 8px;"><strong>Email:</strong> ${escapeHtml(cleanEmail)}</p>
-          <p style="margin:0;"><strong>Time:</strong> ${new Date().toISOString()}</p>
+      html: `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f0f4fb;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f0f4fb;">
+  <tr><td align="center" style="padding:32px 16px;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:520px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(15,23,42,.09);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#111827;">
+      <tr><td style="background:linear-gradient(135deg,#059669,#10b981);padding:22px 24px;color:#fff;">
+        <div style="font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Portfolio · Nieuwsbrief</div>
+        <div style="font-size:20px;font-weight:800;">📬 Nieuwe inschrijving!</div>
+      </td></tr>
+      <tr><td style="padding:24px;">
+        <p style="margin:0 0 16px;font-size:15px;color:#374151;">Er is iemand ingeschreven op je nieuwsbrief:</p>
+        <div style="padding:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;margin-bottom:16px;">
+          <p style="margin:0 0 8px;font-size:15px;"><strong>📧 E-mail:</strong> ${escapeHtml(cleanEmail)}</p>
+          <p style="margin:0 0 8px;font-size:15px;"><strong>🌐 Taal:</strong> ${L.toUpperCase()}</p>
+          <p style="margin:0;font-size:13px;color:#6b7280;"><strong>🕐 Tijdstip:</strong> ${new Date().toLocaleString("nl-NL", { timeZone: "Europe/Amsterdam" })}</p>
         </div>
-      `,
-      text: `Newsletter subscription\n\nEmail: ${cleanEmail}\nTime: ${new Date().toISOString()}`,
+        <p style="margin:0;font-size:13px;color:#6b7280;">Totaal abonnees: <strong>${subscribers.total}</strong></p>
+      </td></tr>
+      <tr><td style="padding:16px 24px 20px;border-top:1px solid #f1f5f9;background:#fcfcfd;font-size:13px;color:#9ca3af;">
+        Beheer je abonnees via je <a href="https://samirprofiel.com/admin" style="color:#4f46e5;text-decoration:none;">admin dashboard</a>.
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>`,
+      text: `Nieuwe nieuwsbrief-inschrijving\n\nE-mail: ${cleanEmail}\nTaal: ${L}\nTijdstip: ${new Date().toISOString()}\nTotaal abonnees: ${subscribers.total}`,
     });
 
     if (result?.error) {
@@ -1095,16 +1219,33 @@ app.post("/api/feedback", async (req, res) => {
       from: FROM_EMAIL,
       to: TO_EMAIL,
       subject: `${feedbackSubject(L)} (${cleanRating}/5)`,
-      html: `
-        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111;">
-          <h2 style="margin:0 0 10px;">${escapeHtml(feedbackSubject(L))}</h2>
-          <p style="margin:0 0 8px;"><strong>Rating:</strong> ${cleanRating}/5</p>
-          <p style="margin:0 0 8px;"><strong>Message:</strong></p>
-          <div style="padding:12px;border:1px solid #ddd;border-radius:10px;background:#f8f8f8;white-space:pre-wrap;">${escapeHtml(cleanMessage)}</div>
-          <p style="margin:10px 0 0;"><strong>Time:</strong> ${new Date().toISOString()}</p>
+      html: `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f0f4fb;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f0f4fb;">
+  <tr><td align="center" style="padding:32px 16px;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:520px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(15,23,42,.09);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#111827;">
+      <tr><td style="background:linear-gradient(135deg,#f59e0b,#f97316);padding:22px 24px;color:#fff;">
+        <div style="font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Portfolio · Feedback</div>
+        <div style="font-size:20px;font-weight:800;">⭐ Nieuwe feedback ontvangen</div>
+      </td></tr>
+      <tr><td style="padding:24px;">
+        <p style="margin:0 0 16px;font-size:15px;color:#374151;">Iemand heeft feedback achtergelaten op je portfolio:</p>
+        <div style="padding:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;margin-bottom:16px;">
+          <p style="margin:0 0 10px;font-size:18px;">${"⭐".repeat(cleanRating)}${"☆".repeat(5 - cleanRating)} <strong>${cleanRating}/5</strong></p>
+          <p style="margin:0 0 8px;font-size:13px;color:#6b7280;"><strong>🌐 Taal:</strong> ${L.toUpperCase()} &nbsp;&nbsp; <strong>🕐 Tijdstip:</strong> ${new Date().toLocaleString("nl-NL", { timeZone: "Europe/Amsterdam" })}</p>
         </div>
-      `,
-      text: `Portfolio feedback\n\nRating: ${cleanRating}/5\nMessage:\n${cleanMessage}\n\nTime: ${new Date().toISOString()}`,
+        <div style="padding:16px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;font-size:15px;line-height:1.8;color:#374151;white-space:pre-wrap;">${escapeHtml(cleanMessage)}</div>
+        <p style="margin:12px 0 0;font-size:13px;color:#6b7280;">Totaal feedback: <strong>${feedbackItems.total}</strong></p>
+      </td></tr>
+      <tr><td style="padding:16px 24px 20px;border-top:1px solid #f1f5f9;background:#fcfcfd;font-size:13px;color:#9ca3af;">
+        Bekijk alle feedback via je <a href="https://samirprofiel.com/admin" style="color:#4f46e5;text-decoration:none;">admin dashboard</a>.
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>`,
+      text: `Portfolio feedback\n\nRating: ${cleanRating}/5\nTaal: ${L}\nBericht:\n${cleanMessage}\n\nTijdstip: ${new Date().toISOString()}`,
     });
 
     if (result?.error) {

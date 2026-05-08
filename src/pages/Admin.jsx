@@ -281,17 +281,17 @@ export default function Admin() {
 
   return (
     <section className="container" style={{ maxWidth: "1100px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap", marginBottom: "1.5rem" }}>
         <h1 style={{ marginTop: 0, marginBottom: 0 }}>Admin Dashboard</h1>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button className="btn outline" type="button" onClick={() => loadOverview()}>
             Refresh
           </button>
           <button className="btn outline" type="button" onClick={() => downloadCsv("/admin/export/subscribers.csv", "subscribers.csv")}>
-            Export Subscribers CSV
+            Export Subscribers
           </button>
           <button className="btn outline" type="button" onClick={() => downloadCsv("/admin/export/feedback.csv", "feedback.csv")}>
-            Export Feedback CSV
+            Export Feedback
           </button>
           <button className="btn outline" type="button" onClick={onLogout}>
             Logout
