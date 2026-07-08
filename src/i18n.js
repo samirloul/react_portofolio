@@ -109,7 +109,7 @@ export const translations = {
           title: "Elegancia Barbershop (Live Client Project)",
           icon: "fas fa-scissors",
           text: "A real production website I built individually for a barbershop in Utrecht (Kanaleneiland). Built with custom PHP MVC architecture, customers can book appointments online, choose services and styling options, and contact the salon directly.",
-          tags: ["PHP MVC", "PHP", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
+          tags: ["PHP MVC", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
           links: [
             {
               label: "Live Website",
@@ -461,7 +461,7 @@ export const translations = {
           title: "إيليغانسيا باربرشوب (مشروع حقيقي)",
           icon: "fas fa-scissors",
           text: "موقع إنتاجي حقيقي قمت ببرمجته بشكل فردي ويُستخدم الآن فعلياً لصالون حلاقة في أوتريخت (كانالينييلاند). تم بناؤه بهيكلية PHP MVC مخصصة، ويمكن للعملاء حجز المواعيد أونلاين واختيار الخدمات وخيارات التصفيف بسهولة.",
-          tags: ["PHP MVC", "PHP", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
+          tags: ["PHP MVC", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
           links: [
             { label: "الموقع المباشر", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" },
             { label: "GitHub", href: "https://github.com/samirloul/elegancia-barber", icon: "fab fa-github" }
@@ -753,7 +753,7 @@ export const translations = {
           title: "Elegancia Barbershop (Live Klantproject)",
           icon: "fas fa-scissors",
           text: "Een echte productie-website die ik individueel heb gebouwd voor een kapsalon in Utrecht (Kanaleneiland). Gebouwd met een custom PHP MVC-architectuur, waarbij klanten online afspraken kunnen maken, behandelingen kiezen en styling-opties selecteren.",
-          tags: ["PHP MVC", "PHP", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
+          tags: ["PHP MVC", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
           links: [
             { label: "Live Website", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" },
             { label: "GitHub", href: "https://github.com/samirloul/elegancia-barber", icon: "fab fa-github" }
