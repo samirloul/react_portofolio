@@ -83,7 +83,7 @@ export const translations = {
           links: [
             {
               label: "Open Website",
-              href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ",
+              href: "https://samirprofile.com/projects",
               icon: "fas fa-arrow-up-right-from-square",
             },            {
               label: "GitHub",
@@ -731,7 +731,7 @@ export const translations = {
           links: [
             {
               label: "Open Website",
-              href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ",
+              href: "https://samirprofile.com/projects",
               icon: "fas fa-arrow-up-right-from-square",
             },
             {
