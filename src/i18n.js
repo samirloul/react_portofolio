@@ -79,7 +79,7 @@ export const translations = {
           title: "About Me (Personal Website)",
           icon: "fas fa-user",
           text: "My personal website where I introduce who I am, what I’m learning, and the projects I’m building. Designed to be clean, responsive, and easy to explore.",
-          tags: ["HTML", "CSS", "JavaScript"],
+          tags: ["React", "JavaScript", "HTML", "CSS", "SEO", "i18n", "Vite"],
           links: [
             {
               label: "Open Website",
@@ -101,6 +101,25 @@ export const translations = {
               label: "Visit Syria Website",
               href: "https://syriawebsite.com",
               icon: "fas fa-arrow-up-right-from-square",
+            },
+          ],
+        },
+
+        {
+          title: "Elegancia Barbershop (Live Client Project)",
+          icon: "fas fa-scissors",
+          text: "A real production website I built individually for a barbershop in Utrecht (Kanaleneiland). Built with custom PHP MVC architecture, customers can book appointments online, choose services and styling options, and contact the salon directly.",
+          tags: ["PHP MVC", "PHP", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
+          links: [
+            {
+              label: "Live Website",
+              href: "https://elegancia-barber.nl/",
+              icon: "fas fa-arrow-up-right-from-square",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/samirloul/elegancia-barber",
+              icon: "fab fa-github",
             },
           ],
         },
@@ -424,7 +443,7 @@ export const translations = {
           title: "موقعي الشخصي (عني)",
           icon: "fas fa-user",
           text: "موقع شخصي أعرّف فيه بنفسي وبما أتعلمه وبالمشاريع التي أعمل عليها. تصميم نظيف ومتجاوب وسهل التصفح.",
-          tags: ["HTML", "CSS", "JavaScript"],
+          tags: ["React", "JavaScript", "HTML", "CSS", "SEO", "i18n", "Vite"],
           links: [
             { label: "فتح الموقع", href: "https://samir-website-beste.onrender.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGny2r3baAspddVF1tbZGwKB8Z6dyUO5Y9b2ib7bbYX9b-jCzCS2Ou5BcoIcUA_aem_zQ25t3w7ZRpR5XtoB9ZIuQ", icon: "fas fa-arrow-up-right-from-square" },
             { label: "GitHub", href: "https://github.com/SamirLoul", icon: "fab fa-github" }
@@ -436,6 +455,17 @@ export const translations = {
           text: "موقع عن سوريا - تاريخها وهويتها والثورة السورية. كما يسلط الضوء على دمشق، إحدى أقدم العواصم المأهولة باستمرار في العالم، ويشارك محتوى عن الحياة اليومية والثقافة والتراث.",
           tags: ["PHP", "MySQL", "HTML/CSS"],
           links: [{ label: "زيارة موقع سوريا", href: "https://syriawebsite.com", icon: "fas fa-arrow-up-right-from-square" }],
+        },
+
+        {
+          title: "إيليغانسيا باربرشوب (مشروع حقيقي)",
+          icon: "fas fa-scissors",
+          text: "موقع إنتاجي حقيقي قمت ببرمجته بشكل فردي ويُستخدم الآن فعلياً لصالون حلاقة في أوتريخت (كانالينييلاند). تم بناؤه بهيكلية PHP MVC مخصصة، ويمكن للعملاء حجز المواعيد أونلاين واختيار الخدمات وخيارات التصفيف بسهولة.",
+          tags: ["PHP MVC", "PHP", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
+          links: [
+            { label: "الموقع المباشر", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" },
+            { label: "GitHub", href: "https://github.com/samirloul/elegancia-barber", icon: "fab fa-github" }
+          ],
         },
 
         { title: "مشروع مستقبلي", icon: "fas fa-hourglass", text: "مع استمراري في دراسة تطوير البرمجيات، سيتم إضافة المزيد من المشاريع المبتكرة إلى هذا البورتفوليو.", tags: ["قيد التخطيط"], links: [{ label: "قريباً", href: "#", icon: "fas fa-clock" }] },
@@ -697,7 +727,7 @@ export const translations = {
           title: "Over Mij (Persoonlijke Website)",
           icon: "fas fa-user",
           text: "Mijn persoonlijke website waar ik mezelf voorstel, wat ik leer en de projecten die ik bouw. Ontworpen om schoon, responsief en gemakkelijk te verkennen te zijn.",
-          tags: ["HTML", "CSS", "JavaScript"],
+          tags: ["React", "JavaScript", "HTML", "CSS", "SEO", "i18n", "Vite"],
           links: [
             {
               label: "Open Website",
@@ -717,6 +747,17 @@ export const translations = {
           text: "Een website over Syrië — de geschiedenis, identiteit en de Syrische revolutie. Het belicht ook Damascus, een van 's werelds oudste continu bewoonde hoofdsteden, en deelt inhoud over het dagelijks leven, cultuur en erfgoed.",
           tags: ["PHP", "MySQL", "HTML/CSS"],
           links: [{ label: "Bezoek Syrië Website", href: "https://syriawebsite.com", icon: "fas fa-arrow-up-right-from-square" }],
+        },
+
+        {
+          title: "Elegancia Barbershop (Live Klantproject)",
+          icon: "fas fa-scissors",
+          text: "Een echte productie-website die ik individueel heb gebouwd voor een kapsalon in Utrecht (Kanaleneiland). Gebouwd met een custom PHP MVC-architectuur, waarbij klanten online afspraken kunnen maken, behandelingen kiezen en styling-opties selecteren.",
+          tags: ["PHP MVC", "PHP", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
+          links: [
+            { label: "Live Website", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" },
+            { label: "GitHub", href: "https://github.com/samirloul/elegancia-barber", icon: "fab fa-github" }
+          ],
         },
 
         { title: "Toekomstig Project", icon: "fas fa-hourglass", text: "Terwijl ik mijn studie Software Development voortzet, zullen er meer innovatieve projecten aan dit portfolio worden toegevoegd.", tags: ["TBD", "Planning"], links: [{ label: "Binnenkort", href: "#", icon: "fas fa-clock" }] },
