@@ -4,4 +4,6 @@ Disallow: /server/
 Disallow: /api/
 Disallow: /admin/
 
+Host: samirprofile.com
+
 Sitemap: https://samirprofile.com/sitemap.xml

@@ -7,41 +7,27 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Samir Loul | سمير لول | سميرلول | Developer Portfolio | Web Developer | Software Developer | Portfolio | Webontwikkelaar</title>
+  <title>Samir Loul | Sameer Loul | سمير لول | Developer Portfolio | Web Developer | Software Developer</title>
 
     <meta
       name="description"
-      content="Samir Loul portfolio website. Web developer, software developer, React developer. Portfolio van Samir Loul. الموقع الشخصي لسمير لول مطور ويب ومبرمج."
+      content="Official website of Samir Loul (Sameer Loul), software and web developer in the Netherlands. Projects, CV, contact, and professional background in English, Dutch, and Arabic."
     />
 
     <meta
       name="keywords"
-      content="
-      Samir Loul,
-      سمير لول,
-      سميرلول,
-      samirprofile,
-      developer,
-      web developer,
-      software developer,
-      react developer,
-      javascript developer,
-      portfolio,
-      programmer,
-      webontwikkelaar,
-      programmeur,
-      developer netherlands,
-      مطور ويب,
-      مبرمج,
-      ملف شخصي,
-      portfolio developer
-      "
+      content="Samir Loul, Sameer Loul, Samirloul, Sameerloul, samir, sameer, sam, سمير لول, سميرلول, web developer, software developer, website developer, website bouwen, website nodig, project maken, who is Samir Loul, who is Sameer, wie is Samir Loul, React developer, Laravel developer, PHP developer, JavaScript developer, webontwikkelaar Nederland"
     />
 
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Samir Loul" />
 
     <link rel="canonical" href="https://samirprofile.com/" />
+
+    <link rel="alternate" hreflang="en" href="https://samirprofile.com/?lang=en" />
+    <link rel="alternate" hreflang="nl" href="https://samirprofile.com/?lang=nl" />
+    <link rel="alternate" hreflang="ar" href="https://samirprofile.com/?lang=ar" />
+    <link rel="alternate" hreflang="x-default" href="https://samirprofile.com/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Samir Loul Portfolio" />
@@ -52,6 +38,9 @@
     />
     <meta property="og:url" content="https://samirprofile.com/" />
     <meta property="og:image" content="https://samirprofile.com/samir.jpg" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="nl_NL" />
+    <meta property="og:locale:alternate" content="ar_AR" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Samir Loul | Developer Portfolio" />
@@ -80,15 +69,69 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Samir Loul",
-      "alternateName": ["سمير لول", "سميرلول"],
-      "url": "https://samirprofile.com/",
-      "jobTitle": "Web Developer",
-      "sameAs": [
-        "https://x.com/samirloul",
-        "https://www.instagram.com/samirloul/",
-        "https://www.linkedin.com/in/samir-loul-083ab53b0/"
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://samirprofile.com/#person",
+          "name": "Samir Loul",
+          "givenName": "Samir",
+          "familyName": "Loul",
+          "alternateName": [
+            "Sameer Loul",
+            "Samirloul",
+            "Sameerloul",
+            "سمير لول",
+            "سميرلول"
+          ],
+          "url": "https://samirprofile.com/",
+          "image": "https://samirprofile.com/samir.jpg",
+          "jobTitle": "Software Developer",
+          "description": "Software and web developer based in the Netherlands, originally from Syria.",
+          "nationality": "Syrian",
+          "knowsLanguage": ["en", "nl", "ar"],
+          "knowsAbout": [
+            "Web Development",
+            "Software Development",
+            "React",
+            "JavaScript",
+            "PHP",
+            "Laravel",
+            "SQL",
+            "API Development"
+          ],
+          "sameAs": [
+            "https://github.com/SamirLoul",
+            "https://x.com/samirloul",
+            "https://www.instagram.com/samirloul/",
+            "https://www.linkedin.com/in/samir-loul-083ab53b0/",
+            "https://www.tiktok.com/@samirloul1"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://samirprofile.com/#website",
+          "url": "https://samirprofile.com/",
+          "name": "Samir Loul Portfolio",
+          "alternateName": "Sameer Loul Portfolio",
+          "description": "Official portfolio website of Samir Loul.",
+          "inLanguage": ["en", "nl", "ar"],
+          "publisher": {
+            "@id": "https://samirprofile.com/#person"
+          }
+        },
+        {
+          "@type": "ProfilePage",
+          "@id": "https://samirprofile.com/#profile",
+          "url": "https://samirprofile.com/",
+          "name": "Who is Samir Loul",
+          "about": {
+            "@id": "https://samirprofile.com/#person"
+          },
+          "isPartOf": {
+            "@id": "https://samirprofile.com/#website"
+          },
+          "inLanguage": "en"
+        }
       ]
     }
     </script>
