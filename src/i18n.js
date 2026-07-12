@@ -11,6 +11,7 @@ export const translations = {
       projects: "Projects",
       cv: "CV",
       contact: "Contact",
+      startProject: "Start Project",
     },
     hero: {
       hello: "Hello, I'm",
@@ -395,7 +396,7 @@ export const translations = {
   // ================= ARABIC =================
   ar: {
     dir: "rtl",
-    nav: { name: "سمير لول", home: "الرئيسية", about: "عني", projects: "المشاريع", cv: "السيرة الذاتية", contact: "تواصل" },
+    nav: { name: "سمير لول", home: "الرئيسية", about: "عني", projects: "المشاريع", cv: "السيرة الذاتية", contact: "تواصل", startProject: "ابدأ مشروعك" },
     hero: {
       hello: "مرحباً، أنا",
       name: "سمير لول",
@@ -682,7 +683,7 @@ export const translations = {
   // ================= DUTCH =================
   nl: {
     dir: "ltr",
-    nav: { name: "Samir Loul", home: "Home", about: "Over mij", projects: "Projecten", cv: "CV", contact: "Contact" },
+    nav: { name: "Samir Loul", home: "Home", about: "Over mij", projects: "Projecten", cv: "CV", contact: "Contact", startProject: "Start project" },
     hero: {
       hello: "Hallo, ik ben",
       name: "Samir Loul",
