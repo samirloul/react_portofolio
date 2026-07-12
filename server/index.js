@@ -316,6 +316,20 @@ app.use(
 );
 
 app.use(
+  "/api/project-request",
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      ok: false,
+      error: "Too many requests. Please try again in a minute.",
+    },
+  })
+);
+
+app.use(
   "/api/newsletter",
   rateLimit({
     windowMs: 60 * 1000,
@@ -880,6 +894,245 @@ function feedbackSubject(lang) {
   return "New portfolio feedback";
 }
 
+function projectRequestSubject(lang) {
+  const L = normalizeLang(lang);
+  if (L === "nl") return "Nieuwe website aanvraag";
+  if (L === "ar") return "طلب موقع جديد";
+  return "New website project request";
+}
+
+function projectRequestAdminHTML({ data, lang = "en" }) {
+  const L = normalizeLang(lang);
+  const labelsMap = {
+    en: {
+      intro: "You received a new website intake request.",
+      sections: {
+        business: "Business Profile",
+        features: "Website Features",
+        launch: "Launch, Budget, and Support",
+      },
+      name: "Name",
+      email: "Email",
+      businessName: "Business",
+      businessStage: "Business stage",
+      targetAudience: "Target audience",
+      hasBranding: "Has branding",
+      hasDomain: "Has domain",
+      needBooking: "Needs booking",
+      needShop: "Needs webshop/payment",
+      needMultilang: "Needs multilingual",
+      needBlog: "Needs blog/news",
+      primaryGoal: "Main goal",
+      styleDirection: "Style direction",
+      contentReady: "Content ready",
+      needCopywriting: "Needs copywriting",
+      pagesCount: "Expected pages",
+      needCms: "Needs CMS",
+      referenceWebsite: "Reference websites",
+      budgetRange: "Budget range",
+      timeline: "Timeline",
+      urgent: "Urgent",
+      hasHosting: "Has hosting",
+      needLegalPages: "Needs legal pages",
+      needAnalytics: "Needs analytics",
+      needIntegrations: "Needs integrations",
+      integrationsDetails: "Integration details",
+      maintenance: "Needs maintenance",
+      seo: "Needs SEO",
+      launchCampaign: "Needs launch campaign",
+      notes: "Extra notes",
+    },
+    nl: {
+      intro: "Je hebt een nieuwe website-intake ontvangen.",
+      sections: {
+        business: "Bedrijfsprofiel",
+        features: "Website Functionaliteiten",
+        launch: "Planning, Budget en Support",
+      },
+      name: "Naam",
+      email: "E-mail",
+      businessName: "Bedrijf",
+      businessStage: "Bedrijfsfase",
+      targetAudience: "Doelgroep",
+      hasBranding: "Heeft branding",
+      hasDomain: "Heeft domein",
+      needBooking: "Wil afspraakmodule",
+      needShop: "Wil webshop/betaling",
+      needMultilang: "Wil meertaligheid",
+      needBlog: "Wil blog/nieuws",
+      primaryGoal: "Hoofddoel",
+      styleDirection: "Voorkeursstijl",
+      contentReady: "Content klaar",
+      needCopywriting: "Hulp met teksten",
+      pagesCount: "Aantal pagina's",
+      needCms: "CMS gewenst",
+      referenceWebsite: "Referentie websites",
+      budgetRange: "Budget",
+      timeline: "Planning",
+      urgent: "Urgent",
+      hasHosting: "Heeft hosting",
+      needLegalPages: "Juridische pagina's",
+      needAnalytics: "Analytics gewenst",
+      needIntegrations: "Integraties gewenst",
+      integrationsDetails: "Integratie details",
+      maintenance: "Onderhoud gewenst",
+      seo: "SEO gewenst",
+      launchCampaign: "Launch campagne gewenst",
+      notes: "Extra notities",
+    },
+    ar: {
+      intro: "لديك طلب جديد عبر نموذج الموقع.",
+      sections: {
+        business: "ملف المشروع",
+        features: "ميزات الموقع",
+        launch: "الإطلاق والميزانية والدعم",
+      },
+      name: "الاسم",
+      email: "البريد الإلكتروني",
+      businessName: "اسم المشروع",
+      businessStage: "مرحلة المشروع",
+      targetAudience: "الفئة المستهدفة",
+      hasBranding: "لديه هوية بصرية",
+      hasDomain: "لديه نطاق",
+      needBooking: "يحتاج نظام حجز",
+      needShop: "يحتاج متجر/دفع",
+      needMultilang: "يحتاج تعدد لغات",
+      needBlog: "يحتاج مدونة/أخبار",
+      primaryGoal: "الهدف الرئيسي",
+      styleDirection: "نمط التصميم",
+      contentReady: "المحتوى جاهز",
+      needCopywriting: "يحتاج كتابة محتوى",
+      pagesCount: "عدد الصفحات",
+      needCms: "يحتاج CMS",
+      referenceWebsite: "مواقع مرجعية",
+      budgetRange: "الميزانية",
+      timeline: "الجدول الزمني",
+      urgent: "مستعجل",
+      hasHosting: "لديه استضافة",
+      needLegalPages: "يحتاج صفحات قانونية",
+      needAnalytics: "يحتاج تحليلات",
+      needIntegrations: "يحتاج تكاملات",
+      integrationsDetails: "تفاصيل التكامل",
+      maintenance: "يريد صيانة",
+      seo: "يريد SEO",
+      launchCampaign: "يريد دعم الإطلاق",
+      notes: "ملاحظات إضافية",
+    },
+  };
+  const labels = labelsMap[L] || labelsMap.en;
+
+  const block = (title, rows) => `
+    <div style="margin-top:14px;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;">
+      <div style="padding:11px 14px;background:#f8fafc;border-bottom:1px solid #e5e7eb;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#334155;">
+        ${escapeHtml(title)}
+      </div>
+      <div style="padding:12px 14px;">
+        ${rows
+          .map(
+            ([k, v]) => `
+              <div style="padding:7px 0;border-bottom:1px dashed #e5e7eb;">
+                <div style="font-size:12px;color:#64748b;margin-bottom:2px;">${escapeHtml(k)}</div>
+                <div style="font-size:14px;color:#0f172a;font-weight:600;line-height:1.6;">${escapeHtml(v || "-")}</div>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+
+  const contentHtml = `
+    <div style="border:1px solid #e5e7eb;border-radius:16px;padding:14px 14px 10px;background:#ffffff;">
+      <p style="margin:0 0 8px;color:#475569;font-size:14px;line-height:1.7;">
+        ${escapeHtml(labels.intro)}
+      </p>
+
+      ${block(labels.sections.business, [
+        [labels.name, data.fullName],
+        [labels.email, data.email],
+        [labels.businessName, data.businessName],
+        [labels.businessStage, data.businessStage],
+        [labels.targetAudience, data.targetAudience],
+        [labels.hasBranding, data.hasBranding],
+        [labels.hasDomain, data.hasDomain],
+      ])}
+
+      ${block(labels.sections.features, [
+        [labels.primaryGoal, data.primaryGoal],
+        [labels.styleDirection, data.styleDirection],
+        [labels.needBooking, data.needBooking],
+        [labels.needShop, data.needShop],
+        [labels.needMultilang, data.needMultilang],
+        [labels.needBlog, data.needBlog],
+        [labels.contentReady, data.contentReady],
+        [labels.needCopywriting, data.needCopywriting],
+        [labels.pagesCount, data.pagesCount],
+        [labels.needCms, data.needCms],
+        [labels.referenceWebsite, data.referenceWebsite || "-"],
+      ])}
+
+      ${block(labels.sections.launch, [
+        [labels.budgetRange, data.budgetRange],
+        [labels.timeline, data.timeline],
+        [labels.urgent, data.urgent],
+        [labels.hasHosting, data.hasHosting],
+        [labels.needLegalPages, data.needLegalPages],
+        [labels.needAnalytics, data.needAnalytics],
+        [labels.needIntegrations, data.needIntegrations],
+        [labels.integrationsDetails, data.integrationsDetails || "-"],
+        [labels.maintenance, data.maintenance],
+        [labels.seo, data.seo],
+        [labels.launchCampaign, data.launchCampaign],
+        [labels.notes, data.notes || "-"],
+      ])}
+    </div>
+  `;
+
+  return emailLayout({
+    lang: L,
+    title: projectRequestSubject(L),
+    intro: labels.intro,
+    contentHtml,
+    showNoReply: false,
+  });
+}
+
+function projectRequestAutoReplySubject(lang) {
+  const L = normalizeLang(lang);
+  if (L === "nl") return "Bedankt! Je website-aanvraag is ontvangen ✅";
+  if (L === "ar") return "شكرًا! تم استلام طلب الموقع ✅";
+  return "Thanks! Your website request was received ✅";
+}
+
+function projectRequestAutoReplyText({ name, lang, toEmail }) {
+  const L = normalizeLang(lang);
+
+  if (L === "nl") {
+    return `Hoi ${name},
+
+Bedankt voor je aanvraag. Ik heb je intake ontvangen en neem snel contact op met een passend voorstel.
+
+Samir Loul
+${toEmail}`;
+  }
+
+  if (L === "ar") {
+    return `مرحبًا ${name}
+
+شكرًا على طلبك. استلمت النموذج وسأتواصل معك قريبًا باقتراح مناسب.
+
+سمير لول
+${toEmail}`;
+  }
+
+  return `Hi ${name},
+
+Thanks for your request. I received your intake and will contact you soon with a suitable proposal.
+
+Samir Loul
+${toEmail}`;
+}
+
 function broadcastHtml({ subject, message, unsubscribeToken = "" }) {
   const unsubscribeUrl = `${APP_BASE_URL}/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
   const messageHtml = escapeHtml(message).replaceAll("\n", "<br>");
@@ -985,7 +1238,7 @@ app.get("/", (req, res) => {
     ok: true,
     service: "contact-api",
     message: "API is running",
-    endpoints: ["/api/health", "/api/contact", "/api/newsletter", "/api/feedback"],
+    endpoints: ["/api/health", "/api/contact", "/api/project-request", "/api/newsletter", "/api/feedback"],
   });
 });
 
@@ -993,6 +1246,13 @@ app.get("/api/contact", (req, res) => {
   return res.json({
     ok: true,
     message: "API is working. Use POST to send messages.",
+  });
+});
+
+app.get("/api/project-request", (req, res) => {
+  return res.json({
+    ok: true,
+    message: "API is working. Use POST to send project requests.",
   });
 });
 
@@ -1118,6 +1378,206 @@ if (userResult?.error) {
   } catch (err) {
     console.error("SERVER ERROR:", err);
 
+    return res.status(500).json({
+      ok: false,
+      error: "Server error",
+      details: String(err?.message || err),
+    });
+  }
+});
+
+app.post("/api/project-request", async (req, res) => {
+  try {
+    const {
+      fullName,
+      email,
+      businessName,
+      businessStage,
+      targetAudience,
+      hasBranding,
+      hasDomain,
+      styleDirection,
+      needBooking,
+      needShop,
+      needMultilang,
+      needBlog,
+      primaryGoal,
+      contentReady,
+      needCopywriting,
+      pagesCount,
+      needCms,
+      referenceWebsite,
+      budgetRange,
+      timeline,
+      urgent,
+      hasHosting,
+      needLegalPages,
+      needAnalytics,
+      needIntegrations,
+      integrationsDetails,
+      maintenance,
+      seo,
+      launchCampaign,
+      notes = "",
+      website = "",
+      lang = "en",
+      recaptchaToken,
+    } = req.body || {};
+
+    if (website) {
+      return res.status(200).json({ ok: true });
+    }
+
+    if (!recaptchaToken) {
+      return res.status(400).json({ ok: false, error: "Missing captcha token" });
+    }
+
+    const captcha = await verifyRecaptcha(recaptchaToken, req.ip);
+
+    if (!captcha.ok) {
+      return res.status(400).json({
+        ok: false,
+        error: captcha.error || "Captcha failed",
+        details: captcha.data?.["error-codes"] || null,
+      });
+    }
+
+    const clean = {
+      fullName: clampLen(String(fullName || "").trim(), 80),
+      email: clampLen(String(email || "").trim().toLowerCase(), 254),
+      businessName: clampLen(String(businessName || "").trim(), 120),
+      businessStage: clampLen(String(businessStage || "").trim(), 60),
+      targetAudience: clampLen(String(targetAudience || "").trim(), 180),
+      hasBranding: clampLen(String(hasBranding || "").trim(), 20),
+      hasDomain: clampLen(String(hasDomain || "").trim(), 20),
+      styleDirection: clampLen(String(styleDirection || "").trim(), 60),
+      needBooking: clampLen(String(needBooking || "").trim(), 20),
+      needShop: clampLen(String(needShop || "").trim(), 20),
+      needMultilang: clampLen(String(needMultilang || "").trim(), 20),
+      needBlog: clampLen(String(needBlog || "").trim(), 20),
+      primaryGoal: clampLen(String(primaryGoal || "").trim(), 500),
+      contentReady: clampLen(String(contentReady || "").trim(), 20),
+      needCopywriting: clampLen(String(needCopywriting || "").trim(), 20),
+      pagesCount: clampLen(String(pagesCount || "").trim(), 40),
+      needCms: clampLen(String(needCms || "").trim(), 20),
+      referenceWebsite: clampLen(String(referenceWebsite || "").trim(), 600),
+      budgetRange: clampLen(String(budgetRange || "").trim(), 60),
+      timeline: clampLen(String(timeline || "").trim(), 60),
+      urgent: clampLen(String(urgent || "").trim(), 20),
+      hasHosting: clampLen(String(hasHosting || "").trim(), 20),
+      needLegalPages: clampLen(String(needLegalPages || "").trim(), 20),
+      needAnalytics: clampLen(String(needAnalytics || "").trim(), 20),
+      needIntegrations: clampLen(String(needIntegrations || "").trim(), 20),
+      integrationsDetails: clampLen(String(integrationsDetails || "").trim(), 600),
+      maintenance: clampLen(String(maintenance || "").trim(), 20),
+      seo: clampLen(String(seo || "").trim(), 20),
+      launchCampaign: clampLen(String(launchCampaign || "").trim(), 20),
+      notes: clampLen(String(notes || "").trim(), 2000),
+    };
+
+    const L = normalizeLang(lang);
+
+    if (
+      !clean.fullName ||
+      !clean.email ||
+      !isValidEmail(clean.email) ||
+      !clean.businessName ||
+      !clean.businessStage ||
+      !clean.targetAudience ||
+      !clean.hasBranding ||
+      !clean.hasDomain ||
+      !clean.styleDirection ||
+      !clean.needBooking ||
+      !clean.needShop ||
+      !clean.needMultilang ||
+      !clean.needBlog ||
+      !clean.primaryGoal ||
+      !clean.contentReady ||
+      !clean.needCopywriting ||
+      !clean.pagesCount ||
+      !clean.needCms ||
+      !clean.budgetRange ||
+      !clean.timeline ||
+      !clean.urgent ||
+      !clean.hasHosting ||
+      !clean.needLegalPages ||
+      !clean.needAnalytics ||
+      !clean.needIntegrations ||
+      !clean.maintenance ||
+      !clean.seo ||
+      !clean.launchCampaign
+    ) {
+      return res.status(400).json({ ok: false, error: "Missing required fields" });
+    }
+
+    if (clean.needIntegrations === "yes" && !clean.integrationsDetails) {
+      return res.status(400).json({ ok: false, error: "Integration details are required" });
+    }
+
+    const adminResult = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: TO_EMAIL,
+      replyTo: clean.email,
+      subject: `${projectRequestSubject(L)} - ${clean.businessName} - ${clean.fullName}`,
+      html: projectRequestAdminHTML({ data: clean, lang: L }),
+      text: `New website project request
+
+Name: ${clean.fullName}
+Email: ${clean.email}
+Business: ${clean.businessName}
+Stage: ${clean.businessStage}
+Target audience: ${clean.targetAudience}
+Branding: ${clean.hasBranding}
+Domain: ${clean.hasDomain}
+Style: ${clean.styleDirection}
+Booking: ${clean.needBooking}
+Webshop: ${clean.needShop}
+Multilang: ${clean.needMultilang}
+Blog: ${clean.needBlog}
+Goal: ${clean.primaryGoal}
+Content ready: ${clean.contentReady}
+Copywriting: ${clean.needCopywriting}
+Pages: ${clean.pagesCount}
+CMS: ${clean.needCms}
+References: ${clean.referenceWebsite || "-"}
+Budget: ${clean.budgetRange}
+Timeline: ${clean.timeline}
+Urgent: ${clean.urgent}
+Hosting: ${clean.hasHosting}
+Legal pages: ${clean.needLegalPages}
+Analytics: ${clean.needAnalytics}
+Integrations: ${clean.needIntegrations}
+Integration details: ${clean.integrationsDetails || "-"}
+Maintenance: ${clean.maintenance}
+SEO: ${clean.seo}
+Launch campaign: ${clean.launchCampaign}
+Notes: ${clean.notes || "-"}`,
+    });
+
+    if (adminResult?.error) {
+      return res.status(500).json({
+        ok: false,
+        error: "Resend error (admin)",
+        details: adminResult.error,
+      });
+    }
+
+    const userResult = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: clean.email,
+      subject: projectRequestAutoReplySubject(L),
+      text: projectRequestAutoReplyText({ name: clean.fullName, lang: L, toEmail: TO_EMAIL }),
+    });
+
+    if (userResult?.error) {
+      return res.json({
+        ok: true,
+        warning: "Projectaanvraag is verstuurd, maar bevestigingsmail naar afzender mislukte.",
+      });
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
     return res.status(500).json({
       ok: false,
       error: "Server error",
