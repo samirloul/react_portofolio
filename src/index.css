@@ -2326,13 +2326,46 @@ html.rtl .contact-social-arrow { margin-left: 0; margin-right: auto; }
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
+  border: 1px solid var(--border-med);
+  background: linear-gradient(180deg, #ffffff, #f7efe4);
+  color: var(--primary);
   cursor: pointer;
   font-size: 20px;
+  font-weight: 700;
   line-height: 1;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.14);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease,
+    color 0.14s ease, border-color 0.14s ease;
+}
+
+.hamburger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+}
+
+.hamburger:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline-offset: 2px;
+}
+
+.hamburger[aria-expanded="true"] {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary-dark);
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.32);
+}
+
+[data-theme="dark"] .hamburger {
+  background: var(--bg-card);
+  color: var(--text);
+  border-color: var(--border-soft);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.42);
+}
+
+[data-theme="dark"] .hamburger[aria-expanded="true"] {
+  color: #ffffff;
 }
 
 /* Mobiel gedrag */
@@ -2378,4 +2411,251 @@ html.rtl .contact-social-arrow { margin-left: 0; margin-right: auto; }
   width: 1px;
   height: 1px;
   overflow: hidden;
+}
+
+/* =========================
+   PROJECT INTAKE PAGE
+   ========================= */
+
+.project-intake-page {
+  width: min(940px, 100%);
+  margin: 0 auto;
+  padding: 0 1rem 4rem;
+}
+
+.project-intake-header {
+  text-align: center;
+  padding: 1.6rem 1.1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 1.4rem;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(16,185,129,.16), transparent 38%),
+    radial-gradient(circle at 88% 100%, rgba(59,130,246,.14), transparent 40%),
+    var(--bg-card);
+  box-shadow: var(--shadow-soft);
+}
+
+.project-intake-header h1 {
+  margin: .3rem 0 .45rem;
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
+}
+
+.project-intake-header p {
+  margin: 0 auto;
+  max-width: 710px;
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+
+.project-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+  font-size: .76rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.project-intake-progress-wrap {
+  margin-top: 1rem;
+  padding: .95rem 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 1rem;
+  background: var(--bg-card);
+}
+
+.project-intake-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .6rem;
+  color: var(--text-muted);
+}
+
+.project-intake-progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(148,163,184,.22);
+  overflow: hidden;
+}
+
+.project-intake-progress.thin {
+  height: 8px;
+}
+
+.project-intake-progress > div {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #0ea5e9);
+  transition: width .2s ease;
+}
+
+.project-intake-card {
+  margin-top: 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 1.4rem;
+  padding: 1.15rem;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-med);
+}
+
+.project-step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .55rem;
+}
+
+.project-step-head p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.project-step-head span {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.project-step-questions {
+  margin-top: .9rem;
+  display: grid;
+  gap: .8rem;
+}
+
+.project-question {
+  display: grid;
+  gap: .45rem;
+}
+
+.project-label-row {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.project-question label,
+.project-question-label {
+  margin: 0;
+  font-size: .95rem;
+  color: var(--text);
+}
+
+.project-hint {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .72rem;
+  font-weight: 700;
+  background: rgba(59,130,246,.12);
+  color: #0f172a;
+  border: 1px solid rgba(59,130,246,.30);
+  cursor: help;
+}
+
+[data-theme="dark"] .project-hint {
+  color: #e2e8f0;
+  background: rgba(59,130,246,.20);
+}
+
+.project-hint-bubble {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 8px);
+  min-width: 220px;
+  max-width: 320px;
+  padding: .55rem .65rem;
+  border-radius: .7rem;
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid rgba(148,163,184,.35);
+  box-shadow: 0 14px 26px rgba(2,6,23,.35);
+  font-size: .78rem;
+  line-height: 1.5;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .14s ease, transform .14s ease;
+  transform-origin: bottom center;
+}
+
+.project-hint:hover .project-hint-bubble,
+.project-hint:focus .project-hint-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.project-toggle {
+  display: flex;
+  gap: .55rem;
+  flex-wrap: wrap;
+}
+
+.project-toggle label {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  border: 1px solid var(--border-soft);
+  padding: .42rem .7rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.project-toggle input:checked + span {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.project-question-progress {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(148,163,184,.20);
+}
+
+.project-question-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #22c55e);
+  transition: width .15s ease;
+}
+
+.project-step-actions {
+  margin-top: .9rem;
+  display: flex;
+  justify-content: space-between;
+  gap: .7rem;
+}
+
+.project-status {
+  margin: .85rem 0 0;
+  padding: .65rem .8rem;
+  border-radius: .8rem;
+  border: 1px solid var(--border-soft);
+}
+
+.project-status.success {
+  background: rgba(34,197,94,.12);
+  border-color: rgba(34,197,94,.26);
+}
+
+.project-status.error {
+  background: rgba(239,68,68,.12);
+  border-color: rgba(239,68,68,.26);
+}
+
+@media (max-width: 720px) {
+  .project-step-actions {
+    flex-direction: column;
+  }
+
+  .project-hint-bubble {
+    min-width: 180px;
+    max-width: 260px;
+  }
 }
