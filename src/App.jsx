@@ -12,6 +12,7 @@ import About from "./pages/About.jsx";
 import Projects from "./pages/Projects.jsx";
 import Cv from "./pages/Cv.jsx";
 import Contact from "./pages/Contact.jsx";
+import StartProject from "./pages/StartProject.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
 import Admin from "./pages/Admin.jsx";
 import BackToTop from "./components/BackToTop.jsx";
@@ -97,6 +98,17 @@ export default function App() {
       } else {
         title = "Contact - Samir Loul";
         description = "Contact Samir Loul for web development and programming projects.";
+      }
+    } else if (location.pathname === "/start-project") {
+      if (lang === "ar") {
+        title = "ابدأ مشروعك - سمير لول";
+        description = "ابدأ طلب موقعك عبر نموذج ذكي من 5 خطوات لتحديد احتياجاتك بدقة.";
+      } else if (lang === "nl") {
+        title = "Start Project - Samir Loul";
+        description = "Start je website project via een slimme 5-stappen intake.";
+      } else {
+        title = "Start Project - Samir Loul";
+        description = "Start your website project using a smart 5-step intake form.";
       }
     } else {
       if (lang === "ar") {
@@ -185,6 +197,9 @@ export default function App() {
           <NavLink to="/contact" className="nav-link" onClick={closeMenu}>
             {t.nav.contact}
           </NavLink>
+          <NavLink to="/start-project" className="nav-link" onClick={closeMenu}>
+            {t.nav.startProject}
+          </NavLink>
         </nav>
 
         <div className="navbar-right">
@@ -217,6 +232,7 @@ export default function App() {
           <Route path="/projects" element={<Projects t={t} />} />
           <Route path="/cv" element={<Cv t={t} lang={lang} />} />
           <Route path="/contact" element={<Contact t={t} lang={lang} />} />
+          <Route path="/start-project" element={<StartProject lang={lang} />} />
           <Route path="/blog/:slug" element={<BlogPost t={t} lang={lang} />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
