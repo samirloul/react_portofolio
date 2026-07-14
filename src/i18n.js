@@ -117,11 +117,6 @@ export const translations = {
               href: "https://elegancia-barber.nl/",
               icon: "fas fa-arrow-up-right-from-square",
             },
-            {
-              label: "GitHub",
-              href: "https://github.com/samirloul/elegancia-barber",
-              icon: "fab fa-github",
-            },
           ],
         },
 
@@ -464,8 +459,7 @@ export const translations = {
           text: "موقع إنتاجي حقيقي قمت ببرمجته بشكل فردي ويُستخدم الآن فعلياً لصالون حلاقة في أوتريخت (كانالينييلاند). تم بناؤه بهيكلية PHP MVC مخصصة، ويمكن للعملاء حجز المواعيد أونلاين واختيار الخدمات وخيارات التصفيف بسهولة.",
           tags: ["PHP MVC", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
           links: [
-            { label: "الموقع المباشر", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" },
-            { label: "GitHub", href: "https://github.com/samirloul/elegancia-barber", icon: "fab fa-github" }
+            { label: "الموقع المباشر", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" }
           ],
         },
 
@@ -756,8 +750,7 @@ export const translations = {
           text: "Een echte productie-website die ik individueel heb gebouwd voor een kapsalon in Utrecht (Kanaleneiland). Gebouwd met een custom PHP MVC-architectuur, waarbij klanten online afspraken kunnen maken, behandelingen kiezen en styling-opties selecteren.",
           tags: ["PHP MVC", "JavaScript", "CSS", "SQL", "HTML", "SEO"],
           links: [
-            { label: "Live Website", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" },
-            { label: "GitHub", href: "https://github.com/samirloul/elegancia-barber", icon: "fab fa-github" }
+            { label: "Live Website", href: "https://elegancia-barber.nl/", icon: "fas fa-arrow-up-right-from-square" }
           ],
         },
 
