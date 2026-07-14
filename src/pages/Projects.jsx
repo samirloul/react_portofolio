@@ -55,51 +55,55 @@ export default function Projects({ t }) {
                 <i className={card.icon || "fas fa-code"} />
               </div>
 
-              <h3 className="project-title">{card.title}</h3>
-              <p className="project-text">{card.text}</p>
+              <div className="project-content">
+                <h3 className="project-title">{card.title}</h3>
+                <p className="project-text">{card.text}</p>
 
-              {Array.isArray(card.tags) && card.tags.length > 0 && (
-                <div className="project-tags">
-                  {card.tags.map((tag) => (
-                    <span key={`${card.title}-${tag}`} className="tag-pill">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+                {Array.isArray(card.tags) && card.tags.length > 0 && (
+                  <div className="project-tags">
+                    {card.tags.map((tag) => (
+                      <span key={`${card.title}-${tag}`} className="tag-pill">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
-              {/* Links */}
-              {Array.isArray(card.links) && card.links.length > 0 && (
-                <div className="project-actions">
-                  {card.links.map((l) => {
-                    const disabled = isDisabled(l.href);
-                    const external = isExternal(l.href);
+                {/* Links */}
+                {Array.isArray(card.links) && card.links.length > 0 && (
+                  <div className="project-actions">
+                    {card.links.map((l) => {
+                      const disabled = isDisabled(l.href);
+                      const external = isExternal(l.href);
 
-                    return (
-                      <a
-                        key={`${card.title}-${l.label}-${l.href}`}
-                        className={`project-btn ${l.variant === "outline" ? "outline" : "primary"} ${
-                          disabled ? "disabled" : ""
-                        }`}
-                        href={disabled ? undefined : l.href}
-                        target={!disabled && external ? "_blank" : undefined}
-                        rel={!disabled && external ? "noreferrer" : undefined}
-                        aria-disabled={disabled}
-                        onClick={(e) => {
-                          if (disabled) e.preventDefault();
-                        }}
-                      >
-                        <i className={l.icon || "fas fa-arrow-up-right-from-square"} aria-hidden="true" />
-                        <span>{l.label}</span>
-                      </a>
-                    );
-                  })}
-                </div>
-              )}
+                      return (
+                        <a
+                          key={`${card.title}-${l.label}-${l.href}`}
+                          className={`project-btn ${l.variant === "outline" ? "outline" : "primary"} ${
+                            disabled ? "disabled" : ""
+                          }`}
+                          href={disabled ? undefined : l.href}
+                          target={!disabled && external ? "_blank" : undefined}
+                          rel={!disabled && external ? "noreferrer" : undefined}
+                          aria-disabled={disabled}
+                          onClick={(e) => {
+                            if (disabled) e.preventDefault();
+                          }}
+                        >
+                          <i className={l.icon || "fas fa-arrow-up-right-from-square"} aria-hidden="true" />
+                          <span>{l.label}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
-              {/* Share & Rate */}
-              <ShareButtons url={`/projects#${card.title}`} t={t} />
-              <ProjectRating projectId={card.title} t={t} />
+              <div className="project-footer">
+                {/* Share & Rate */}
+                <ShareButtons url={`/projects#${card.title}`} t={t} />
+                <ProjectRating projectId={card.title} t={t} />
+              </div>
             </article>
           ))}
         </div>
