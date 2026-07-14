@@ -842,6 +842,7 @@ html[dir="rtl"] .skill-item {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.6rem;
+  align-items: stretch;
 }
 
 .project-card {
@@ -855,6 +856,22 @@ html[dir="rtl"] .skill-item {
   border: 1px solid var(--border-soft);
   transition: transform 0.18s ease, box-shadow 0.18s ease,
     border-color 0.18s ease;
+  height: 100%;
+}
+
+.project-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.project-footer {
+  margin-top: auto;
+}
+
+.project-footer .project-rating {
+  margin: 0 !important;
 }
 
 .project-card:hover {
@@ -1822,7 +1839,7 @@ html[dir="rtl"] .timeline-item::before {
   }
 }
 .project-actions {
-  margin-top: 0.8rem;
+  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
