@@ -478,7 +478,7 @@ export default function StartProject({ lang = "en" }) {
   }, [form]);
 
   const currentStepKey = steps[currentStep];
-  const currentQuestions = stepQuestions[currentStepKey] || [];
+  const currentQuestions = useMemo(() => stepQuestions[currentStepKey] || [], [currentStepKey]);
 
   const stepProgress = useMemo(() => {
     const answered = currentQuestions.filter((key) => {
