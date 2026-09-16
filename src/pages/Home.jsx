@@ -111,6 +111,29 @@ export default function Home({ t, lang = "en" }) {
         </div>
       </section>
 
+      <section className="visual-story container" aria-labelledby="visual-story-title">
+        <div className="visual-story-copy">
+          <span className="eyebrow">{t.nav.about}</span>
+          <h2 id="visual-story-title">{t.about.title}</h2>
+          <p>{t.about.intro}</p>
+          <div className="visual-story-actions">
+            <Link className="btn primary" to="/about">{hero.primaryButton}</Link>
+            <Link className="btn outline" to="/start-project">{t.nav.startProject}</Link>
+          </div>
+        </div>
+
+        <div className="visual-story-gallery">
+          <figure className="visual-photo visual-photo-large">
+            <img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.24%20(4).jpeg" alt="Samir in the city" loading="lazy" />
+            <figcaption>{t.nav.about}</figcaption>
+          </figure>
+          <figure className="visual-photo visual-photo-small">
+            <img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.23.jpeg" alt="Samir near the water" loading="lazy" />
+            <figcaption>{hero.role}</figcaption>
+          </figure>
+        </div>
+      </section>
+
       <Skills t={t} />
 
       {/* Stats Section */}
