@@ -1,6 +1,7 @@
-export default function PageVisual({ image, eyebrow, title, text, className = "" }) {
+export default function PageVisual({ image, alt, eyebrow, title, text, className = "" }) {
   return (
-    <div className={`page-visual ${className}`.trim()} style={{ backgroundImage: `url("${image}")` }}>
+    <div className={`page-visual ${className}`.trim()}>
+      <img className="page-visual-image" src={image} alt={alt || title} loading="lazy" />
       <div className="page-visual-overlay" />
       <div className="page-visual-content">
         {eyebrow ? <span className="eyebrow page-visual-eyebrow">{eyebrow}</span> : null}
