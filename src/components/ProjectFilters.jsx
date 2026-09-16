@@ -8,6 +8,9 @@ export default function ProjectFilters({ projects, onFilter, t }) {
     backend: ["php", "mysql", "sql", "laravel", "api", "backend", "node"],
     fullstack: ["fullstack", "full stack", "react", "php", "mysql", "sql", "api", "laravel"],
     tools: ["git", "github", "vite", "npm", "tool", "devops"],
+    laravel: ["laravel"],
+    php: ["php"],
+    react: ["react"],
   };
 
   const hasTagFromGroup = (project, groupKey) => {
@@ -20,15 +23,25 @@ export default function ProjectFilters({ projects, onFilter, t }) {
       return hasFront && hasBack;
     }
 
+    if (groupKey === "live" || groupKey === "completed" || groupKey === "in-development") {
+      const normalized = String(project?.status || "").toLowerCase();
+      return normalized.includes(groupKey.replace("-", " ")) || normalized.includes(groupKey.replace("-", ""));
+    }
+
     return tags.some((tag) => candidates.some((candidate) => tag.includes(candidate)));
   };
 
   const filterOptions = [
     { key: "all", label: t?.projectFilters?.all || "All Projects" },
-    { key: "frontend", label: t?.projectFilters?.frontend || "Frontend" },
+    { key: "laravel", label: t?.projectFilters?.laravel || "Laravel" },
+    { key: "php", label: t?.projectFilters?.php || "PHP" },
+    { key: "react", label: t?.projectFilters?.react || "React" },
     { key: "backend", label: t?.projectFilters?.backend || "Backend" },
+    { key: "frontend", label: t?.projectFilters?.frontend || "Frontend" },
     { key: "fullstack", label: t?.projectFilters?.fullstack || "Full Stack" },
-    { key: "tools", label: t?.projectFilters?.tools || "Tools & DevOps" },
+    { key: "live", label: t?.projectFilters?.live || "Live" },
+    { key: "completed", label: t?.projectFilters?.completed || "Completed" },
+    { key: "in-development", label: t?.projectFilters?.inDevelopment || "In Development" },
   ];
 
   const handleFilter = (filter) => {
