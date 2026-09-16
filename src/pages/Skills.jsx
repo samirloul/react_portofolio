@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/skills.css";
+import PageVisual from "../components/PageVisual.jsx";
 
 export default function Skills({ t }) {
   const { skills } = t;
@@ -7,16 +8,23 @@ export default function Skills({ t }) {
   if (!skills) return null;
 
   const skillCategories = [
-    { key: "frontend", icon: "fas fa-palette" },
     { key: "backend", icon: "fas fa-server" },
+    { key: "frontend", icon: "fas fa-palette" },
+    { key: "security", icon: "fas fa-shield-alt" },
+    { key: "learning", icon: "fas fa-brain" },
     { key: "tools", icon: "fas fa-hammer" },
-    { key: "soft", icon: "fas fa-brain" },
   ];
 
   return (
-    <section className="tech-skills-section">
+    <section className="tech-skills-section page-section">
+      <PageVisual
+        image="/fotos/vaardigeheden.png"
+        className="skills-visual"
+        eyebrow="Skills"
+        title={skills.title}
+        text={skills.visualText}
+      />
       <div className="container">
-        <h2 className="section-title">{skills.title}</h2>
         <div className="tech-skills-grid">
           {skillCategories.map((category) => {
             const categoryData = skills[category.key];
@@ -27,6 +35,7 @@ export default function Skills({ t }) {
                   <i className={category.icon}></i>
                 </div>
                 <h3>{categoryData.title}</h3>
+                <div className="tech-skill-meter" aria-hidden="true"><span /></div>
                 <ul className="tech-skill-list">
                   {categoryData.items.map((item, idx) => (
                     <li key={idx} className="tech-skill-item">
