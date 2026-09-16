@@ -63,9 +63,9 @@ export default function App() {
 
     const routeCopy = {
       "/skills": {
-        en: ["Skills - Samir Loul", "Explore Samir Loul's technical skills in frontend, backend, PHP, Laravel, React and secure web development."],
-        nl: ["Vaardigheden - Samir Loul", "Bekijk de technische vaardigheden van Samir Loul in frontend, backend, PHP, Laravel, React en veilige webontwikkeling."],
-        ar: ["مهارات سمير لول التقنية", "استكشف مهارات سمير لول في تطوير الواجهات والخلفيات وPHP وLaravel وReact وتطوير الويب الآمن."],
+        en: ["Samir Loul | Laravel, PHP, MySQL & React Skills", "Explore Samir Loul's skills in Laravel, PHP, MySQL, React, backend and software development."],
+        nl: ["Samir Loul | Laravel, PHP, MySQL & React-vaardigheden", "Bekijk de vaardigheden van Samir Loul in Laravel, PHP, MySQL, React, backendontwikkeling en softwareontwikkeling."],
+        ar: ["سمير لول | مهارات Laravel وPHP وMySQL وReact", "استكشف مهارات سمير لول في Laravel وPHP وMySQL وReact وتطوير الأنظمة الخلفية والبرمجيات."],
       },
       "/experience": {
         en: ["Experience - Samir Loul", "Read about Samir Loul's software development internship, education and practical experience."],
@@ -104,38 +104,44 @@ export default function App() {
       [title, description] = localizedRouteCopy;
     }
 
-    if (location.pathname === "/about") {
+    if (location.pathname === "/") {
+      title = t.seo?.homeTitle || "Samir Loul | Software Developer";
+      description = t.seo?.homeDescription || "Samir Loul is a Software Developer focused on backend development, Laravel, PHP, MySQL, React, AI and cybersecurity.";
+    } else if (location.pathname === "/about") {
       if (lang === "ar") {
-        title = "من أنا - سمير لول";
-        description = "تعرف على سمير لول، مطور ويب ومطور برمجيات وخبراته ومهاراته.";
+        title = "عن سمير لول | مطور برمجيات";
+        description = "تعرف على سمير لول، مطور برمجيات مهتم بتطوير الأنظمة الخلفية والذكاء الاصطناعي والأمن السيبراني.";
       } else if (lang === "nl") {
-        title = "Over mij - Samir Loul";
-        description = "Lees meer over Samir Loul, webontwikkelaar, software developer en zijn ervaring.";
+        title = "Over Samir Loul | Software Developer";
+        description = "Lees meer over Samir Loul, Software Developer met interesse in backendontwikkeling, AI en cybersecurity.";
       } else {
-        title = "About - Samir Loul";
-        description = "Learn more about Samir Loul, web developer, software developer and his experience.";
+        title = "About Samir Loul | Software Developer";
+        description = "Learn more about Samir Loul, a Software Developer focused on backend development, AI and cybersecurity.";
       }
+    } else if (location.pathname === "/skills") {
+      const localizedSkillsCopy = routeCopy["/skills"]?.[lang];
+      if (localizedSkillsCopy) [title, description] = localizedSkillsCopy;
     } else if (location.pathname === "/projects") {
       if (lang === "ar") {
-        title = "المشاريع - سمير لول";
-        description = "استكشف مشاريع سمير لول في تطوير الويب والبرمجة وReact.";
+        title = "سمير لول | مشاريع تطوير البرمجيات";
+        description = "استكشف مشاريع سمير لول في تطوير البرمجيات والويب باستخدام React وPHP وLaravel.";
       } else if (lang === "nl") {
-        title = "Projecten - Samir Loul";
-        description = "Bekijk projecten van Samir Loul in webontwikkeling, programmeren en React.";
+        title = "Samir Loul | Software Development-projecten";
+        description = "Bekijk de software development-projecten van Samir Loul met React, PHP en Laravel.";
       } else {
-        title = "Projects - Samir Loul";
-        description = "Explore projects by Samir Loul in web development, programming and React.";
+        title = "Samir Loul | Software Development Projects";
+        description = "Explore Samir Loul's software development projects built with React, PHP and Laravel.";
       }
     } else if (location.pathname === "/cv") {
       if (lang === "ar") {
-        title = "السيرة الذاتية - سمير لول";
-        description = "السيرة الذاتية لسمير لول، مطور ويب ومطور برمجيات.";
+        title = "سمير لول | السيرة الذاتية وملف تطوير البرمجيات";
+        description = "اطلع على السيرة الذاتية وملف تطوير البرمجيات لسمير لول، مع التركيز على تطوير الأنظمة الخلفية والتطوير الكامل وهندسة البرمجيات.";
       } else if (lang === "nl") {
-        title = "CV - Samir Loul";
-        description = "Bekijk het cv van Samir Loul, webontwikkelaar en software developer.";
+        title = "Samir Loul | CV & Software Development Profile";
+        description = "Bekijk het CV en software development-profiel van Samir Loul, met focus op backendontwikkeling, full-stackontwikkeling en software engineering.";
       } else {
-        title = "CV - Samir Loul";
-        description = "View the CV of Samir Loul, web developer and software developer.";
+        title = "Samir Loul | CV & Software Development Profile";
+        description = "View the CV and software development profile of Samir Loul, focused on backend development, full-stack development and software engineering.";
       }
     } else if (location.pathname === "/contact") {
       if (lang === "ar") {
