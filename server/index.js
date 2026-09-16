@@ -5,12 +5,343 @@ import rateLimit from "express-rate-limit";
 import { Resend } from "resend";
 import helmet from "helmet";
 import crypto from "node:crypto";
+import bcrypt from "bcryptjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
 
 dotenv.config();
+
+const isProduction = process.env.NODE_ENV === "production";
+const PORT = Number(process.env.PORT || 8080);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DATA_DIR = path.join(__dirname, "data");
+const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
+const FEEDBACK_FILE = path.join(DATA_DIR, "feedback.json");
+const DATABASE_URL = (process.env.DATABASE_URL || "").trim();
+const APP_BASE_URL = (process.env.APP_BASE_URL || "https://samirprofile.com").replace(/\/+$/, "");
+const PG_SSL = String(process.env.PG_SSL || "true").toLowerCase() !== "false";
+const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
+const FROM_EMAIL = process.env.FROM_EMAIL || "Samir Loul <no-reply@samirprofile.com>";
+const RECAPTCHA_SECRET_KEY = (process.env.RECAPTCHA_SECRET_KEY || "").trim();
+const ADMIN_TOKEN = (process.env.ADMIN_TOKEN || "").trim();
+const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || "admin").trim();
+const ADMIN_PASSWORD_HASH = (process.env.ADMIN_PASSWORD_HASH || "").trim();
+const SESSION_SECRET = (process.env.SESSION_SECRET || "portfolio-session-secret").trim();
+const RAW_ALLOWED_ORIGINS = process.env.CORS_ORIGIN || "https://samirprofile.com,https://www.samirprofile.com,http://localhost:5173";
+const ALLOWED_ORIGINS = RAW_ALLOWED_ORIGINS
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
+if (isProduction && !DATABASE_URL) {
+  throw new Error("DATABASE_URL is required in production");
+}
+
+if (isProduction && !ADMIN_PASSWORD_HASH && !ADMIN_TOKEN) {
+  throw new Error("ADMIN_PASSWORD_HASH or ADMIN_TOKEN is required in production");
+}
+
+let db = null;
+
+function getRequestId(req) {
+  return (req.headers["x-request-id"] || crypto.randomBytes(6).toString("hex")).toString();
+}
+
+function structuredLog(level, message, meta = {}) {
+  const payload = {
+    timestamp: new Date().toISOString(),
+    level,
+    message,
+    ...meta,
+  };
+  console.log(JSON.stringify(payload));
+}
+
+function getRemoteIp(req) {
+  return req.headers["x-forwarded-for"]?.toString().split(",")[0]?.trim() || req.socket?.remoteAddress || "unknown";
+}
+
+function parseCookies(cookieHeader = "") {
+  const data = {};
+  for (const segment of (cookieHeader || "").split(";")) {
+    const cleaned = segment.trim();
+    if (!cleaned) continue;
+    const equalIndex = cleaned.indexOf("=");
+    if (equalIndex === -1) continue;
+    const key = cleaned.slice(0, equalIndex).trim();
+    const value = cleaned.slice(equalIndex + 1).trim();
+    data[key] = decodeURIComponent(value || "");
+  }
+  return data;
+}
+
+function signSession(payload) {
+  const json = JSON.stringify(payload);
+  const signature = crypto.createHmac("sha256", SESSION_SECRET).update(json).digest("hex");
+  return Buffer.from(json, "utf8").toString("base64url") + "." + signature;
+}
+
+function verifySessionToken(token) {
+  if (!token || typeof token !== "string") return null;
+  const [payloadPart, signature] = token.split(".");
+  if (!payloadPart || !signature) return null;
+  const payloadText = Buffer.from(payloadPart, "base64url").toString("utf8");
+  const expected = crypto.createHmac("sha256", SESSION_SECRET).update(payloadText).digest("hex");
+  try {
+    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
+    const payload = JSON.parse(payloadText);
+    if (Number(payload.exp) < Date.now()) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function getAdminSession(req) {
+  const cookieHeader = String(req.headers.cookie || "");
+  const cookies = parseCookies(cookieHeader);
+  return verifySessionToken(cookies.admin_session || "");
+}
+
+function getSessionCookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "strict" : "lax",
+    secure: isProduction,
+    path: "/",
+    maxAge: 1000 * 60 * 60 * 8,
+  };
+}
+
+function setAdminSessionCookie(res, username) {
+  const payload = { username, exp: Date.now() + 1000 * 60 * 60 * 8 };
+  const token = signSession(payload);
+  res.cookie("admin_session", token, getSessionCookieOptions());
+  const csrf = crypto.randomBytes(32).toString("hex");
+  res.cookie("csrf_token", csrf, { ...getSessionCookieOptions(), httpOnly: false });
+  return csrf;
+}
+
+function clearAdminSessionCookie(res) {
+  res.clearCookie("admin_session", { path: "/" });
+  res.clearCookie("csrf_token", { path: "/" });
+}
+
+function getCsrfToken(req) {
+  const cookieHeader = String(req.headers.cookie || "");
+  const cookies = parseCookies(cookieHeader);
+  return String(cookies.csrf_token || "").trim();
+}
+
+function requireCsrf(req, res, next) {
+  if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
+    return next();
+  }
+
+  const tokenFromHeader = String(req.headers["x-csrf-token"] || "").trim();
+  const tokenFromCookie = getCsrfToken(req);
+
+  if (!tokenFromHeader || !tokenFromCookie || tokenFromHeader !== tokenFromCookie) {
+    return res.status(403).json({ ok: false, error: "CSRF validation failed" });
+  }
+
+  return next();
+}
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  const normalized = String(origin).replace(/\/+$/, "");
+  return ALLOWED_ORIGINS.includes(normalized) || ALLOWED_ORIGINS.includes("*");
+}
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+function requireResendClient() {
+  if (!resend) {
+    throw new Error("RESEND_API_KEY is not configured. Email features are unavailable until it is set.");
+  }
+  return resend;
+}
+
+const app = express();
+app.set("trust proxy", 1);
+app.disable("x-powered-by");
+
+app.use((req, res, next) => {
+  req.requestId = getRequestId(req);
+  const start = Date.now();
+  res.on("finish", () => {
+    structuredLog("info", "http-request", {
+      requestId: req.requestId,
+      method: req.method,
+      path: req.originalUrl,
+      status: res.statusCode,
+      durationMs: Date.now() - start,
+      remoteIp: getRemoteIp(req),
+    });
+  });
+  next();
+});
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+        connectSrc: ["'self'", "https://www.google.com", "https://www.gstatic.com", "https://api.resend.com"],
+        frameSrc: ["'self'", "https://www.google.com", "https://www.gstatic.com"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'none'"],
+      },
+    },
+    hsts: isProduction,
+    noSniff: true,
+    xFrameOptions: { action: "deny" },
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  })
+);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || isAllowedOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error(`Origin not allowed by CORS: ${origin}`));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Admin-Token", "X-Requested-With", "X-CSRF-Token"],
+    credentials: true,
+  })
+);
+app.options("*", cors());
+
+app.use(express.json({ limit: "100kb" }));
+app.use(express.urlencoded({ extended: false, limit: "100kb" }));
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
+const PROFILE_IMAGE_URL = "https://samirprofile.com/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.23.jpeg";
+const SOCIALS = [
+  { label: "X", href: "https://x.com/samirloul", color: "#111111" },
+  { label: "Instagram", href: "https://www.instagram.com/samirloul/", color: "#E1306C" },
+  { label: "TikTok", href: "https://www.tiktok.com/@samirloul1", color: "#111111" },
+  {
+    label: "Snapchat",
+    href: "https://www.snapchat.com/@samir631s?invite_id=IGIAfg18&locale=nl_NL&share_id=UlqVPeOXRemffu3e4daVWg&sid=a9060b8fe1be4d028dfc489f2633a308",
+    color: "#FFFC00",
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/people/Samir-Loul/pfbid0229Fmoew6U5a5a5CKW5ctUqiL3dXeo3RKj9rsM5kWhAodTzeHpE6tUUQrGBeyHUA2l/",
+    color: "#1877F2",
+  },
+  { label: "Threads", href: "https://www.threads.com/@samirloul", color: "#000000" },
+];
+
+const apiLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many requests. Please try again soon." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const contactLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many contact submissions. Please try again in 10 minutes." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const projectLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many project requests. Please try again in 10 minutes." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const newsletterLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many newsletter signups. Please try again in 10 minutes." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const feedbackLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many feedback submissions. Please try again in 10 minutes." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const adminLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many admin requests. Please try again in 10 minutes." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many admin login attempts. Please try again later." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+const broadcastLimiter = rateLimit({
+  windowMs: 60 * 60_000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Broadcast is temporarily rate limited. Please try again in an hour." },
+  keyGenerator: (req) => req.ip || req.headers["x-forwarded-for"] || "unknown",
+});
+
+app.use("/api", apiLimiter);
+app.use("/api/contact", contactLimiter);
+app.use("/api/project-request", projectLimiter);
+app.use("/api/newsletter", newsletterLimiter);
+app.use("/api/feedback", feedbackLimiter);
+app.use("/api/admin/login", adminLoginLimiter);
+app.use("/api/admin", adminLimiter);
+
+console.log("ENV check:", {
+  nodeEnv: process.env.NODE_ENV || "development",
+  databaseConfigured: !!DATABASE_URL,
+  resendConfigured: !!process.env.RESEND_API_KEY,
+  recaptchaConfigured: !!RECAPTCHA_SECRET_KEY,
+  adminUsernameConfigured: !!ADMIN_USERNAME,
+  adminTokenConfigured: !!ADMIN_TOKEN,
+  adminPasswordHashConfigured: !!ADMIN_PASSWORD_HASH,
+  allowedOrigins: ALLOWED_ORIGINS,
+  appBaseUrl: APP_BASE_URL,
+});
 
 function getEmailCopy(lang) {
   const L = normalizeLang(lang);
@@ -206,170 +537,6 @@ function emailLayout({
 </body>
 </html>`;
 }
-const app = express();
-app.use((req, res, next) => {
-  console.log(`[REQ] ${req.method} ${req.url}`);
-  next();
-});
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-/** =========================
- * Config
- * ========================= */
-const PORT = process.env.PORT || 8080;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_DIR = path.join(__dirname, "data");
-const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
-const FEEDBACK_FILE = path.join(DATA_DIR, "feedback.json");
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
-const DATABASE_URL = process.env.DATABASE_URL || "";
-const APP_BASE_URL = (process.env.APP_BASE_URL || "https://samirprofile.com").replace(/\/+$/, "");
-const PG_SSL = String(process.env.PG_SSL || "true").toLowerCase() !== "false";
-
-let db = null;
-
-const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
-const FROM_EMAIL =
-  process.env.FROM_EMAIL || "Samir Loul <no-reply@samirprofile.com>";
-const RAW_ALLOWED_ORIGINS = process.env.CORS_ORIGIN || "*";
-const ALLOWED_ORIGINS = RAW_ALLOWED_ORIGINS
-  .split(",")
-  .map((origin) => origin.trim().replace(/\/+$/, ""))
-  .filter(Boolean);
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-
-console.log("ENV check:");
-console.log("- RESEND_API_KEY set?", !!process.env.RESEND_API_KEY);
-console.log("- RECAPTCHA_SECRET_KEY set?", !!RECAPTCHA_SECRET_KEY);
-console.log("- TO_EMAIL:", TO_EMAIL);
-console.log("- FROM_EMAIL:", FROM_EMAIL);
-console.log("- CORS_ORIGIN(raw):", RAW_ALLOWED_ORIGINS);
-console.log("- CORS_ORIGIN(parsed):", ALLOWED_ORIGINS);
-console.log("- ADMIN_TOKEN set?", !!ADMIN_TOKEN);
-console.log("- DATABASE_URL set?", !!DATABASE_URL);
-console.log("- APP_BASE_URL:", APP_BASE_URL);
-
-/** =========================
- * Middleware
- * ========================= */
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-}));
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) {
-        callback(null, true);
-        return;
-      }
-
-      if (ALLOWED_ORIGINS.includes("*")) {
-        callback(null, true);
-        return;
-      }
-
-      const normalizedOrigin = String(origin).replace(/\/+$/, "");
-      if (ALLOWED_ORIGINS.includes(normalizedOrigin)) {
-        callback(null, true);
-        return;
-      }
-
-      callback(new Error(`Origin not allowed by CORS: ${origin}`));
-    },
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Admin-Token"],
-  })
-);
-const PROFILE_IMAGE_URL = "https://samirprofile.com/samir.jpg";
-const SOCIALS = [
-  { label: "X", href: "https://x.com/samirloul", color: "#111111" },
-  { label: "Instagram", href: "https://www.instagram.com/samirloul/", color: "#E1306C" },
-  { label: "TikTok", href: "https://www.tiktok.com/@samirloul1", color: "#111111" },
-  {
-    label: "Snapchat",
-    href: "https://www.snapchat.com/@samir631s?invite_id=IGIAfg18&locale=nl_NL&share_id=UlqVPeOXRemffu3e4daVWg&sid=a9060b8fe1be4d028dfc489f2633a308",
-    color: "#FFFC00",
-  },
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/people/Samir-Loul/pfbid0229Fmoew6U5a5a5CKW5ctUqiL3dXeo3RKj9rsM5kWhAodTzeHpE6tUUQrGBeyHUA2l/",
-    color: "#1877F2",
-  },
-  { label: "Threads", href: "https://www.threads.com/@samirloul", color: "#000000" },
-];
-app.use(express.json({ limit: "200kb" }));
-
-app.use(
-  "/api/contact",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 5,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-      ok: false,
-      error: "Too many requests. Please try again in a minute.",
-    },
-  })
-);
-
-app.use(
-  "/api/project-request",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 5,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-      ok: false,
-      error: "Too many requests. Please try again in a minute.",
-    },
-  })
-);
-
-app.use(
-  "/api/newsletter",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 10,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-      ok: false,
-      error: "Too many requests. Please try again in a minute.",
-    },
-  })
-);
-
-app.use(
-  "/api/feedback",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 10,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-      ok: false,
-      error: "Too many requests. Please try again in a minute.",
-    },
-  })
-);
-
-app.use(
-  "/api/admin",
-  rateLimit({
-    windowMs: 60 * 1000,
-    max: 30,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-      ok: false,
-      error: "Too many requests. Please try again in a minute.",
-    },
-  })
-);
 
 /** =========================
  * Helpers
@@ -707,50 +874,75 @@ function getAdminToken(req) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!ADMIN_TOKEN) {
-    return res.status(500).json({ ok: false, error: "Missing ADMIN_TOKEN on server" });
+  const session = getAdminSession(req);
+  const legacyToken = getAdminToken(req);
+  const isValidLegacy = !!ADMIN_TOKEN && legacyToken && legacyToken === ADMIN_TOKEN;
+
+  if (session && session.username) {
+    req.admin = { username: session.username };
+    return next();
   }
 
-  const token = getAdminToken(req);
-  if (!token || token !== ADMIN_TOKEN) {
-    return res.status(401).json({ ok: false, error: "Unauthorized" });
+  if (isValidLegacy) {
+    req.admin = { username: "legacy-admin" };
+    return next();
   }
 
-  return next();
+  return res.status(401).json({ ok: false, error: "Unauthorized" });
 }
 
-async function verifyRecaptcha(token, remoteip) {
-  if (!RECAPTCHA_SECRET_KEY) {
-    return { ok: false, error: "Missing RECAPTCHA_SECRET_KEY" };
+async function verifyAdminCredentials(username, password) {
+  const cleanUsername = String(username || "").trim();
+  const cleanPassword = String(password || "");
+
+  if (!cleanUsername || !cleanPassword) return false;
+
+  if (cleanUsername !== ADMIN_USERNAME) return false;
+
+  if (ADMIN_PASSWORD_HASH) {
+    return await bcrypt.compare(cleanPassword, ADMIN_PASSWORD_HASH);
   }
 
-  if (!token) {
-    return { ok: false, error: "Missing recaptcha token" };
+  return false;
+}
+
+async function verifyRecaptcha(token, remoteIp) {
+  if (!RECAPTCHA_SECRET_KEY) {
+    return { ok: false, error: "Captcha service is not configured." };
+  }
+
+  if (!token || typeof token !== "string") {
+    return { ok: false, error: "Captcha verification failed." };
   }
 
   const params = new URLSearchParams();
   params.append("secret", RECAPTCHA_SECRET_KEY);
   params.append("response", token);
+  if (remoteIp) params.append("remoteip", remoteIp);
 
-  if (remoteip) {
-    params.append("remoteip", remoteip);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+
+  try {
+    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+      signal: controller.signal,
+    });
+    const data = await response.json();
+    const isValid = !!data.success && (typeof data.score !== "number" || data.score >= 0.5);
+    return {
+      ok: isValid,
+      data,
+      error: isValid ? null : "Captcha verification failed.",
+    };
+  } catch (error) {
+    structuredLog("warn", "captcha-verification-error", { error: String(error?.message || error) });
+    return { ok: false, error: "Captcha verification failed." };
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const resp = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: params.toString(),
-  });
-
-  const data = await resp.json();
-  console.log("captcha result:", data);
-
-  return {
-    ok: !!data.success,
-    data,
-  };
 }
 
 /** =========================
@@ -1318,7 +1510,7 @@ const L = normalizeLang(lang);
       return res.status(400).json({ ok: false, error: "Message too short" });
     }
 
-    const adminResult = await resend.emails.send({
+    const adminResult = await requireResendClient().emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
       replyTo: cleanEmail,
@@ -1350,7 +1542,7 @@ ${cleanMessage}
         details: adminResult.error,
       });
     }
-const userResult = await resend.emails.send({
+const userResult = await requireResendClient().emails.send({
   from: FROM_EMAIL,
   to: cleanEmail,
   subject: autoReplySubject(L),
@@ -1514,7 +1706,7 @@ app.post("/api/project-request", async (req, res) => {
       return res.status(400).json({ ok: false, error: "Integration details are required" });
     }
 
-    const adminResult = await resend.emails.send({
+    const adminResult = await requireResendClient().emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
       replyTo: clean.email,
@@ -1562,7 +1754,7 @@ Notes: ${clean.notes || "-"}`,
       });
     }
 
-    const userResult = await resend.emails.send({
+    const userResult = await requireResendClient().emails.send({
       from: FROM_EMAIL,
       to: clean.email,
       subject: projectRequestAutoReplySubject(L),
@@ -1603,7 +1795,7 @@ app.post("/api/newsletter", async (req, res) => {
 
     const subscribers = await addSubscriber(cleanEmail, L);
 
-    const result = await resend.emails.send({
+    const result = await requireResendClient().emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
       subject: `${newsletterSubject(L)}: ${cleanEmail}`,
@@ -1684,7 +1876,7 @@ app.post("/api/feedback", async (req, res) => {
       lang: L,
     });
 
-    const result = await resend.emails.send({
+    const result = await requireResendClient().emails.send({
       from: FROM_EMAIL,
       to: TO_EMAIL,
       subject: `${feedbackSubject(L)} (${cleanRating}/5)`,
@@ -1725,6 +1917,38 @@ app.post("/api/feedback", async (req, res) => {
   } catch (err) {
     return res.status(500).json({ ok: false, error: "Server error", details: String(err?.message || err) });
   }
+});
+
+app.get("/api/admin/me", requireAdmin, (req, res) => {
+  return res.json({ ok: true, user: req.admin });
+});
+
+app.post("/api/admin/login", adminLoginLimiter, async (req, res) => {
+  try {
+    const username = String(req.body?.username || "").trim();
+    const password = String(req.body?.password || "");
+
+    if (!username || !password) {
+      return res.status(400).json({ ok: false, error: "Invalid credentials" });
+    }
+
+    const valid = await verifyAdminCredentials(username, password);
+
+    if (!valid) {
+      return res.status(401).json({ ok: false, error: "Invalid credentials" });
+    }
+
+    const csrf = setAdminSessionCookie(res, username);
+    return res.json({ ok: true, user: { username }, csrfToken: csrf });
+  } catch (error) {
+    structuredLog("error", "admin-login-failed", { error: String(error?.message || error) });
+    return res.status(500).json({ ok: false, error: "Internal server error" });
+  }
+});
+
+app.post("/api/admin/logout", requireAdmin, (req, res) => {
+  clearAdminSessionCookie(res);
+  return res.json({ ok: true });
 });
 
 app.get("/api/admin/overview", requireAdmin, async (req, res) => {
@@ -1792,7 +2016,7 @@ app.get("/api/admin/export/feedback.csv", requireAdmin, async (req, res) => {
   return res.send(lines.join("\n"));
 });
 
-app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
+app.post("/api/admin/broadcast", requireAdmin, requireCsrf, async (req, res) => {
   try {
     const { subject = "", message = "", previewOnly = false } = req.body || {};
     const cleanSubject = clampLen(String(subject || "").trim(), 120);
@@ -1826,7 +2050,7 @@ app.post("/api/admin/broadcast", requireAdmin, async (req, res) => {
     const failures = [];
 
     for (const recipient of recipients) {
-      const result = await resend.emails.send({
+      const result = await requireResendClient().emails.send({
         from: FROM_EMAIL,
         to: recipient.email,
         subject: cleanSubject,
