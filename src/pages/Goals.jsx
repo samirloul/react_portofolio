@@ -15,7 +15,7 @@ export default function Goals({ t }) {
 
   return (
     <main className="container content-page" style={{ paddingTop: "2rem", paddingBottom: "4rem" }}>
-      <PageVisual image="/fotos/doelen.png" eyebrow={t?.nav?.goals || "Goals"} title={t?.goals?.title || "Goals"} text={t?.goals?.intro} />
+      <PageVisual image="/fotos/samir-loul-career-development-goals.png" alt="Samir Loul career goals in full stack development, software engineering and higher education" eyebrow={t?.nav?.goals || "Goals"} title={t?.goals?.title || "Goals"} text={t?.goals?.intro} />
 
       <section className="content-card" style={{ background: "var(--bg-card)", border: "1px solid var(--border-soft)", borderRadius: "20px", padding: "1.5rem", marginTop: "2rem" }}>
         <h2>{t?.goals?.futureTitle || "Future direction"}</h2>
