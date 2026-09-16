@@ -34,7 +34,7 @@ export default function Learning({ t }) {
 
   return (
     <main className="container content-page" style={{ paddingTop: "2rem", paddingBottom: "4rem" }}>
-      <PageVisual image="/fotos/leren.png" eyebrow={t?.nav?.learning || "Learning / Now"} title={t?.learning?.title || "Learning / Now"} text={t?.learning?.intro} />
+      <PageVisual image="/fotos/samir-loul-learning-ai-cybersecurity.png" alt="Samir Loul learning AI, cybersecurity, backend development and software engineering" eyebrow={t?.nav?.learning || "Learning / Now"} title={t?.learning?.title || "Learning / Now"} text={t?.learning?.intro} />
 
       <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", marginTop: "2rem" }}>
         <section className="content-card" style={{ background: "var(--bg-card)", border: "1px solid var(--border-soft)", borderRadius: "20px", padding: "1.5rem" }}>
