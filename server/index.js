@@ -36,10 +36,6 @@ const ALLOWED_ORIGINS = RAW_ALLOWED_ORIGINS
   .map((origin) => origin.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 
-if (isProduction && !DATABASE_URL) {
-  throw new Error("DATABASE_URL is required in production");
-}
-
 if (isProduction && !ADMIN_PASSWORD_HASH && !ADMIN_TOKEN) {
   throw new Error("ADMIN_PASSWORD_HASH or ADMIN_TOKEN is required in production");
 }
