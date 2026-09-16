@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import PageVisual from "../components/PageVisual.jsx";
 
 const SOCIAL_LINKS = [
   { href: "https://x.com/samirloul", icon: "fa-brands fa-x-twitter" },
@@ -284,7 +285,14 @@ const handleSubmit = async (e) => {
 
   return (
     <section className="contact-page contact-v2">
-      <header className="contact-hero">
+      <PageVisual
+        image="/fotos/contact-samir-loul-software-developer.png"
+        alt="Contact Samir Loul software developer for web development and software opportunities"
+        eyebrow="Contact"
+        title={c.title}
+        text={c.intro}
+      />
+      <header className="contact-hero" style={{ backgroundImage: "none", background: "var(--bg-card)" }}>
         <div className="contact-hero-inner">
           <div className="contact-hero-badges">
             <span className="chip">
@@ -300,9 +308,6 @@ const handleSubmit = async (e) => {
               {c.locationValue}
             </span>
           </div>
-
-          <h1 className="contact-title">{c.title}</h1>
-          <p className="contact-subtitle">{c.intro}</p>
 
           <div className="contact-quick-actions">
             <a
