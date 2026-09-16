@@ -1,16 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function VisitorStats({ t }) {
-  const [stats, setStats] = useState({ today: 0, total: 0 });
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    // Check for dark mode
-    const darkModePreference = window.matchMedia?.("(prefers-color-scheme: dark)").matches ||
-      document.documentElement.style.colorScheme === "dark" ||
-      document.body.classList.contains("dark");
-    setIsDark(darkModePreference);
-
+  const [stats] = useState(() => {
     const today = new Date().toDateString();
     const lastVisit = localStorage.getItem("last_visit");
     const statsData = JSON.parse(localStorage.getItem("visitor_stats") || '{"today":0,"total":0,"date":""}');
@@ -25,8 +16,14 @@ export default function VisitorStats({ t }) {
 
     localStorage.setItem("visitor_stats", JSON.stringify(statsData));
     localStorage.setItem("last_visit", today);
-    setStats(statsData);
-  }, []);
+    return statsData;
+  });
+
+  const isDark = typeof window !== "undefined" && (
+    window.matchMedia?.("(prefers-color-scheme: dark)").matches ||
+    document.documentElement.style.colorScheme === "dark" ||
+    document.body.classList.contains("dark")
+  );
 
   const styles = {
     container: {
