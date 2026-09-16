@@ -56,7 +56,12 @@ export default function Projects({ t }) {
               </div>
 
               <div className="project-content">
-                <h3 className="project-title">{card.title}</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                  <h3 className="project-title" style={{ margin: 0 }}>{card.title}</h3>
+                  {card.status ? (
+                    <span className="tag-pill" style={{ background: "rgba(79, 70, 229, 0.12)", color: "var(--primary)" }}>{card.status}</span>
+                  ) : null}
+                </div>
                 <p className="project-text">{card.text}</p>
 
                 {Array.isArray(card.tags) && card.tags.length > 0 && (
@@ -69,38 +74,41 @@ export default function Projects({ t }) {
                   </div>
                 )}
 
-                {/* Links */}
-                {Array.isArray(card.links) && card.links.length > 0 && (
-                  <div className="project-actions">
-                    {card.links.map((l) => {
-                      const disabled = isDisabled(l.href);
-                      const external = isExternal(l.href);
+                <div className="project-actions">
+                  {card.slug ? (
+                    <Link className="project-btn primary" to={`/projects/${card.slug}`}>
+                      <i className="fas fa-arrow-right" aria-hidden="true" />
+                      <span>{t?.projects?.viewProject || "View Project"}</span>
+                    </Link>
+                  ) : null}
 
-                      return (
-                        <a
-                          key={`${card.title}-${l.label}-${l.href}`}
-                          className={`project-btn ${l.variant === "outline" ? "outline" : "primary"} ${
-                            disabled ? "disabled" : ""
-                          }`}
-                          href={disabled ? undefined : l.href}
-                          target={!disabled && external ? "_blank" : undefined}
-                          rel={!disabled && external ? "noreferrer" : undefined}
-                          aria-disabled={disabled}
-                          onClick={(e) => {
-                            if (disabled) e.preventDefault();
-                          }}
-                        >
-                          <i className={l.icon || "fas fa-arrow-up-right-from-square"} aria-hidden="true" />
-                          <span>{l.label}</span>
-                        </a>
-                      );
-                    })}
-                  </div>
-                )}
+                  {Array.isArray(card.links) && card.links.length > 0 && card.links.map((l) => {
+                    const disabled = isDisabled(l.href);
+                    const external = isExternal(l.href);
+
+                    return (
+                      <a
+                        key={`${card.title}-${l.label}-${l.href}`}
+                        className={`project-btn ${l.variant === "outline" ? "outline" : "primary"} ${
+                          disabled ? "disabled" : ""
+                        }`}
+                        href={disabled ? undefined : l.href}
+                        target={!disabled && external ? "_blank" : undefined}
+                        rel={!disabled && external ? "noreferrer" : undefined}
+                        aria-disabled={disabled}
+                        onClick={(e) => {
+                          if (disabled) e.preventDefault();
+                        }}
+                      >
+                        <i className={l.icon || "fas fa-arrow-up-right-from-square"} aria-hidden="true" />
+                        <span>{l.label}</span>
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="project-footer">
-                {/* Share & Rate */}
                 <ShareButtons url={`/projects#${card.title}`} t={t} />
                 <ProjectRating projectId={card.title} t={t} />
               </div>
