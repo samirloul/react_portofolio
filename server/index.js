@@ -113,10 +113,10 @@ function getSessionCookieOptions() {
 }
 
 function setAdminSessionCookie(res, username) {
-  const payload = { username, exp: Date.now() + 1000 * 60 * 60 * 8 };
+  const csrf = crypto.randomBytes(32).toString("hex");
+  const payload = { username, csrfToken: csrf, exp: Date.now() + 1000 * 60 * 60 * 8 };
   const token = signSession(payload);
   res.cookie("admin_session", token, getSessionCookieOptions());
-  const csrf = crypto.randomBytes(32).toString("hex");
   res.cookie("csrf_token", csrf, { ...getSessionCookieOptions(), httpOnly: false });
   return csrf;
 }
@@ -139,8 +139,13 @@ function requireCsrf(req, res, next) {
 
   const tokenFromHeader = String(req.headers["x-csrf-token"] || "").trim();
   const tokenFromCookie = getCsrfToken(req);
+  const session = getAdminSession(req);
+  const tokenFromSession = String(session?.csrfToken || "").trim();
 
-  if (!tokenFromHeader || !tokenFromCookie || tokenFromHeader !== tokenFromCookie) {
+  const validSessionToken = tokenFromSession && tokenFromHeader === tokenFromSession;
+  const validCookieToken = tokenFromCookie && tokenFromHeader === tokenFromCookie;
+
+  if (!tokenFromHeader || (!validSessionToken && !validCookieToken)) {
     return res.status(403).json({ ok: false, error: "CSRF validation failed" });
   }
 
