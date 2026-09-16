@@ -98,9 +98,12 @@ Set these environment variables in Render API service:
 - `FROM_EMAIL`
 - `CORS_ORIGIN` = jouw frontend URL (bijv. `https://jouw-portfolio.onrender.com`)
 - `RECAPTCHA_SECRET_KEY`
-- `ADMIN_TOKEN` = lang geheim wachtwoord voor `/admin`
+- `SESSION_SECRET` = lange random string voor admin sessies
+- `ADMIN_USERNAME` = admin gebruikersnaam (bijv. `admin`)
+- `ADMIN_PASSWORD_HASH` = bcrypt hash van je admin wachtwoord, liever dan een frontend-visible token
+- `ADMIN_TOKEN` = legacy fallback only; not recommended for production
 - `APP_BASE_URL` = jouw frontend domein (bijv. `https://samirprofile.com`)
-- `DATABASE_URL` = Postgres connection string (optioneel, maar aanbevolen)
+- `DATABASE_URL` = required in production; without it the app will refuse to boot
 - `PG_SSL` = `true` op Render
 
 ### 2) Frontend service on Render
@@ -134,7 +137,7 @@ Expected:
 
 ### C2. Admin dashboard + broadcast test
 1. Open je website op `/admin`.
-2. Login met dezelfde waarde als `ADMIN_TOKEN` in je backend env.
+2. Login met je `ADMIN_USERNAME` en wachtwoord dat overeenkomt met `ADMIN_PASSWORD_HASH` in je backend env.
 3. Controleer of je subscribers en feedback ziet.
 4. Vul onderwerp + bericht in en klik `Preview Recipients`.
 5. Klik `Send To All Subscribers` om update-mail naar iedereen te sturen.
@@ -146,7 +149,7 @@ Expected:
 - Admin API met token-auth, search en paginatie.
 - CSV export voor subscribers en feedback.
 - Unsubscribe-link in broadcast emails (`/api/newsletter/unsubscribe`).
-- Optionele PostgreSQL mode via `DATABASE_URL` (fallback naar JSON files als `DATABASE_URL` leeg is).
+- PostgreSQL is required in production via `DATABASE_URL`; local JSON fallback is only for non-production development.
 - GitHub Actions CI workflow voor frontend build + backend syntax check.
 
 ### D. Contact form test
