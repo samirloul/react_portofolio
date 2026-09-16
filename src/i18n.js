@@ -8,7 +8,12 @@ export const translations = {
       name: "Samir Loul",
       home: "Home",
       about: "About",
+      skills: "Skills",
       projects: "Projects",
+      experience: "Experience",
+      learning: "Learning",
+      goals: "Goals",
+      services: "Services",
       cv: "CV",
       contact: "Contact",
       startProject: "Start Project",
@@ -281,6 +286,7 @@ export const translations = {
     },
     skills: {
       title: "Technical Skills",
+      visualText: "Technologies and areas I am actively building experience in.",
       frontend: {
         title: "Frontend",
         items: ["HTML5", "CSS3", "JavaScript", "React", "Responsive Design"],
@@ -386,12 +392,49 @@ export const translations = {
       fullstack: "Full Stack",
       tools: "Tools & DevOps",
     },
+    experience: {
+      title: "Experience",
+      intro: "My experience is focused on learning by doing, growing in professional environments, and strengthening my software development skills in a practical way.",
+      items: [
+        { title: "Software Developer Intern", company: "Xlab Cloud Services", period: "Current internship", description: "Gaining practical experience in a professional software development environment and improving my development, problem-solving, and technical skills." },
+        { title: "Software Development Student", company: "MBO Utrecht", period: "2024 - 2027", description: "Building a strong foundation in software development, programming logic, project work, and modern web technologies." },
+      ],
+    },
+    learning: {
+      title: "Learning / Now",
+      intro: "I am constantly learning, improving my practical skills, and building projects that help me understand how software works in real-world situations.",
+      currentlyLearningTitle: "Currently Learning",
+      currentlyImprovingTitle: "Currently Improving",
+      currentlyBuildingTitle: "Currently Building",
+      currentlyLearning: ["Cybersecurity", "AI", "Backend Architecture", "Secure Web Development", "Software Engineering", "Docker", "DevOps"],
+      currentlyImproving: ["Laravel", "PHP", "MySQL", "React", "API Development", "Database Design", "Backend Security"],
+      currentlyBuilding: ["Personal projects", "Websites", "Full-stack applications", "Backend systems"],
+    },
+    goals: {
+      title: "Goals",
+      intro: "My current goal is to complete my MBO 4 Software Developer diploma, build real-world experience, and keep developing towards full-stack and software engineering roles.",
+      futureTitle: "Future direction",
+      futureText: "After completing my MBO education, I plan to continue with a part-time HBO programme while working in IT. I want to keep growing in backend development, full-stack development, software engineering, AI and cybersecurity.",
+      currentGoalsTitle: "Current goals",
+      items: ["Complete my MBO 4 Software Developer diploma this year", "Gain more practical experience during my internship", "Understand how professional software teams and companies work in practice", "Learn more about real software development and technical problem solving", "Continue developing my backend and full-stack skills", "Build more knowledge in AI and cybersecurity", "Continue with a part-time HBO programme after MBO", "Combine study with working in IT while growing professionally"],
+    },
+    services: {
+      title: "Services",
+      intro: "I offer support in building and improving web products with a focus on practical development, clean code, and user-focused experiences.",
+      items: ["Portfolio websites", "Business websites", "Full-stack websites", "Responsive web development", "Laravel development", "PHP development", "Database development", "Website maintenance", "Basic SEO", "Bug fixing"],
+    },
+    privacy: {
+      title: "Privacy",
+    },
+    responsibleDisclosure: {
+      title: "Responsible Disclosure",
+    },
   },
 
   // ================= ARABIC =================
   ar: {
     dir: "rtl",
-    nav: { name: "سمير لول", home: "الرئيسية", about: "عني", projects: "المشاريع", cv: "السيرة الذاتية", contact: "تواصل", startProject: "ابدأ مشروعك" },
+    nav: { name: "سمير لول", home: "الرئيسية", about: "عني", skills: "المهارات", projects: "المشاريع", experience: "الخبرة", learning: "التعلم", goals: "الأهداف", services: "الخدمات", cv: "السيرة الذاتية", contact: "تواصل", startProject: "ابدأ مشروعك" },
     hero: {
       hello: "مرحباً، أنا",
       name: "سمير لول",
@@ -567,6 +610,7 @@ export const translations = {
     },
     skills: {
       title: "المهارات التقنية",
+      visualText: "التقنيات والمجالات التي أطور فيها خبرتي حاليًا.",
       frontend: {
         title: "Frontend",
         items: ["HTML5", "CSS3", "JavaScript", "React", "تصميم متجاوب"],
@@ -672,12 +716,49 @@ export const translations = {
       fullstack: "العملية الكاملة",
       tools: "الأدوات والأتمتة",
     },
+    experience: {
+      title: "الخبرة",
+      intro: "تركّز خبرتي على التعلم من خلال الممارسة والنمو في بيئات عملية وتقوية مهارات تطوير البرمجيات بطريقة عملية.",
+      items: [
+        { title: "متدرب تطوير برمجيات", company: "Xlab Cloud Services", period: "التدريب الحالي", description: "أكتسب خبرة عملية في بيئة تطوير برمجيات احترافية وأطور مهاراتي التقنية وحل المشكلات." },
+        { title: "طالب تطوير برمجيات", company: "MBO Utrecht", period: "2024 - 2027", description: "أبني أساسًا قويًا في تطوير البرمجيات ومنطق البرمجة والعمل على المشاريع وتقنيات الويب الحديثة." },
+      ],
+    },
+    learning: {
+      title: "التعلم / الآن",
+      intro: "أتعلم باستمرار، وأحسن مهاراتي العملية، وأبني مشاريع تساعدني على فهم كيفية عمل البرمجيات في الواقع.",
+      currentlyLearningTitle: "أتعلم حاليًا",
+      currentlyImprovingTitle: "أحسن حاليًا",
+      currentlyBuildingTitle: "أبني حاليًا",
+      currentlyLearning: ["الأمن السيبراني", "الذكاء الاصطناعي", "هندسة الأنظمة الخلفية", "تطوير ويب آمن", "هندسة البرمجيات", "Docker", "DevOps"],
+      currentlyImproving: ["Laravel", "PHP", "MySQL", "React", "تطوير API", "تصميم قواعد البيانات", "أمن الأنظمة الخلفية"],
+      currentlyBuilding: ["مشاريع شخصية", "مواقع إلكترونية", "تطبيقات كاملة", "أنظمة خلفية"],
+    },
+    goals: {
+      title: "الأهداف",
+      intro: "هدفنا الحالي هو إكمال دورة MBO 4 لتطوير البرمجيات، واكتساب خبرة عملية، والاستمرار في التطور نحو أدوار تطوير الواجهة والخلفية وهندسة البرمجيات.",
+      futureTitle: "الاتجاه المستقبلي",
+      futureText: "بعد إكمال تعليمي في MBO، أهدف إلى متابعة دراسة HBO بدوام جزئي أثناء العمل في مجال التقنية. أريد الاستمرار في النمو في تطوير الخلفية، وتطوير التطبيقات الكاملة، وهندسة البرمجيات، والذكاء الاصطناعي، والأمن السيبراني.",
+      currentGoalsTitle: "الأهداف الحالية",
+      items: ["إكمال دبلوم MBO 4 لتطوير البرمجيات هذا العام", "اكتساب خبرة عملية أكبر أثناء التدريب", "فهم طريقة عمل فرق وشركات البرمجيات الاحترافية", "تعلم المزيد عن تطوير البرمجيات وحل المشكلات التقنية", "تطوير مهاراتي في الخلفية والتطبيقات الكاملة", "زيادة معرفتي بالذكاء الاصطناعي والأمن السيبراني", "متابعة دراسة HBO بدوام جزئي بعد MBO", "الجمع بين الدراسة والعمل في مجال التقنية"],
+    },
+    services: {
+      title: "الخدمات",
+      intro: "أقدم دعمًا في بناء وتحسين المنتجات الإلكترونية مع التركيز على التطوير العملي والشفاف وتجربة المستخدم.",
+      items: ["مواقع شخصية", "مواقع للشركات", "مواقع كاملة", "تطوير ويب متجاوب", "تطوير Laravel", "تطوير PHP", "تطوير قواعد البيانات", "صيانة المواقع", "إعداد SEO أساسي", "إصلاح الأخطاء"],
+    },
+    privacy: {
+      title: "الخصوصية",
+    },
+    responsibleDisclosure: {
+      title: "الإفصاح المسؤول",
+    },
   },
 
   // ================= DUTCH =================
   nl: {
     dir: "ltr",
-    nav: { name: "Samir Loul", home: "Home", about: "Over mij", projects: "Projecten", cv: "CV", contact: "Contact", startProject: "Start project" },
+    nav: { name: "Samir Loul", home: "Home", about: "Over mij", skills: "Vaardigheden", projects: "Projecten", experience: "Ervaring", learning: "Leren", goals: "Doelen", services: "Diensten", cv: "CV", contact: "Contact", startProject: "Start project" },
     hero: {
       hello: "Hallo, ik ben",
       name: "Samir Loul",
@@ -782,11 +863,6 @@ export const translations = {
         { title: "Programmeertalen", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
         { title: "Hulpmiddelen en technologieën", items: ["Git & Version Control", "Responsief webdesign", "ICT-ondersteuning"] },
       ],
-      techTitle: "Technische Vaardigheden",
-      techGroups: [
-        { title: "Programmeertalen", items: ["HTML5 & CSS3", "JavaScript", "PHP", "SQL"] },
-        { title: "Tools & Technologieën", items: ["Git & Versiebeheer", "Responsief Webdesign", "ICT Support"] },
-      ],
       softTitle: "Soft Skills",
       softSkills: ["Probleemoplossing", "Communicatie", "Aanpassingsvermogen", "Teamwork", "Continu Leren", "Cultureel Bewustzijn"],
       summaryTitle: "Professionele Samenvatting",
@@ -862,6 +938,7 @@ export const translations = {
     },
     skills: {
       title: "Technische Vaardigheden",
+      visualText: "Technologieën en gebieden waarin ik actief ervaring opbouw.",
       frontend: {
         title: "Frontend",
         items: ["HTML5", "CSS3", "JavaScript", "React", "Responsief Design"],
@@ -966,6 +1043,43 @@ export const translations = {
       backend: "Backend",
       fullstack: "Full Stack",
       tools: "Tools & DevOps",
+    },
+    experience: {
+      title: "Ervaring",
+      intro: "Mijn ervaring ligt vooral in leren door te doen, groeien in professionele omgevingen en mijn softwareontwikkelingsvaardigheden praktisch versterken.",
+      items: [
+        { title: "Software Developer Stagiair", company: "Xlab Cloud Services", period: "Huidige stage", description: "Praktische ervaring opdoen in een professionele softwareontwikkelomgeving en mijn technische vaardigheden en probleemoplossing verbeteren." },
+        { title: "Student Software Development", company: "MBO Utrecht", period: "2024 - 2027", description: "Een sterke basis opbouwen in softwareontwikkeling, programmeerlogica, projectwerk en moderne webtechnologie." },
+      ],
+    },
+    learning: {
+      title: "Leren / Nu",
+      intro: "Ik leer constant, verbeter mijn praktische vaardigheden en bouw projecten die me helpen begrijpen hoe software in de echte wereld werkt.",
+      currentlyLearningTitle: "Momenteel aan het leren",
+      currentlyImprovingTitle: "Momenteel aan het verbeteren",
+      currentlyBuildingTitle: "Momenteel aan het bouwen",
+      currentlyLearning: ["Cybersecurity", "AI", "Backendarchitectuur", "Veilige webontwikkeling", "Software engineering", "Docker", "DevOps"],
+      currentlyImproving: ["Laravel", "PHP", "MySQL", "React", "API-ontwikkeling", "Databaseontwerp", "Backendbeveiliging"],
+      currentlyBuilding: ["Persoonlijke projecten", "Websites", "Full-stackapplicaties", "Backendsystemen"],
+    },
+    goals: {
+      title: "Doelen",
+      intro: "Mijn huidige doel is om mijn MBO 4-opleiding Software Developer af te ronden, echte werkervaring op te doen en door te groeien naar full-stack en software engineering rollen.",
+      futureTitle: "Toekomstige richting",
+      futureText: "Na het afronden van mijn MBO-opleiding wil ik een deeltijd HBO-opleiding volgen terwijl ik in IT werk. Ik wil blijven groeien in backendontwikkeling, full-stackontwikkeling, software engineering, AI en cybersecurity.",
+      currentGoalsTitle: "Huidige doelen",
+      items: ["Mijn MBO 4-diploma Software Developer dit jaar behalen", "Meer praktijkervaring opdoen tijdens mijn stage", "Begrijpen hoe professionele softwareteams en bedrijven werken", "Meer leren over echte softwareontwikkeling en technische probleemoplossing", "Mijn backend- en full-stackvaardigheden verder ontwikkelen", "Meer kennis opbouwen over AI en cybersecurity", "Na MBO een deeltijd HBO-opleiding volgen", "Studie combineren met werken in IT en professioneel groeien"],
+    },
+    services: {
+      title: "Diensten",
+      intro: "Ik ondersteun het bouwen en verbeteren van webproducten met aandacht voor praktisch programmeren, nette code en gebruiksvriendelijke ervaringen.",
+      items: ["Portfolio-websites", "Bedrijfswebsites", "Full-stack websites", "Responsive webdevelopment", "Laravel-ontwikkeling", "PHP-ontwikkeling", "Databaseontwikkeling", "Website-onderhoud", "Basis-SEO", "Bugfixing"],
+    },
+    privacy: {
+      title: "Privacy",
+    },
+    responsibleDisclosure: {
+      title: "Verantwoordelijke openbaarmaking",
     },
   },
 };
