@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import PageVisual from "../components/PageVisual.jsx";
 
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
@@ -993,11 +994,13 @@ export default function StartProject({ lang = "en" }) {
 
   return (
     <section className="project-intake-page">
-      <header className="project-intake-header">
-        <p className="project-kicker">Website Intake</p>
-        <h1>{copy.title}</h1>
-        <p>{copy.subtitle}</p>
-      </header>
+      <PageVisual
+        image="/fotos/samir-loul-start-project.png"
+        alt="Start a web development project with Samir Loul"
+        eyebrow="Website Intake"
+        title={copy.title}
+        text={copy.subtitle}
+      />
 
       <div className="project-intake-progress-wrap" aria-label={copy.progressLabel}>
         <div className="project-intake-progress-head">
