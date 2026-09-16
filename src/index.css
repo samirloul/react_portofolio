@@ -211,7 +211,7 @@ select:disabled {
 
 .navbar-center {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.15rem;
 }
 
 .nav-link {
@@ -533,8 +533,15 @@ html[dir="rtl"] .about-intro {
   align-items: center;
 }
 
+.about-image-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  width: min(100%, 440px);
+}
+
 .about-profile-img {
-  width: min(100%, 320px);
+  width: 100%;
   aspect-ratio: 4 / 5;
   height: auto;
   object-fit: cover;
@@ -1623,7 +1630,12 @@ html[dir="rtl"] .contact-grid {
   }
 
   .about-profile-img {
-    width: min(100%, 250px);
+    width: 100%;
+  }
+
+  .about-image-pair {
+    width: min(100%, 420px);
+    gap: 0.65rem;
   }
 
   .cv-header {
@@ -1997,16 +2009,21 @@ html[dir="rtl"] .timeline-item::before {
   position: relative;
   margin: 1.2rem auto 2.2rem;
   max-width: 1100px;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
   padding: 2.2rem 1.4rem;
   border-radius: 1.8rem;
-  background: linear-gradient(135deg, rgba(79,70,229,.10), rgba(168,85,247,.10));
+  background-image: linear-gradient(90deg, rgba(5, 13, 34, .9), rgba(5, 13, 34, .54)), url("/fotos/contact.png");
+  background-position: center;
+  background-size: cover;
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-soft);
   overflow: hidden;
 }
 
 [data-theme="dark"] .contact-hero {
-  background: linear-gradient(135deg, rgba(79,70,229,.18), rgba(168,85,247,.12));
+  background-image: linear-gradient(90deg, rgba(5, 13, 34, .9), rgba(5, 13, 34, .54)), url("/fotos/contact.png");
 }
 
 .contact-hero::before,
@@ -2063,12 +2080,13 @@ html[dir="rtl"] .timeline-item::before {
   margin: 0.4rem 0 0.35rem;
   font-size: clamp(2rem, 3vw, 2.6rem);
   letter-spacing: .01em;
+  color: #fff;
 }
 
 .contact-subtitle {
   margin: 0 auto;
   max-width: 700px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, .88);
   line-height: 1.8;
 }
 
@@ -2441,14 +2459,17 @@ html.rtl .contact-social-arrow { margin-left: 0; margin-right: auto; }
 }
 
 .project-intake-header {
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
   padding: 1.6rem 1.1rem;
   border: 1px solid var(--border-soft);
   border-radius: 1.4rem;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(16,185,129,.16), transparent 38%),
-    radial-gradient(circle at 88% 100%, rgba(59,130,246,.14), transparent 40%),
-    var(--bg-card);
+  background-image: linear-gradient(rgba(5, 13, 34, .84), rgba(5, 13, 34, .64)), url("/fotos/startproject.png");
+  background-position: center;
+  background-size: cover;
   box-shadow: var(--shadow-soft);
 }
 
@@ -2460,7 +2481,7 @@ html.rtl .contact-social-arrow { margin-left: 0; margin-right: auto; }
 .project-intake-header p {
   margin: 0 auto;
   max-width: 710px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, .88);
   line-height: 1.75;
 }
 
@@ -2469,7 +2490,7 @@ html.rtl .contact-social-arrow { margin-left: 0; margin-right: auto; }
   text-transform: uppercase;
   letter-spacing: .11em;
   font-size: .76rem;
-  color: var(--primary);
+  color: #9bd8ff;
   font-weight: 700;
 }
 
