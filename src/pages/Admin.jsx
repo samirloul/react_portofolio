@@ -7,8 +7,6 @@ const API_ROOT = API_BASE_URL
     : `${API_BASE_URL}/api`
   : "/api";
 
-const TOKEN_KEY = "portfolio-admin-token";
-
 function safeJsonParse(text) {
   try {
     return text ? JSON.parse(text) : null;
@@ -17,16 +15,19 @@ function safeJsonParse(text) {
   }
 }
 
-function authHeaders(token, withJson = false) {
+function jsonHeaders(extra = {}) {
   return {
-    ...(withJson ? { "Content-Type": "application/json" } : {}),
-    "x-admin-token": token,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    ...extra,
   };
 }
 
 export default function Admin() {
-  const [tokenInput, setTokenInput] = useState("");
-  const [token, setToken] = useState("");
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [user, setUser] = useState(null);
+  const [csrfToken, setCsrfToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [overview, setOverview] = useState(null);
@@ -40,23 +41,43 @@ export default function Admin() {
   const [broadcastStatus, setBroadcastStatus] = useState("");
 
   useEffect(() => {
-    const saved = localStorage.getItem(TOKEN_KEY) || "";
-    if (!saved) return;
-    setToken(saved);
-    setTokenInput(saved);
+    let ignore = false;
+
+    const checkSession = async () => {
+      try {
+        const response = await fetch(`${API_ROOT}/admin/me`, { credentials: "include" });
+        const text = await response.text();
+        const data = safeJsonParse(text);
+
+        if (!response.ok || !data?.ok) {
+          return;
+        }
+
+        if (!ignore) {
+          setUser(data.user || null);
+        }
+      } catch {
+        // Ignore and show login form when session is unavailable.
+      }
+    };
+
+    checkSession();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
-  const isLoggedIn = useMemo(() => !!token, [token]);
+  const isLoggedIn = useMemo(() => !!user, [user]);
 
-  const loadOverview = async (activeToken = token) => {
-    if (!activeToken) return;
+  const loadOverview = async () => {
+    if (!isLoggedIn) return;
 
     setLoading(true);
     setError("");
 
     try {
       const response = await fetch(`${API_ROOT}/admin/overview`, {
-        headers: authHeaders(activeToken),
+        credentials: "include",
       });
       const text = await response.text();
       const data = safeJsonParse(text);
@@ -79,8 +100,7 @@ export default function Admin() {
     pageSize = subscribersData.pageSize || 10,
     search = subscriberSearch,
   } = {}) => {
-    const activeToken = token;
-    if (!activeToken) return;
+    if (!isLoggedIn) return;
 
     setLoading(true);
     setError("");
@@ -92,7 +112,7 @@ export default function Admin() {
         search,
       });
       const response = await fetch(`${API_ROOT}/admin/subscribers?${params.toString()}`, {
-        headers: authHeaders(activeToken),
+        credentials: "include",
       });
       const text = await response.text();
       const data = safeJsonParse(text);
@@ -119,8 +139,7 @@ export default function Admin() {
     pageSize = feedbackData.pageSize || 10,
     search = feedbackSearch,
   } = {}) => {
-    const activeToken = token;
-    if (!activeToken) return;
+    if (!isLoggedIn) return;
 
     setLoading(true);
     setError("");
@@ -132,7 +151,7 @@ export default function Admin() {
         search,
       });
       const response = await fetch(`${API_ROOT}/admin/feedback?${params.toString()}`, {
-        headers: authHeaders(activeToken),
+        credentials: "include",
       });
       const text = await response.text();
       const data = safeJsonParse(text);
@@ -155,42 +174,94 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    if (!token) return;
-    loadOverview(token);
+    if (!isLoggedIn) return;
+    loadOverview();
     loadSubscribers({ page: 1, pageSize: 10, search: "" });
     loadFeedback({ page: 1, pageSize: 10, search: "" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [isLoggedIn]);
 
-  const onLogin = (e) => {
+  const onLogin = async (e) => {
     e.preventDefault();
-    const clean = tokenInput.trim();
-    if (!clean) {
-      setError("Please enter admin token");
+    const cleanUsername = usernameInput.trim();
+    const cleanPassword = passwordInput;
+
+    if (!cleanUsername || !cleanPassword) {
+      setError("Please enter your admin username and password");
       return;
     }
-    localStorage.setItem(TOKEN_KEY, clean);
-    setToken(clean);
+
+    setLoading(true);
     setError("");
+
+    try {
+      const response = await fetch(`${API_ROOT}/admin/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: jsonHeaders(),
+        body: JSON.stringify({
+          username: cleanUsername,
+          password: cleanPassword,
+        }),
+      });
+
+      const text = await response.text();
+      const data = safeJsonParse(text);
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.error || `Login failed (${response.status})`);
+      }
+
+      setUser(data.user || { username: cleanUsername });
+      setCsrfToken(data.csrfToken || "");
+      setUsernameInput("");
+      setPasswordInput("");
+    } catch (err) {
+      setUser(null);
+      setError(err?.message || "Failed to sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const onLogout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    setToken("");
-    setTokenInput("");
-    setOverview(null);
-    setSubscribersData({ items: [], page: 1, pageSize: 10, total: 0 });
-    setFeedbackData({ items: [], page: 1, pageSize: 10, total: 0 });
+  const onLogout = async () => {
+    setLoading(true);
     setError("");
-    setBroadcastStatus("");
+
+    try {
+      const response = await fetch(`${API_ROOT}/admin/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: jsonHeaders({ "X-CSRF-Token": csrfToken }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        const data = safeJsonParse(text);
+        throw new Error(data?.error || `Logout failed (${response.status})`);
+      }
+
+      setUser(null);
+      setCsrfToken("");
+      setUsernameInput("");
+      setPasswordInput("");
+      setOverview(null);
+      setSubscribersData({ items: [], page: 1, pageSize: 10, total: 0 });
+      setFeedbackData({ items: [], page: 1, pageSize: 10, total: 0 });
+      setBroadcastStatus("");
+    } catch (err) {
+      setError(err?.message || "Failed to log out");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const downloadCsv = async (endpoint, filename) => {
-    if (!token) return;
+    if (!isLoggedIn) return;
 
     try {
       const response = await fetch(`${API_ROOT}${endpoint}`, {
-        headers: authHeaders(token),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -212,7 +283,7 @@ export default function Admin() {
   };
 
   const sendBroadcast = async (previewOnly) => {
-    if (!token) return;
+    if (!isLoggedIn) return;
 
     if (!previewOnly) {
       const confirmed = window.confirm("Weet je zeker dat je dit naar alle abonnees wilt sturen?");
@@ -226,7 +297,8 @@ export default function Admin() {
     try {
       const response = await fetch(`${API_ROOT}/admin/broadcast`, {
         method: "POST",
-        headers: authHeaders(token, true),
+        credentials: "include",
+        headers: jsonHeaders({ "X-CSRF-Token": csrfToken }),
         body: JSON.stringify({
           subject: broadcastSubject,
           message: broadcastMessage,
@@ -259,18 +331,26 @@ export default function Admin() {
       <section className="container" style={{ maxWidth: "760px" }}>
         <h1 style={{ marginTop: 0 }}>Admin</h1>
         <p style={{ color: "var(--text-muted)" }}>
-          Login with your ADMIN_TOKEN to view subscribers, feedback, and send a project update email.
+          Sign in with your admin username and password to manage subscribers, feedback, and broadcast updates.
         </p>
 
         <form onSubmit={onLogin} style={{ display: "grid", gap: "0.75rem" }}>
           <input
-            type="password"
-            value={tokenInput}
-            onChange={(e) => setTokenInput(e.target.value)}
-            placeholder="Enter ADMIN_TOKEN"
+            type="text"
+            value={usernameInput}
+            onChange={(e) => setUsernameInput(e.target.value)}
+            placeholder="Admin username"
+            autoComplete="username"
           />
-          <button className="btn primary" type="submit" style={{ width: "fit-content" }}>
-            Open Admin
+          <input
+            type="password"
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            placeholder="Admin password"
+            autoComplete="current-password"
+          />
+          <button className="btn primary" type="submit" style={{ width: "fit-content" }} disabled={loading}>
+            {loading ? "Signing in..." : "Open Admin"}
           </button>
         </form>
 
