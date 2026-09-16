@@ -105,7 +105,7 @@ function getAdminSession(req) {
 function getSessionCookieOptions() {
   return {
     httpOnly: true,
-    sameSite: isProduction ? "strict" : "lax",
+    sameSite: isProduction ? "none" : "lax",
     secure: isProduction,
     path: "/",
     maxAge: 1000 * 60 * 60 * 8,
