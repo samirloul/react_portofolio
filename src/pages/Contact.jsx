@@ -42,9 +42,7 @@ function safeJsonParse(text) {
 }
 
 export default function Contact({ t, lang }) {
-  if (!t?.contact) return null;
-
-  const c = t.contact;
+  const c = t?.contact;
   const recaptchaLang = lang === "ar" ? "ar" : lang === "nl" ? "nl" : "en";
   const captchaMessages = {
     en: {
@@ -242,6 +240,8 @@ const handleSubmit = async (e) => {
     setServerMsg(error?.message || c.statusText.serverError);
   }
 };
+
+  if (!c) return null;
 
   const messageLength = form.message.length;
   const counterText = c.ui.counter.replace("{count}", String(messageLength));
