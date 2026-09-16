@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
 
-export default function DebugPanel({ t }) {
+export default function DebugPanel() {
   const [feedback, setFeedback] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [visitors, setVisitors] = useState(null);
   const [ratings, setRatings] = useState({});
   const [showPanel, setShowPanel] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [isCompact, setIsCompact] = useState(() => window.innerWidth <= 768);
 
-  useEffect(() => {
-    const darkModePreference = window.matchMedia?.("(prefers-color-scheme: dark)").matches ||
-      document.documentElement.style.colorScheme === "dark" ||
-      document.body.classList.contains("dark");
-    setIsDark(darkModePreference);
-  }, []);
+  const isDark = typeof window !== "undefined" && (
+    window.matchMedia?.("(prefers-color-scheme: dark)").matches ||
+    document.documentElement.style.colorScheme === "dark" ||
+    document.body.classList.contains("dark")
+  );
 
   useEffect(() => {
     const onResize = () => setIsCompact(window.innerWidth <= 768);
