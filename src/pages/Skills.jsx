@@ -18,7 +18,8 @@ export default function Skills({ t }) {
   return (
     <section className="tech-skills-section page-section">
       <PageVisual
-        image="/fotos/vaardigeheden.png"
+        image="/fotos/samir-loul-software-development-skills.png"
+        alt="Samir Loul software development skills in Laravel, PHP, MySQL, React and backend development"
         className="skills-visual"
         eyebrow="Skills"
         title={skills.title}
