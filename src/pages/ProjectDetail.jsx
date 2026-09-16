@@ -117,7 +117,7 @@ export default function ProjectDetail({ t }) {
       <article className="project-detail" style={{ background: "var(--bg-card)", border: "1px solid var(--border-soft)", borderRadius: "24px", boxShadow: "var(--shadow-soft)", overflow: "hidden" }}>
         <div style={{ padding: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-            <h1 style={{ margin: 0 }}>{project.title}</h1>
+            <h1 style={{ margin: 0 }}>{project.title} | Project by Samir Loul</h1>
             <span className="tag-pill" style={{ background: "rgba(79, 70, 229, 0.12)", color: "var(--primary)" }}>{project.status}</span>
           </div>
 
