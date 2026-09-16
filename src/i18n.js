@@ -4,6 +4,11 @@ export const translations = {
   // ================= ENGLISH =================
   en: {
     dir: "ltr",
+    seo: {
+      homeTitle: "Samir Loul | Software Developer",
+      homeDescription:
+        "Samir Loul is a Software Developer focused on backend development, Laravel, PHP, MySQL, React, AI and cybersecurity.",
+    },
     nav: {
       name: "Samir Loul",
       home: "Home",
@@ -22,14 +27,14 @@ export const translations = {
       hello: "Hello, I'm",
       name: "Samir Loul",
       role: "Software Developer & Tech Enthusiast",
-      text: "A passionate young developer from Syria, currently living in the Netherlands and pursuing my dreams in software development.",
+      text: "Samir Loul is a Software Developer focused on backend development with Laravel, PHP and MySQL, while also building with React and exploring AI and cybersecurity.",
       primaryButton: "Learn More",
       secondaryButton: "Get In Touch",
     },
     about: {
       title: "About Me",
       intro:
-        "My name is Samir Loul, and I come from Syria. I currently live in the Netherlands, where I've been building my life and pursuing my dreams. My journey has been one of resilience, growth, and determination, and I'm always open to sharing my experiences and answering your questions.",
+        "I'm Samir Loul, a Software Developer with a strong interest in backend development, AI, cybersecurity and full-stack development. I build with Laravel, PHP, MySQL and React while continuing to grow through practical projects and learning.",
       educationTitle: "My Educational Journey",
       timeline: [
         {
@@ -434,19 +439,24 @@ export const translations = {
   // ================= ARABIC =================
   ar: {
     dir: "rtl",
+    seo: {
+      homeTitle: "سمير لول | مطور برمجيات",
+      homeDescription:
+        "سمير لول مطور برمجيات مهتم بتطوير Backend وLaravel وPHP وMySQL وReact والذكاء الاصطناعي والأمن السيبراني.",
+    },
     nav: { name: "سمير لول", home: "الرئيسية", about: "عني", skills: "المهارات", projects: "المشاريع", experience: "الخبرة", learning: "التعلم", goals: "الأهداف", services: "الخدمات", cv: "السيرة الذاتية", contact: "تواصل", startProject: "ابدأ مشروعك" },
     hero: {
       hello: "مرحباً، أنا",
       name: "سمير لول",
       role: "مطور برمجيات ومهتم بالتقنية",
-      text: "مطور شاب شغوف من سوريا أعيش حالياً في هولندا وأسعى لتحقيق أحلامي في مجال تطوير البرمجيات.",
+      text: "سمير لول مطور برمجيات يركز على تطوير الأنظمة الخلفية باستخدام Laravel وPHP وMySQL، كما يعمل باستخدام React ويستكشف الذكاء الاصطناعي والأمن السيبراني.",
       primaryButton: "المزيد عني",
       secondaryButton: "تواصل معي",
     },
     about: {
       title: "نبذة عني",
       intro:
-        "اسمي سمير لول وأنا من سوريا. أعيش حالياً في هولندا حيث أبني حياتي وأسعى لتحقيق أحلامي. كانت رحلتي رحلة صمود ونمو وتصميم، وأنا دائماً منفتح لمشاركة تجاربي والإجابة على أسئلتكم.",
+        "أنا سمير لول، مطور برمجيات مهتم بشكل كبير بتطوير الأنظمة الخلفية والذكاء الاصطناعي والأمن السيبراني وتطوير التطبيقات الكاملة. أعمل باستخدام Laravel وPHP وMySQL وReact وأواصل التطور من خلال المشاريع العملية والتعلم المستمر.",
       educationTitle: "رحلتي التعليمية",
       timeline: [
         {
@@ -758,19 +768,24 @@ export const translations = {
   // ================= DUTCH =================
   nl: {
     dir: "ltr",
+    seo: {
+      homeTitle: "Samir Loul | Software Developer",
+      homeDescription:
+        "Samir Loul is Software Developer met interesse in backend development, Laravel, PHP, MySQL, React, AI en cybersecurity.",
+    },
     nav: { name: "Samir Loul", home: "Home", about: "Over mij", skills: "Vaardigheden", projects: "Projecten", experience: "Ervaring", learning: "Leren", goals: "Doelen", services: "Diensten", cv: "CV", contact: "Contact", startProject: "Start project" },
     hero: {
       hello: "Hallo, ik ben",
       name: "Samir Loul",
       role: "Software Developer & Tech Liefhebber",
-      text: "Een gepassioneerde jonge ontwikkelaar uit Syrië, momenteel woonachtig in Nederland en bezig mijn dromen in softwareontwikkeling na te jagen.",
+      text: "Samir Loul is Software Developer met focus op backendontwikkeling met Laravel, PHP en MySQL. Daarnaast bouw ik met React en verdiep ik me in AI en cybersecurity.",
       primaryButton: "Meer over mij",
       secondaryButton: "Neem contact op",
     },
     about: {
       title: "Over Mij",
       intro:
-        "Mijn naam is Samir Loul en ik kom uit Syrië. Ik woon momenteel in Nederland, waar ik mijn leven heb opgebouwd en mijn dromen najaag. Mijn reis is er een van veerkracht, groei en vastberadenheid, en ik sta altijd open om mijn ervaringen te delen en je vragen te beantwoorden.",
+        "Ik ben Samir Loul, een Software Developer met sterke interesse in backendontwikkeling, AI, cybersecurity en full-stackontwikkeling. Ik bouw met Laravel, PHP, MySQL en React en blijf groeien door praktijkprojecten en continu leren.",
       educationTitle: "Mijn Educatieve Reis",
       timeline: [
         { years: "2017 - 2019", title: "Ithaka (ISK)", text: "Ik begon mijn educatieve reis in Nederland bij Ithaka (ISK), waar ik studeerde van december 2017 tot juni 2019. Het was een plek waar ik leerde me aan te passen aan een nieuwe omgeving en de basis legde voor mijn toekomst." },
