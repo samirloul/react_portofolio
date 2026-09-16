@@ -1,5 +1,4 @@
 import React from "react";
-import profileImg from "../assets/samirHomePage.jpeg";
 import FunFacts from "./FunFacts";
 import Testimonials from "../components/Testimonials";
 
@@ -45,14 +44,19 @@ const AboutPage = ({ t }) => {
             </div>
 
             <div className="about-image">
-              <img
-                src={profileImg}
-                alt="Samir Loul"
-                className="about-profile-img"
-              />
+              <div className="about-image-pair">
+                <img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.24%20(4).jpeg" alt="Samir in the city" className="about-profile-img" />
+                <img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.23.jpeg" alt="Samir near the water" className="about-profile-img" />
+              </div>
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="personal-photo-strip container" aria-label="Samir Loul photos">
+        <figure><img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.24%20(2).jpeg" alt="Samir outdoors" loading="lazy" /></figure>
+        <figure><img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.24.jpeg" alt="Samir near a river" loading="lazy" /></figure>
+        <figure><img src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.24%20(1).jpeg" alt="Samir in the city" loading="lazy" /></figure>
       </section>
 
       {/* ========= EDUCATION ========= */}
