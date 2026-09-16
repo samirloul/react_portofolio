@@ -21,7 +21,7 @@ export default function Experience({ t }) {
 
   return (
     <main className="container content-page" style={{ paddingTop: "2rem", paddingBottom: "4rem" }}>
-      <PageVisual image="/fotos/ervaringen.png" eyebrow={t?.nav?.experience || "Experience"} title={t?.experience?.title || "Experience"} text={t?.experience?.intro} />
+      <PageVisual image="/fotos/samir-loul-software-development-experience.png" alt="Samir Loul software development experience and professional growth" eyebrow={t?.nav?.experience || "Experience"} title={t?.experience?.title || "Experience"} text={t?.experience?.intro} />
 
       <div style={{ display: "grid", gap: "1.25rem" }}>
         {items.map((item) => (
