@@ -4,7 +4,7 @@ export default function ShareButtons({ projectTitle = "My Project", url = window
   const [copied, setCopied] = useState(false);
 
   const shareThis = (platform) => {
-    const text = t?.share?.shareText || "Check out this amazing project";
+    const text = t?.share?.shareText || `Check out this amazing project: ${projectTitle}`;
     const encodedUrl = encodeURIComponent(url);
     const encodedText = encodeURIComponent(text);
 
