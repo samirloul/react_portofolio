@@ -25,7 +25,6 @@ import BlogPost from "./pages/BlogPost.jsx";
 import Admin from "./pages/Admin.jsx";
 import BackToTop from "./components/BackToTop.jsx";
 import FloatingContactButton from "./components/FloatingContactButton.jsx";
-import DebugPanel from "./components/DebugPanel.jsx";
 
 export default function App() {
   const location = useLocation();
@@ -273,17 +272,6 @@ export default function App() {
       <header className="navbar">
         <div className="navbar-left">
           <span className="brand">{t.nav.name}</span>
-
-          {/*  Hamburger (zichtbaar op mobiel via CSS) */}
-          <button
-            className="hamburger"
-            type="button"
-            aria-label="Menu"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((p) => !p)}
-          >
-            {menuOpen ? "✕" : "☰"}
-          </button>
         </div>
 
         {/*  open class bepaalt of menu zichtbaar is op mobiel */}
@@ -318,27 +306,61 @@ export default function App() {
           <NavLink to="/contact" className="nav-link" onClick={closeMenu}>
             {t.nav.contact}
           </NavLink>
+
+          <div className="mobile-menu-controls" aria-label="Language and theme settings">
+            <select
+              className="lang-select"
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              aria-label="Language"
+            >
+              <option value="en">EN</option>
+              <option value="ar">AR</option>
+              <option value="nl">NL</option>
+            </select>
+
+            <button
+              className="theme-toggle"
+              onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
+              type="button"
+              aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            >
+              {theme === "light" ? "🌙" : "☀️"}
+            </button>
+          </div>
         </nav>
 
         <div className="navbar-right">
-          <select
-            className="lang-select"
-            value={lang}
-            onChange={(e) => setLang(e.target.value)}
-          >
-            <option value="en">EN</option>
-            <option value="ar">AR</option>
-            <option value="nl">NL</option>
-          </select>
+          <div className="desktop-menu-controls">
+            <select
+              className="lang-select"
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              aria-label="Language"
+            >
+              <option value="en">EN</option>
+              <option value="ar">AR</option>
+              <option value="nl">NL</option>
+            </select>
+
+            <button
+              className="theme-toggle"
+              onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
+              aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+              type="button"
+            >
+              {theme === "light" ? "🌙" : "☀️"}
+            </button>
+          </div>
 
           <button
-            className="theme-toggle"
-            onClick={() =>
-              setTheme((prev) => (prev === "light" ? "dark" : "light"))
-            }
+            className="hamburger"
             type="button"
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((p) => !p)}
           >
-            {theme === "light" ? "🌙" : "☀️"}
+            {menuOpen ? "✕" : "☰"}
           </button>
         </div>
       </header>
@@ -366,7 +388,6 @@ export default function App() {
 
       <BackToTop />
       <FloatingContactButton />
-      <DebugPanel t={t} />
     </div>
   );
 }

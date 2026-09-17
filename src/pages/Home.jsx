@@ -1,5 +1,4 @@
 // src/pages/Home.jsx
-import samirPhoto from "../assets/samirHomePage.jpeg";
 import { Link } from "react-router-dom";
 import Skills from "./Skills";
 import FunFacts from "./FunFacts";
@@ -63,34 +62,26 @@ export default function Home({ t, lang = "en" }) {
   return (
     <>
       <section className="hero">
-        {/* Links: tekst */}
         <div className="hero-text">
           <p className="hero-sub">{hero.hello}</p>
 
-          <h1 className="hero-title">
-            {hero.hello} <span className="hero-name-highlight">{hero.name}</span>
-          </h1>
+          <h1 className="hero-title">{hero.name}</h1>
 
           <h2 className="hero-role">{hero.role}</h2>
           <p className="hero-desc">{hero.text}</p>
 
           <div className="hero-buttons">
-            <Link className="btn primary" to="/about">
-              {hero.primaryButton}
+            <Link className="btn primary" to="/start-project">
+              {t.nav.startProject}
             </Link>
 
             <Link className="btn outline" to="/contact">
               {hero.secondaryButton}
             </Link>
-          </div>
-        </div>
 
-        {/* Rechts: foto + socials */}
-        <div className="hero-right">
-          <div className="hero-photo-outer">
-            <div className="hero-photo-wrapper">
-              <img src={samirPhoto} alt={lang === "ar" ? "سمير لول" : "Samir Loul"} className="hero-photo" />
-            </div>
+            <Link className="btn ghost" to="/about">
+              {hero.primaryButton}
+            </Link>
           </div>
 
           <div className="hero-social-row" aria-label="Social links">

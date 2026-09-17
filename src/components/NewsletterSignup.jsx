@@ -70,16 +70,16 @@ export default function NewsletterSignup({ t, lang = "en" }) {
   const styles = {
     container: {
       padding: "2rem",
-      background: isDark ? "#1a1a2e" : "#f0f0f0",
+      background: "var(--bg-card)",
       borderRadius: "1rem",
       margin: "2rem 0",
-      border: isDark ? "1px solid #444" : "none",
+      border: "1px solid var(--border-soft)",
     },
     title: {
-      color: isDark ? "#fff" : "#000",
+      color: "var(--text-strong)",
     },
     subtitle: {
-      color: isDark ? "#aaa" : "#666",
+      color: "var(--text-muted)",
       marginBottom: "1.5rem",
     },
     form: {
@@ -92,15 +92,15 @@ export default function NewsletterSignup({ t, lang = "en" }) {
       minWidth: "200px",
       padding: "0.75rem 1rem",
       borderRadius: "0.5rem",
-      border: `2px solid ${isDark ? "#444" : "#ddd"}`,
-      background: isDark ? "#2a2a3e" : "#fff",
-      color: isDark ? "#fff" : "#000",
+      border: "2px solid var(--input-border)",
+      background: "var(--input-bg)",
+      color: "var(--text)",
       fontFamily: "inherit",
     },
     button: {
       padding: "0.75rem 1.5rem",
-      background: "#6366f1",
-      color: "white",
+      background: "var(--gradient-primary)",
+      color: "var(--text-strong)",
       border: "none",
       borderRadius: "0.5rem",
       cursor: "pointer",

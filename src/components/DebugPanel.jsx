@@ -107,14 +107,14 @@ export default function DebugPanel() {
       color: isDark ? "#fff" : "#000",
       marginTop: 0,
       marginBottom: "1rem",
-      borderBottom: `2px solid #6366f1`,
+      borderBottom: "2px solid var(--primary)",
       paddingBottom: "0.5rem",
     },
     section: {
       marginBottom: "1.5rem",
     },
     sectionTitle: {
-      color: isDark ? "#6366f1" : "#333",
+      color: "var(--primary)",
       fontWeight: "bold",
       marginBottom: "0.5rem",
       fontSize: "0.9rem",
@@ -132,7 +132,7 @@ export default function DebugPanel() {
     },
     button2: {
       padding: "0.5rem 1rem",
-      background: "#6366f1",
+      background: "var(--primary)",
       color: "white",
       border: "none",
       borderRadius: "0.5rem",

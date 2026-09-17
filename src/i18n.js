@@ -778,7 +778,7 @@ export const translations = {
       hello: "Hallo, ik ben",
       name: "Samir Loul",
       role: "Software Developer & Tech Liefhebber",
-      text: "Samir Loul is Software Developer met focus op backendontwikkeling met Laravel, PHP en MySQL. Daarnaast bouw ik met React en verdiep ik me in AI en cybersecurity.",
+      text: "Ik bouw moderne websites en webapplicaties met focus op design, performance en gebruiksvriendelijkheid. Van frontend tot backend help ik ideeën omzetten in professionele digitale oplossingen.",
       primaryButton: "Meer over mij",
       secondaryButton: "Neem contact op",
     },

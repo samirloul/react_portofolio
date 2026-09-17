@@ -71,12 +71,12 @@
 }
 
 .timeline-item.current {
-  border-left-color: #6366f1;
+  border-left-color: var(--primary);
 }
 
 .timeline-item.current::before {
-  background: #6366f1;
-  box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.2);
+  background: var(--primary);
+  box-shadow: 0 0 0 6px rgba(var(--primary-rgb), 0.2);
 }
 
 /* =================== SECTION TITLE ANIMATIONS =================== */
@@ -97,7 +97,7 @@ input, textarea {
 
 input:focus, textarea:focus {
   transform: scale(1.02);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
 }
 
 .btn {

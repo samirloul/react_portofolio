@@ -65,9 +65,9 @@ export default function ProjectFilters({ projects, onFilter, t }) {
           style={{
             padding: "0.5rem 1rem",
             borderRadius: "2rem",
-            border: `2px solid ${activeFilter === opt.key ? "#6366f1" : "#ccc"}`,
-            background: activeFilter === opt.key ? "#6366f1" : "transparent",
-            color: activeFilter === opt.key ? "white" : "inherit",
+            border: `2px solid ${activeFilter === opt.key ? "var(--primary)" : "var(--border-med)"}`,
+            background: activeFilter === opt.key ? "var(--primary)" : "transparent",
+            color: activeFilter === opt.key ? "var(--text-strong)" : "var(--text)",
             cursor: "pointer",
             transition: "all 0.3s ease",
           }}

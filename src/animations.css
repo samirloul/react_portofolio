@@ -86,10 +86,10 @@
 
 @keyframes glow {
   0%, 100% {
-    filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.3));
+    filter: drop-shadow(0 0 5px rgba(var(--primary-rgb), 0.3));
   }
   50% {
-    filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.6));
+    filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.6));
   }
 }
 

@@ -34,7 +34,7 @@
   inset: 0;
   border-radius: 12px;
   padding: 2px;
-  background: linear-gradient(135deg, #6366f1, #3b82f6, #8b5cf6);
+  background: var(--gradient-primary);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -53,7 +53,7 @@
 
 .fact-card:hover {
   transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 15px 40px rgba(99, 102, 241, 0.2);
+  box-shadow: var(--shadow-primary);
 }
 
 .fact-emoji {

@@ -118,7 +118,7 @@ export default function ProjectDetail({ t }) {
         <div style={{ padding: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "1rem" }}>
             <h1 style={{ margin: 0 }}>{project.title} | Project by Samir Loul</h1>
-            <span className="tag-pill" style={{ background: "rgba(79, 70, 229, 0.12)", color: "var(--primary)" }}>{project.status}</span>
+            <span className="tag-pill" style={{ background: "var(--primary-extra-soft)", color: "var(--primary-active)" }}>{project.status}</span>
           </div>
 
           <p style={{ color: "var(--text-muted)", fontSize: "1.05rem", lineHeight: 1.7, marginBottom: "1.5rem" }}>{project.overview}</p>

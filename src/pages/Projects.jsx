@@ -59,7 +59,7 @@ export default function Projects({ t }) {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
                   <h3 className="project-title" style={{ margin: 0 }}>{card.title}</h3>
                   {card.status ? (
-                    <span className="tag-pill" style={{ background: "rgba(79, 70, 229, 0.12)", color: "var(--primary)" }}>{card.status}</span>
+                    <span className="tag-pill" style={{ background: "var(--primary-extra-soft)", color: "var(--primary-active)" }}>{card.status}</span>
                   ) : null}
                 </div>
                 <p className="project-text">{card.text}</p>

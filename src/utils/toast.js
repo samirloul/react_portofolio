@@ -20,11 +20,11 @@ export const showToast = (message, type = 'success', duration = 3000) => {
 
   // Maak toast element
   const toast = document.createElement('div');
-  const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6';
+  const bgColor = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--info)';
   
   toast.style.cssText = `
     background: linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%);
-    color: white;
+    color: var(--text-strong);
     padding: 1rem 1.5rem;
     border-radius: 8px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);

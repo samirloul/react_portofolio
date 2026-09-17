@@ -53,7 +53,7 @@ export default function VisitorStats({ t }) {
       fontSize: "2rem",
       fontWeight: "bold",
       margin: 0,
-      color: isDark ? "#6366f1" : "#1a1a2e",
+      color: "var(--primary)",
     },
     statLabel: {
       margin: 0,
