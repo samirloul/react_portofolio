@@ -55,6 +55,7 @@ export default function Admin() {
 
         if (!ignore) {
           setUser(data.user || null);
+          setCsrfToken(data.csrfToken || "");
         }
       } catch {
         // Ignore and show login form when session is unavailable.

@@ -1921,7 +1921,12 @@ app.post("/api/feedback", async (req, res) => {
 });
 
 app.get("/api/admin/me", requireAdmin, (req, res) => {
-  return res.json({ ok: true, user: req.admin });
+  const session = getAdminSession(req);
+  return res.json({
+    ok: true,
+    user: req.admin,
+    csrfToken: session?.csrfToken || getCsrfToken(req),
+  });
 });
 
 app.post("/api/admin/login", adminLoginLimiter, async (req, res) => {
