@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+import { Turnstile } from "@marsidev/react-turnstile";
 import PageVisual from "../components/PageVisual.jsx";
 
 const SOCIAL_LINKS = [
@@ -16,7 +16,7 @@ const SOCIAL_LINKS = [
 ];
 
 const EMAIL_TO = "sameerloul2010@gmail.com";
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
 const API_ROOT = API_BASE_URL
   ? API_BASE_URL.endsWith("/api")
@@ -47,20 +47,19 @@ export default function Contact({ t, lang }) {
   const recaptchaLang = lang === "ar" ? "ar" : lang === "nl" ? "nl" : "en";
   const captchaMessages = {
     en: {
-      missingSiteKey: "reCAPTCHA site key is missing. Add VITE_RECAPTCHA_SITE_KEY and restart Vite.",
-      checkCaptcha: "Please complete the reCAPTCHA first.",
+      missingSiteKey: "Turnstile site key is missing.",
+checkCaptcha: "Please complete the security check first.",
     },
     nl: {
-      missingSiteKey: "reCAPTCHA site key ontbreekt. Voeg VITE_RECAPTCHA_SITE_KEY toe en herstart Vite.",
-      checkCaptcha: "Vink eerst de reCAPTCHA aan.",
+missingSiteKey: "Turnstile site key ontbreekt.",
+checkCaptcha: "Voltooi eerst de beveiligingscontrole.",
     },
     ar: {
-      missingSiteKey: "مفتاح reCAPTCHA غير موجود. أضف VITE_RECAPTCHA_SITE_KEY ثم أعد تشغيل Vite.",
-      checkCaptcha: "يرجى إكمال reCAPTCHA أولاً.",
+missingSiteKey: "مفتاح Turnstile غير موجود.",
+checkCaptcha: "يرجى إكمال التحقق الأمني أولاً.",
     },
   };
   const msg = captchaMessages[recaptchaLang] || captchaMessages.en;
-  const recaptchaRef = useRef(null);
   const copyTimerRef = useRef(null);
 
   const [form, setForm] = useState(initialForm);
@@ -68,6 +67,7 @@ export default function Contact({ t, lang }) {
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [serverMsg, setServerMsg] = useState("");
   const [copied, setCopied] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   useEffect(() => {
     return () => {
@@ -77,10 +77,7 @@ export default function Contact({ t, lang }) {
     };
   }, []);
 
-  useEffect(() => {
-    // When language changes, force a fresh captcha state for the new locale.
-    recaptchaRef.current?.reset();
-  }, [recaptchaLang]);
+
 
   const errors = useMemo(() => {
     const next = {};
@@ -182,13 +179,12 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  const recaptchaToken = recaptchaRef.current?.getValue();
+if (!turnstileToken) {
+  setStatus("error");
+  setServerMsg(msg.checkCaptcha);
+  return;
+}
 
-  if (!recaptchaToken) {
-    setStatus("error");
-    setServerMsg(msg.checkCaptcha);
-    return;
-  }
 
   setStatus("sending");
 
@@ -205,7 +201,7 @@ const handleSubmit = async (e) => {
         message: form.message.trim(),
         website: form.website,
         lang: lang || (t.dir === "rtl" ? "ar" : "en"),
-        recaptchaToken,
+        turnstileToken,
       }),
     });
 
@@ -226,17 +222,17 @@ const handleSubmit = async (e) => {
     }
 
     if (data?.warning) {
-      recaptchaRef.current?.reset();
+      setTurnstileToken("");
       setStatus("error");
       setServerMsg(data.warning);
       return;
     }
 
-    recaptchaRef.current?.reset();
+    setTurnstileToken("");
     setStatus("success");
     resetFormState();
   } catch (error) {
-    recaptchaRef.current?.reset();
+    setTurnstileToken("");
     setStatus("error");
     setServerMsg(error?.message || c.statusText.serverError);
   }
@@ -453,13 +449,20 @@ const handleSubmit = async (e) => {
             </div>
 
             <div className="recaptcha-wrap">
-              <ReCAPTCHA
-                key={`recaptcha-${recaptchaLang}`}
-                ref={recaptchaRef}
-                sitekey={SITE_KEY || ""}
-                hl={recaptchaLang}
-              />
-            </div>
+  {SITE_KEY && (
+    <Turnstile
+      key={`turnstile-${recaptchaLang}`}
+      siteKey={SITE_KEY}
+      options={{
+        language: recaptchaLang,
+        theme: "auto",
+      }}
+      onSuccess={(token) => setTurnstileToken(token)}
+      onExpire={() => setTurnstileToken("")}
+      onError={() => setTurnstileToken("")}
+    />
+  )}
+</div>
 
             <button
               type="submit"
