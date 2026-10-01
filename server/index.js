@@ -25,7 +25,7 @@ const APP_BASE_URL = (process.env.APP_BASE_URL || "https://samirprofile.com").re
 const PG_SSL = String(process.env.PG_SSL || "true").toLowerCase() !== "false";
 const TO_EMAIL = process.env.TO_EMAIL || "sameerloul2010@gmail.com";
 const FROM_EMAIL = process.env.FROM_EMAIL || "Samir Loul <no-reply@samirprofile.com>";
-const RECAPTCHA_SECRET_KEY = (process.env.RECAPTCHA_SECRET_KEY || "").trim();
+const TURNSTILE_SECRET_KEY = (process.env.TURNSTILE_SECRET_KEY || "").trim();
 const ADMIN_TOKEN = (process.env.ADMIN_TOKEN || "").trim();
 const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || "admin").trim();
 const ADMIN_PASSWORD_HASH = (process.env.ADMIN_PASSWORD_HASH || "").trim();
@@ -336,7 +336,7 @@ console.log("ENV check:", {
   nodeEnv: process.env.NODE_ENV || "development",
   databaseConfigured: !!DATABASE_URL,
   resendConfigured: !!process.env.RESEND_API_KEY,
-  recaptchaConfigured: !!RECAPTCHA_SECRET_KEY,
+  turnstileConfigured: !!TURNSTILE_SECRET_KEY,
   adminUsernameConfigured: !!ADMIN_USERNAME,
   adminTokenConfigured: !!ADMIN_TOKEN,
   adminPasswordHashConfigured: !!ADMIN_PASSWORD_HASH,
@@ -907,43 +907,39 @@ async function verifyAdminCredentials(username, password) {
   return false;
 }
 
-async function verifyRecaptcha(token, remoteIp) {
-  if (!RECAPTCHA_SECRET_KEY) {
-    return { ok: false, error: "Captcha service is not configured." };
+async function verifyTurnstile(token, remoteIp = "") {
+  if (!TURNSTILE_SECRET_KEY) {
+    throw new Error("TURNSTILE_SECRET_KEY is missing");
   }
 
-  if (!token || typeof token !== "string") {
-    return { ok: false, error: "Captcha verification failed." };
-  }
-
-  const params = new URLSearchParams();
-  params.append("secret", RECAPTCHA_SECRET_KEY);
-  params.append("response", token);
-  if (remoteIp) params.append("remoteip", remoteIp);
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 4000);
-
-  try {
-    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString(),
-      signal: controller.signal,
-    });
-    const data = await response.json();
-    const isValid = !!data.success && (typeof data.score !== "number" || data.score >= 0.5);
+  if (!token) {
     return {
-      ok: isValid,
-      data,
-      error: isValid ? null : "Captcha verification failed.",
+      success: false,
+      "error-codes": ["missing-input-response"],
     };
-  } catch (error) {
-    structuredLog("warn", "captcha-verification-error", { error: String(error?.message || error) });
-    return { ok: false, error: "Captcha verification failed." };
-  } finally {
-    clearTimeout(timeout);
   }
+
+  const formData = new URLSearchParams();
+  formData.append("secret", TURNSTILE_SECRET_KEY);
+  formData.append("response", token);
+
+  if (remoteIp) {
+    formData.append("remoteip", remoteIp);
+  }
+
+  const response = await fetch(
+    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Turnstile verification failed (${response.status})`);
+  }
+
+  return response.json();
 }
 
 /** =========================
@@ -1468,28 +1464,28 @@ app.post("/api/contact", async (req, res) => {
       message,
       website = "",
       lang = "en",
-      recaptchaToken,
+      turnstileToken,
     } = req.body || {};
 
     if (website) {
       return res.status(200).json({ ok: true });
     }
 
-    if (!recaptchaToken) {
+if (!turnstileToken) {
+  return res.status(400).json({
+    ok: false,
+    error: "Missing Turnstile token",
+  });
+}
+
+const captcha = await verifyTurnstile(turnstileToken, req.ip);
+
+    if (!captcha.success) {
       return res.status(400).json({
         ok: false,
-        error: "Missing captcha token",
-      });
-    }
-
-    const captcha = await verifyRecaptcha(recaptchaToken, req.ip);
-
-    if (!captcha.ok) {
-      return res.status(400).json({
-        ok: false,
-        error: captcha.error || "Captcha failed",
-        details: captcha.data?.["error-codes"] || null,
-        hostname: captcha.data?.hostname || null,
+error: "Turnstile verification failed",
+details: captcha["error-codes"] || null,
+        hostname: captcha.hostname || null,
       });
     }
 
@@ -1613,21 +1609,21 @@ app.post("/api/project-request", async (req, res) => {
       launchCampaign,
       notes = "",
       website = "",
-      lang = "en",
-      recaptchaToken,
+lang = "en",
+turnstileToken,
     } = req.body || {};
 
     if (website) {
       return res.status(200).json({ ok: true });
     }
 
-    if (!recaptchaToken) {
-      return res.status(400).json({ ok: false, error: "Missing captcha token" });
+    if (!turnstileToken) {
+      return res.status(400).json({ ok: false, error: "Missing Turnstile token" });
     }
 
-    const captcha = await verifyRecaptcha(recaptchaToken, req.ip);
+    const captcha = await verifyTurnstile(turnstileToken, req.ip);
 
-    if (!captcha.ok) {
+    if (!captcha.success) {
       return res.status(400).json({
         ok: false,
         error: captcha.error || "Captcha failed",
