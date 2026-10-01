@@ -1,8 +1,8 @@
 import { useMemo, useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+import { Turnstile } from "@marsidev/react-turnstile";
 import PageVisual from "../components/PageVisual.jsx";
 
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
 const API_ROOT = API_BASE_URL
   ? API_BASE_URL.endsWith("/api")
@@ -29,9 +29,8 @@ const copyByLang = {
     sending: "Sending...",
     success: "Request sent successfully. I will contact you soon.",
     error: "Something went wrong. Please try again.",
-    captchaMissing:
-      "reCAPTCHA site key is missing. Add VITE_RECAPTCHA_SITE_KEY and restart Vite.",
-    captchaRequired: "Please complete reCAPTCHA first.",
+captchaMissing: "Turnstile site key is missing.",
+captchaRequired: "Please complete the security check first.",
     required: "Required",
     invalidEmail: "Invalid email",
     labels: {
@@ -115,9 +114,8 @@ const copyByLang = {
     sending: "Bezig met versturen...",
     success: "Aanvraag verstuurd. Ik neem snel contact met je op.",
     error: "Er ging iets mis. Probeer opnieuw.",
-    captchaMissing:
-      "reCAPTCHA site key ontbreekt. Voeg VITE_RECAPTCHA_SITE_KEY toe en herstart Vite.",
-    captchaRequired: "Vink eerst reCAPTCHA aan.",
+captchaMissing: "Turnstile site key ontbreekt.",
+captchaRequired: "Voltooi eerst de beveiligingscontrole.",
     required: "Verplicht",
     invalidEmail: "Ongeldig e-mailadres",
     labels: {
@@ -200,9 +198,8 @@ const copyByLang = {
     sending: "جارٍ الإرسال...",
     success: "تم إرسال الطلب بنجاح. سأتواصل معك قريبًا.",
     error: "حدث خطأ. حاول مرة أخرى.",
-    captchaMissing:
-      "مفتاح reCAPTCHA غير موجود. أضف VITE_RECAPTCHA_SITE_KEY ثم أعد تشغيل Vite.",
-    captchaRequired: "يرجى إكمال reCAPTCHA أولاً.",
+captchaMissing: "مفتاح Turnstile غير موجود.",
+captchaRequired: "يرجى إكمال التحقق الأمني أولاً.",
     required: "مطلوب",
     invalidEmail: "بريد إلكتروني غير صالح",
     labels: {
@@ -466,12 +463,12 @@ function TextAreaField({ id, label, hint, value, rows, onChange, placeholder }) 
 }
 
 export default function StartProject({ lang = "en" }) {
-  const recaptchaRef = useRef(null);
   const copy = copyByLang[lang] || copyByLang.en;
   const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState("idle");
   const [serverMsg, setServerMsg] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const progressPercent = useMemo(() => {
     const answered = progressQuestions.filter((key) => isQuestionAnswered(form[key])).length;
@@ -583,9 +580,8 @@ export default function StartProject({ lang = "en" }) {
       return;
     }
 
-    const recaptchaToken = recaptchaRef.current?.getValue();
 
-    if (!recaptchaToken) {
+    if (!turnstileToken) {
       setStatus("error");
       setServerMsg(copy.captchaRequired);
       return;
@@ -602,7 +598,7 @@ export default function StartProject({ lang = "en" }) {
         body: JSON.stringify({
           ...form,
           lang,
-          recaptchaToken,
+          turnstileToken,
         }),
       });
 
@@ -613,12 +609,12 @@ export default function StartProject({ lang = "en" }) {
         throw new Error(data?.error || `Request failed (${response.status})`);
       }
 
-      recaptchaRef.current?.reset();
+setTurnstileToken("");
       setStatus("success");
       setForm(initialForm);
       setCurrentStep(0);
     } catch (error) {
-      recaptchaRef.current?.reset();
+setTurnstileToken("");
       setStatus("error");
       setServerMsg(error?.message || copy.error);
     }
@@ -985,9 +981,20 @@ export default function StartProject({ lang = "en" }) {
           />
         </div>
 
-        <div className="recaptcha-wrap">
-          <ReCAPTCHA ref={recaptchaRef} sitekey={SITE_KEY || ""} hl={lang} />
-        </div>
+<div className="recaptcha-wrap">
+  {SITE_KEY && (
+    <Turnstile
+      siteKey={SITE_KEY}
+      options={{
+        language: lang === "ar" ? "ar" : lang === "nl" ? "nl" : "en",
+        theme: "auto",
+      }}
+      onSuccess={(token) => setTurnstileToken(token)}
+      onExpire={() => setTurnstileToken("")}
+      onError={() => setTurnstileToken("")}
+    />
+  )}
+</div>
       </>
     );
   };
