@@ -97,7 +97,7 @@ Set these environment variables in Render API service:
 - `TO_EMAIL`
 - `FROM_EMAIL`
 - `CORS_ORIGIN` = jouw frontend URL (bijv. `https://jouw-portfolio.onrender.com`)
-- `RECAPTCHA_SECRET_KEY`
+- `TURNSTILE_SECRET_KEY`
 - `SESSION_SECRET` = lange random string voor admin sessies
 - `ADMIN_USERNAME` = admin gebruikersnaam (bijv. `admin`)
 - `ADMIN_PASSWORD_HASH` = bcrypt hash van je admin wachtwoord, liever dan een frontend-visible token
@@ -112,7 +112,7 @@ Set these environment variables in Render API service:
 
 Set these environment variables in Render frontend service:
 - `VITE_API_BASE_URL` = jouw API URL (bijv. `https://jouw-api.onrender.com`)
-- `VITE_RECAPTCHA_SITE_KEY`
+- `VITE_TURNSTILE_SITE_KEY`
 
 ## How To Test That It Really Works
 
@@ -153,7 +153,7 @@ Expected:
 - GitHub Actions CI workflow voor frontend build + backend syntax check.
 
 ### D. Contact form test
-1. Vul contactformulier in + reCAPTCHA.
+1. Vul contactformulier in + Cloudflare Turnstile.
 2. Verwacht 2 mails:
 - 1 naar jou (admin mail)
 - 1 bevestiging naar bezoeker
@@ -162,4 +162,4 @@ Expected:
 - `CORS` error: zet `CORS_ORIGIN` exact gelijk aan je frontend URL.
 - `Request failed (404)`: `VITE_API_BASE_URL` wijst naar verkeerde URL.
 - `Resend error`: controleer of je domein/from-email geverifieerd is in Resend.
-- `Captcha failed`: controleer site key + secret key en domeinbinding in Google reCAPTCHA.
+- `Captcha failed`: controleer site key + secret key en domeinbinding in Google Cloudflare Turnstile.
