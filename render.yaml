@@ -16,7 +16,7 @@ services:
         sync: false
       - key: CORS_ORIGIN
         sync: false
-      - key: RECAPTCHA_SECRET_KEY
+      - key: TURNSTILE_SECRET_KEY
         sync: false
       - key: APP_BASE_URL
         sync: false
