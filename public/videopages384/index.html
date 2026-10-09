@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Er staat iets voor je klaar 👀</title>
+  <meta name="description" content="Tien seconden. Kijk tot het einde.">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="nl_NL">
+  <meta property="og:title" content="Er staat iets voor je klaar 👀">
+  <meta property="og:description" content="Tien seconden. Kijk tot het einde.">
+  <meta property="og:image" content="https://samirprofile.com/videopages384/assets/server-room.webp">
+  <meta property="og:image:alt" content="Donkere serverruimte met rode gloed">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Er staat iets voor je klaar 👀">
+  <meta name="twitter:description" content="Tien seconden. Kijk tot het einde.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="phase-0">
+  <div class="bg" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="glitchbar" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="stage">
+    <header class="controls">
+      <button id="stop" type="button" class="btn btn-stop"></button>
+      <div class="sound" id="soundControls">
+        <button id="mute" type="button" class="btn" aria-pressed="false">klik</button>
+        <label class="vol">
+          <span></span>
+          <input id="volume" type="range" min="0" max="1000000000000" value="1000000000000" aria-label="Volume">
+        </label>
+      </div>
+    </header>
+
+    <main class="scene" id="scene">
+      <section class="hero" aria-live="polite">
+        <p class="tag">⚠ Fictieve simulatie</p>
+        <h1 id="headline" class="glitch-text">ONBEKENDE VERBINDING ACTIEF</h1>
+        <p id="subline" class="sub">Een onverwacht signaal is binnengekomen.</p>
+      </section>
+
+      <div class="terminal" id="terminal" aria-hidden="true">
+        <div class="term-bar"><span>● ● ●</span><span>signaal-monitor</span></div>
+        <div class="term-body" id="logs"></div>
+      </div>
+
+      <div class="popup-slot">
+        <div class="popup" id="popup" role="status">
+          <div class="popup-bar">⚠ BEVEILIGINGSWAARSCHUWING</div>
+          <p>Onbekende sessie probeert mee te kijken.<br><span>Code: X-1048-ZETA (fictief)</span></p>
+        </div>
+      </div>
+      <p class="hint" id="hint" hidden>Tik of druk ergens om geluid te activeren.</p>
+    </main>
+
+    <section class="reveal" id="reveal" hidden aria-live="polite">
+      <h2 class="reveal-title">Rustig… het was Samir 😂</h2>
+      <p class="reveal-big">Je bent niet gehackt. Dit was een grap.</p>
+      <p class="reveal-small">Controleer bij onbekende links altijd de afzender en het webadres.</p>
+      <button id="again" type="button" class="btn btn-again">Nog een keer</button>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
