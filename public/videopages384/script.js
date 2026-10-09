@@ -193,6 +193,8 @@
     hint.hidden = true;
     body.classList.remove("phase-0", "phase-1", "phase-2", "phase-3");
     body.classList.add("revealed");
+    body.classList.remove("intro-mode");
+    $("intro").hidden = true;
     $("scene").hidden = true;
     $("reveal").hidden = false;
   }
@@ -214,7 +216,7 @@
   });
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && running) { reveal(); return; }
+    if (e.key === "Escape" && (running || !body.classList.contains("revealed"))) { reveal(); return; }
     unlock();
   });
   document.addEventListener("pointerdown", unlock, { passive: true });
@@ -225,5 +227,9 @@
   document.addEventListener("visibilitychange", function () { if (document.hidden && running) reveal(); });
   window.addEventListener("pagehide", function () { if (running) reveal(); });
 
-  start();
+  $("open").addEventListener("click", function () {
+    body.classList.remove("intro-mode");
+    $("intro").hidden = true;
+    start();
+  });
 })();
