@@ -7,6 +7,7 @@ import NewsletterSignup from "../components/NewsletterSignup";
 import FeedbackForm from "../components/FeedbackForm";
 import BlogPreview from "../components/BlogPreview";
 import ExploreUniverse from "../components/ExploreUniverse.jsx";
+import PremiumLaptop from "../components/PremiumLaptop.jsx";
 import "../styles/cinematic.css";
 import "../styles/cinematic-refined.css";
 
@@ -36,31 +37,6 @@ function useStoryProgress(ref) {
   }, [ref]);
   return progress;
 }
-function DeveloperWorkstation({ progress, label }) {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const media = matchMedia("(prefers-reduced-motion: reduce)");
-    const change = () => setReduced(media.matches);
-    change(); media.addEventListener("change", change);
-    return () => media.removeEventListener("change", change);
-  }, []);
-  const rotation = reduced ? 0 : -15 + progress * 24;
-  const screen = progress < .39 ? "code" : progress < .72 ? "projects" : "connect";
-  return <div className="cin-device-stage" aria-hidden="true" title={label}>
-    <div className="cin-device" style={{ "--cin-rotation": rotation+"deg", "--cin-rise": (reduced ? 0 : progress * -24)+"px" }}>
-      <div className="cin-screen-shell">
-        <div className="cin-screen">
-          <div className="cin-screen-top"><span className="cin-lights"><i/><i/><i/></span><span>samir / developer</span><span>●</span></div>
-          {screen === "code" ? <div className="cin-editor"><div className="cin-line"><b>const</b> developer = {"{"}</div><div className="cin-line ind">name: <em>"Samir Loul"</em>,</div><div className="cin-line ind">role: <em>"Software Developer"</em>,</div><div className="cin-line ind">stack: [<em>"React"</em>, <em>"PHP"</em>,</div><div className="cin-line ind two"><em>"Laravel"</em>, <em>"MySQL"</em>]</div><div className="cin-line">{"}"};</div><div className="cin-line"><b>build</b>(<em>"the future"</em>);<span className="cin-cursor">▍</span></div></div>
-          : screen === "projects" ? <div className="cin-mini-preview"><div className="cin-mini-label">SELECTED WORK / 2026</div><div className="cin-mini-title">Creative systems.<br/>Real solutions.</div><div className="cin-mini-panels"><span/><span/><span/></div></div>
-          : <div className="cin-mini-preview cin-contact-preview"><div className="cin-mini-label">CONNECTION ESTABLISHED</div><div className="cin-mini-title">Let's create<br/>something great.</div><div className="cin-mini-connect">samirprofile.com ↗</div></div>}
-        </div>
-      </div>
-      <div className="cin-base"><div className="cin-keyboard"/><div className="cin-trackpad"/></div>
-    </div>
-    <span className="cin-orb cin-orb-a"/><span className="cin-orb cin-orb-b"/>
-  </div>;
-}
 function Section({ index, eyebrow, title, children, className="" }) {
   return <section className={`cin-section ${className}`}><div className="cin-section-inner"><p className="cin-kicker"><span>{String(index).padStart(2,"0")}</span> / {eyebrow}</p><h2 className="cin-section-title">{title}</h2>{children}</div></section>;
 }
@@ -82,7 +58,7 @@ export default function Home({ t, lang="en" }) {
   const stats = t?.stats?.items || (fallback[lang]||fallback.en).map(label=>({label,suffix:"+"}));
   return <div className="cin-home" ref={storyRef}>
     <div className="cin-noise" aria-hidden="true"/>
-    <div className="cin-device-wrap"><DeveloperWorkstation progress={progress} label={c.scene}/></div>
+    <div className="cin-device-wrap"><PremiumLaptop progress={progress} lang={lang}/></div>
     <section className="cin-hero">
       <div className="cin-hero-content"><p className="cin-kicker">01 / {c.eyebrow}</p><p className="cin-intro-wordmark">SAMIR LOUL <span>— SOFTWARE DEVELOPER</span></p><h1>{c.headline}<span>{c.second}</span></h1><p className="cin-hero-description">{t?.hero?.text}</p><div className="cin-actions"><Link className="cin-btn cin-btn-primary" to="/projects">{c.projects}<span aria-hidden="true">↗</span></Link><Link className="cin-btn" to="/about">{c.about}</Link><Link className="cin-btn cin-btn-minimal" to="/contact">{c.together}</Link></div></div><span className="cin-scroll-prompt" aria-hidden="true">SCROLL TO EXPLORE ↓</span>
     </section>
