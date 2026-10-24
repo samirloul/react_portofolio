@@ -1,0 +1,30 @@
+/* Progressive enhancement for existing routed pages, no API or state changes. */
+:root { --primary:#245fe9;--primary-hover:#154dc5;--primary-active:#1648af;--primary-light:#8db1ff;--primary-soft:#dce8ff;--primary-extra-soft:#edf3ff;--accent:#4f80ee;--accent-light:#a9c5ff;--accent-highlight:#bed1ff;--primary-dark:#1a4dc2;--primary-rgb:36,95,233;--accent-rgb:79,128,238;--gradient-primary:linear-gradient(135deg,#215ceb,#5396ff);--gradient-text:linear-gradient(135deg,#1e5ad9,#408cf0);--input-focus:#2563eb;--scrollbar-thumb:#6c91dc; }
+:root[data-theme="dark"]{--primary:#89b1ff;--primary-hover:#b4cdff;--primary-active:#a4c4ff;--primary-light:#7cafff;--primary-soft:#172c56;--primary-extra-soft:#13213e;--primary-dark:#5a90ef;--accent:#7dc0fc;--accent-light:#4587d2;--accent-highlight:#a0cfff;--primary-rgb:137,177,255;--accent-rgb:125,192,252;--gradient-primary:linear-gradient(135deg,#3368db,#639aff);--gradient-text:linear-gradient(135deg,#a4c4ff,#58bafa);--input-focus:#94b8ff;}
+.premium-home-main {padding:0!important;}
+.premium-navbar {padding:12px clamp(18px,3vw,48px);background:color-mix(in srgb,var(--bg) 85%,transparent);box-shadow:none;border-bottom:1px solid var(--border-soft);min-height:70px;}
+.premium-navbar .brand {font-weight:900;letter-spacing:-.05em;color:var(--text-strong);font-size:clamp(1.15rem,1.5vw,1.6rem);}
+.premium-navbar .navbar-center{gap:clamp(.35rem,1vw,1.1rem);align-items:center}
+.premium-navbar .nav-link{font-size:clamp(.72rem,.9vw,.9rem);padding:8px 2px;font-weight:650}
+.premium-navbar .nav-link-cta{padding:10px 15px;border-radius:50px;color:#fff;background:#265ee3}
+.premium-navbar .nav-link-cta.active,.premium-navbar .nav-link-cta:hover{color:#fff}
+.premium-content-main{max-width:100%;padding:0 0 80px;}
+.premium-content-main .content-page,.premium-content-main .projects-page,.premium-content-main .about-page,.premium-content-main .services-page,.premium-content-main .learning-page,.premium-content-main .goals-page,.premium-content-main .contact-page{width:min(100%,1380px);max-width:1380px;margin-inline:auto;padding:clamp(50px,7vw,100px) clamp(20px,5vw,80px);}
+.premium-content-main .page-title,.premium-content-main .section-title,.premium-content-main .projects-header h1{font-size:clamp(2.8rem,6vw,6.5rem);line-height:1.05;letter-spacing:-.065em;font-weight:850;color:var(--text-strong)}
+.premium-content-main .lead,.premium-content-main .about-intro{font-size:clamp(1.05rem,1.35vw,1.3rem);line-height:1.8}
+.premium-content-main .content-card,.premium-content-main .project-card,.premium-content-main .tech-skill-card,.premium-content-main .tech-card,.premium-content-main .skill-item{border:1px solid var(--border-soft);border-radius:22px;box-shadow:0 12px 38px rgba(14,30,68,.06);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;}
+.premium-content-main .content-card:hover,.premium-content-main .project-card:hover,.premium-content-main .tech-card:hover{transform:translateY(-5px);border-color:var(--primary-light);box-shadow:0 18px 45px rgba(14,30,68,.11)}
+.premium-content-main .project-grid{gap:22px}
+.premium-content-main .project-title{font-size:clamp(1.25rem,1.7vw,1.9rem);letter-spacing:-.03em}
+.premium-content-main .btn,.premium-content-main .project-btn{transition:transform .22s ease,background .22s ease,box-shadow .22s ease}
+.premium-content-main .btn:focus-visible,.premium-navbar button:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.premium-content-main .tech-skills-grid{gap:20px}
+.premium-content-main .tech-skill-card{padding:25px}
+.premium-content-main img{max-width:100%;height:auto}
+.premium-content-main input,.premium-content-main textarea,.premium-content-main select{max-width:100%}
+.premium-admin-main{padding:24px clamp(12px,3vw,45px) 80px}
+html[dir="rtl"] .premium-content-main .content-page{text-align:start}
+@media(max-width:1100px){.premium-navbar{padding-inline:15px}.premium-navbar .navbar-center{gap:.5rem}}
+@media(max-width:900px){.premium-navbar .navbar-center{align-items:stretch;gap:12px}.premium-navbar .nav-link{font-size:1rem;padding:10px}}
+@media(max-width:480px){.premium-content-main .content-page,.premium-content-main .projects-page{padding:42px 17px}.premium-content-main .page-title{font-size:2.65rem}}
+@media(prefers-reduced-motion:reduce){.premium-content-main *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
