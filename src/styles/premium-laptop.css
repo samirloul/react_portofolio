@@ -2,3 +2,8 @@
 @media(max-width:760px){.pl-machine{top:13%;left:5%;width:90%}.pl-floating{padding:7px 10px;font-size:.62rem}.pl-float-react{top:8%}.pl-float-api{right:0;top:48%}.pl-float-git{bottom:25%}.pl-quick-nav{left:2%;right:2%;bottom:0;flex-direction:column;align-items:center}.pl-nav-label{display:none}.pl-quick-nav a{padding:8px;font-size:.65rem}.pl-code-row code{font-size:clamp(5px,1.45vw,10px)}.pl-terminal{font-size:clamp(5px,1.2vw,9px)}.pl-tabs button{font-size:clamp(5px,1.3vw,9px)}}
 @media(max-width:390px){.pl-floating{display:none}.pl-quick-nav>div{justify-content:center}.pl-machine{top:19%}}
 @media(prefers-reduced-motion:reduce){.pl-wrap *{animation:none!important;transition:none!important}.pl-machine{transform:rotateX(7deg) rotateY(-8deg)!important}}
+
+/* Allow real editor tabs and destination links to receive pointer input. */
+.cin-device-wrap:has(.pl-wrap){pointer-events:auto}
+.cin-device-wrap .pl-wrap{pointer-events:auto}
+.cin-device-wrap .pl-wrap a,.cin-device-wrap .pl-wrap button{position:relative;z-index:4}
