@@ -40,7 +40,7 @@ export default function ExploreUniverse({ lang = "en" }) {
           <div className="explore-floating explore-float-a" aria-hidden="true">{"{ }"}</div><div className="explore-floating explore-float-b" aria-hidden="true">{"</>"}</div>
           <div className="explore-scene" key={active}>
             <span className="explore-scene-kicker">SAMIRPROFILE / {String(active+1).padStart(2,"0")}</span>
-            <div className="explore-scene-icon" aria-hidden="true">{glyphs[active]}</div>
+            <div className="explore-scene-icon" aria-hidden="true">{glyphs[active]}</div>{active===2 && <img className="explore-profile-image" src="/fotos/MIJZELF/WhatsApp%20Image%202026-09-16%20at%2001.27.24%20(4).jpeg" alt="" loading="lazy"/>}
             <h3>{c.paths[active][0]}</h3>
             <p>{c.paths[active][1]}</p>
             <Link className="explore-visit" to={routes[active]}>{c.go}<span aria-hidden="true">↗</span></Link>
