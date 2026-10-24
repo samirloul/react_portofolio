@@ -7,6 +7,7 @@ import "./styles/skills.css";
 import "./styles/fun-facts.css";
 import "./styles/about-timeline.css";
 import "./styles/new-features.css";
+import "./styles/premium-pages.css";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
 import Skills from "./pages/Skills.jsx";
@@ -269,7 +270,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="navbar">
+      <header className="navbar premium-navbar">
         <div className="navbar-left">
           <span className="brand">{t.nav.name}</span>
         </div>
@@ -365,7 +366,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="page">
+      <main className={`page ${location.pathname === "/" ? "premium-home-main" : location.pathname === "/admin" ? "premium-admin-main" : "premium-content-main"}`}>
         <Routes>
           <Route path="/" element={<Home t={t} lang={lang} />} />
           <Route path="/about" element={<About t={t} />} />
