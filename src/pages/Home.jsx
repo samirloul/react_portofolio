@@ -6,6 +6,7 @@ import VisitorStats from "../components/VisitorStats";
 import NewsletterSignup from "../components/NewsletterSignup";
 import FeedbackForm from "../components/FeedbackForm";
 import BlogPreview from "../components/BlogPreview";
+import ExploreUniverse from "../components/ExploreUniverse.jsx";
 import "../styles/cinematic.css";
 import "../styles/cinematic-refined.css";
 
@@ -90,6 +91,7 @@ export default function Home({ t, lang="en" }) {
     </Section>
     <Section index={3} eyebrow={t?.nav?.skills} title={c.expertise} className="cin-skills"><p className="cin-lead">{t?.skills?.visualText}</p><div className="cin-tech-grid">{categories.map((tech,i)=><div className="cin-tech-tile" key={i}><span className="cin-tech-number">{String(i+1).padStart(2,"0")}</span><strong>{tech}</strong><span>↗</span></div>)}</div><Link className="cin-text-link" to="/skills">{c.next} ↗</Link></Section>
     <Section index={4} eyebrow={t?.nav?.projects} title={c.work} className="cin-work"><p className="cin-lead">{t?.projects?.intro}</p><div className="cin-work-grid">{cards.map((p,i)=><article className="cin-work-card" key={p.slug || p.title}><div className="cin-work-visual"><div className="cin-preview-ui" aria-hidden="true"><div className="cin-preview-top"><i/><i/><i/></div><div className="cin-preview-layout"><aside/><div><b/><strong>{p.title}</strong><span/><span/><em/></div></div></div><span>{String(i+1).padStart(2,"0")}</span><strong>{p.title}</strong><div className="cin-work-visual-lines" aria-hidden="true"><i/><i/><i/></div></div><div className="cin-work-body"><span>{p.status || "PROJECT"}</span><h3>{p.title}</h3><p>{p.text}</p><div className="cin-tags">{(p.tags || []).slice(0,4).map(tag=><span key={tag}>{tag}</span>)}</div>{p.slug && <Link className="cin-text-link" to={`/projects/${p.slug}`}>{t?.projects?.viewProject || "View project"} ↗</Link>}</div></article>)}</div><Link className="cin-btn" to="/projects">{c.projects} ↗</Link></Section>
+    <ExploreUniverse lang={lang}/>
     <Section index={5} eyebrow={t?.nav?.experience} title={c.journey} className="cin-journey"><div className="cin-timeline">{experience.map((item,i)=><article key={i}><span>{item.period}</span><div><h3>{item.title}</h3><strong>{item.company}</strong><p>{item.description}</p></div></article>)}</div><Link className="cin-text-link" to="/experience">{c.next} ↗</Link></Section>
     <section className="cin-finale"><p className="cin-kicker">06 / CONTACT</p><h2>{c.contact}</h2><p>{c.contactSub}</p><div className="cin-actions"><Link className="cin-btn cin-btn-primary" to="/contact">{t?.nav?.contact} ↗</Link><Link className="cin-btn" to="/start-project">{t?.nav?.startProject} ↗</Link></div></section>
     <div className="cin-home-extras container"><section className="stats-section"><h2 className="section-title">{t?.stats?.title}</h2><div className="stats-grid">{[3,3,8,100].map((n,i)=><Counter key={i} end={n} duration={1800} label={stats[i]?.label} suffix={stats[i]?.suffix}/>)}</div></section><FunFacts t={t}/><VisitorStats t={t}/><BlogPreview t={t}/><NewsletterSignup t={t} lang={lang}/><FeedbackForm t={t} lang={lang}/></div>
