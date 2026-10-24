@@ -7,3 +7,6 @@
 @media(max-width:760px){.eh-tech-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.eh-note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cin-work-grid{grid-template-columns:1fr}.cin-device-wrap{width:min(100%,490px);height:355px;top:365px;inset-inline:0}.cin-hero-content{width:100%}.cin-work-body{min-height:unset}}
 @media(max-width:470px){.eh-note-grid{grid-template-columns:1fr}.eh-tech{padding:13px;min-height:143px}.eh-tech-logo{width:39px;height:39px}.cin-hero:after{display:none}}
 @media(prefers-reduced-motion:reduce){.eh-tech{animation:none!important}.eh-tech,.eh-note,.cin-preview-ui{transition:none!important}}
+
+/* Destination card: real existing photo, restrained framing */
+.explore-profile-image{position:absolute;top:17px;right:14px;width:88px;height:108px;object-fit:cover;object-position:center 20%;border-radius:12px;border:2px solid rgba(215,232,255,.7);box-shadow:0 12px 28px rgba(0,0,0,.25);transform:rotate(5deg);animation:eh-photo .6s ease both}.explore-scene:has(.explore-profile-image) .explore-scene-icon{margin-bottom:10px}@keyframes eh-photo{from{opacity:0;transform:translateY(10px) rotate(10deg)}to{opacity:1;transform:rotate(5deg)}}@media(max-width:460px){.explore-profile-image{width:62px;height:78px;top:15px;right:0}}@media(prefers-reduced-motion:reduce){.explore-profile-image{animation:none!important}}
